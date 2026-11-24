@@ -88,17 +88,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------------------
-    // 3. MOTION MICRO-INTERACTIONS (Card Hover Tilt)
+    // 3. MOTION MICRO-INTERACTIONS (Card Hover Tilt for small cards only)
     // -------------------------------------------------------------------------
-    document.querySelectorAll('.card').forEach(card => {
+    document.querySelectorAll('.kpi-card, .sector-card, .improvement-card, .library-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left - (rect.width / 2);
             const y = e.clientY - rect.top - (rect.height / 2);
-            card.style.transform = `perspective(1000px) rotateX(${-y * 0.02}deg) rotateY(${x * 0.02}deg) translateY(-2px)`;
+            card.style.transform = `perspective(1000px) rotateX(${-y * 0.03}deg) rotateY(${x * 0.03}deg) translateY(-2px)`;
         });
         card.addEventListener('mouseleave', () => {
             card.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
+        });
+    });
+
+    // Smooth Anchor Navigation with Lenis
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#') && href.length > 1) {
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    if (lenis && typeof lenis.scrollTo === 'function') {
+                        lenis.scrollTo(target, { offset: -60 });
+                    } else {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
         });
     });
 
@@ -109,14 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = document.getElementById('stockForecastChart').getContext('2d');
 
     function formatRupiah(val) {
-        if (val === null || val === undefined || isNaN(val)) return "-";
-        return "Rp " + Math.round(val).toLocaleString('id-ID');
+        if (val === null || val === undefined) return "-";
+        const num = parseFloat(String(val).replace(/[^\d.-]/g, ''));
+        if (isNaN(num)) return "-";
+        return "Rp " + Math.round(num).toLocaleString('id-ID');
     }
 
     function formatPercent(val) {
-        if (val === null || val === undefined || isNaN(val)) return "-";
-        const sign = val > 0 ? "+" : "";
-        return `${sign}${val.toFixed(2)}%`;
+        if (val === null || val === undefined) return "-";
+        const num = parseFloat(String(val).replace(/[%+]/g, ''));
+        if (isNaN(num)) return "-";
+        const sign = num > 0 ? "+" : "";
+        return `${sign}${num.toFixed(2)}%`;
     }
 
     function renderStockChart(historyData, forecastData, currentPrice, tp, sl) {
@@ -604,7 +626,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const t = btn.getAttribute('data-ticker');
                     document.getElementById('stockSelector').value = t;
                     loadStockDetail(t);
-                    document.getElementById('inspector').scrollIntoView({ behavior: 'smooth' });
+                    const inspectorEl = document.getElementById('inspector');
+                    if (lenis && typeof lenis.scrollTo === 'function') {
+                        lenis.scrollTo(inspectorEl, { offset: -60 });
+                    } else if (inspectorEl) {
+                        inspectorEl.scrollIntoView({ behavior: 'smooth' });
+                    }
                 });
             });
 
@@ -679,7 +706,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const t = btn.getAttribute('data-ticker');
                     document.getElementById('stockSelector').value = t;
                     loadStockDetail(t);
-                    document.getElementById('inspector').scrollIntoView({ behavior: 'smooth' });
+                    const inspectorEl = document.getElementById('inspector');
+                    if (lenis && typeof lenis.scrollTo === 'function') {
+                        lenis.scrollTo(inspectorEl, { offset: -60 });
+                    } else if (inspectorEl) {
+                        inspectorEl.scrollIntoView({ behavior: 'smooth' });
+                    }
                 });
             });
 
