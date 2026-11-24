@@ -38,6 +38,11 @@ app.use(express.static(FRONTEND_DIR));
 app.use('/static', express.static(FRONTEND_DIR));
 app.use('/data', express.static(DATA_DIR));
 
+// Dedicated Favicon Handler
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(path.join(FRONTEND_DIR, 'logo.jpg'));
+});
+
 // ==============================================================================
 // API ROUTES
 // ==============================================================================
