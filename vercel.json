@@ -2,20 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
+      "src": "api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "frontend/**",
+          "data/**",
+          "Stock_RNN_Project/logs/**",
+          "Stock_RNN_Project/data_daily/**"
+        ]
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server.js"
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/cron/update",
-      "schedule": "30 9 * * 1-5"
+      "dest": "api/index.js"
     }
   ]
 }
