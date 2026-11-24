@@ -1151,39 +1151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(a);
     }
 
-    // -------------------------------------------------------------------------
-    // 11. DEVELOPER PROMPT COPY INTERACTION & SCROLL SPY
-    // -------------------------------------------------------------------------
-    document.querySelectorAll('.btn-copy-prompt').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const textToCopy = btn.getAttribute('data-copy');
-            if (!textToCopy) return;
-
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(textToCopy);
-                } else {
-                    const ta = document.createElement('textarea');
-                    ta.value = textToCopy;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                }
-
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = '✓ Tersalin!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.innerHTML = originalHtml;
-                    btn.classList.remove('copied');
-                }, 2200);
-            } catch (err) {
-                console.error("Gagal menyalin teks prompt:", err);
-            }
-        });
-    });
-
     // Active navigation highlight on scroll
     window.addEventListener('scroll', debounce(() => {
         const sections = document.querySelectorAll('section[id]');
