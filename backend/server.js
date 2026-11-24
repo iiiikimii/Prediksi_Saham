@@ -406,18 +406,75 @@ app.all('/api/cron/update', async (req, res) => {
     }
 });
 
+// Helper to compute live IDX market session status (WIB time)
+function getMarketStatusInfo() {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Jakarta',
+        hour12: false,
+        weekday: 'short',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    const parts = formatter.formatToParts(now);
+    const getPart = (type) => parts.find(p => p.type === type)?.value || '';
+
+    const weekday = getPart('weekday'); // Mon, Tue, Wed, Thu, Fri, Sat, Sun
+    const hour = parseInt(getPart('hour'), 10);
+    const minute = parseInt(getPart('minute'), 10);
+    const timeMinutes = hour * 60 + minute;
+    const isWeekend = weekday === 'Sat' || weekday === 'Sun';
+
+    let state = 'CLOSED';
+    let statusText = 'Pasar Tutup';
+    let detailText = '';
+
+    if (isWeekend) {
+        state = 'WEEKEND';
+        statusText = 'Libur Akhir Pekan';
+        detailText = 'Bursa BEI libur di akhir pekan. Perdagangan buka kembali Senin pukul 09:00 WIB.';
+    } else if (timeMinutes >= (8 * 60 + 45) && timeMinutes < (9 * 60)) {
+        state = 'PRE_OPEN';
+        statusText = 'Pra-Pembukaan BEI';
+        detailText = 'Sesi pra-pembukaan bursa aktif. Perdagangan reguler dimulai pukul 09:00 WIB.';
+    } else if (timeMinutes >= (9 * 60) && timeMinutes < (16 * 60)) {
+        state = 'OPEN';
+        statusText = 'Pasar BEI Buka (Live)';
+        detailText = 'Jam perdagangan reguler bursa aktif (09:00 - 16:00 WIB). Pembaruan otomatis harian berjalan pukul 16:30 WIB.';
+    } else {
+        state = 'CLOSED';
+        statusText = 'Pasar Tutup';
+        detailText = hour >= 16 
+            ? 'Bursa BEI telah tutup hari ini. Buka kembali esok pukul 09:00 WIB.' 
+            : 'Bursa BEI belum buka. Perdagangan hari ini dimulai pukul 09:00 WIB.';
+    }
+
+    return {
+        state,
+        statusText,
+        detailText,
+        currentTimeWib: `${getPart('day')}/${getPart('month')}/${getPart('year')} ${getPart('hour')}:${getPart('minute')} WIB`
+    };
+}
+
 // 10. Update Status Endpoint
 app.get('/api/status', (req, res) => {
+    const market = getMarketStatusInfo();
     const statusFile = path.join(DATA_DIR, 'update_status.json');
+    let meta = {};
     if (fs.existsSync(statusFile)) {
         try {
-            const meta = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
-            return res.json(meta);
+            meta = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
         } catch (e) {}
     }
     res.json({
-        last_updated_wib: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) + ' WIB',
-        status: 'Active Auto-Update'
+        ...meta,
+        market: market,
+        trading_hours: 'Senin - Jumat: Sesi 1 (09:00-12:00 WIB), Sesi 2 (13:30-15:49 WIB), Tutup 16:00 WIB',
+        update_schedule: 'Setiap hari bursa pukul 16:30 WIB (Pasca penutupan pasar)'
     });
 });
 

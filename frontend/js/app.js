@@ -302,14 +302,33 @@ document.addEventListener('DOMContentLoaded', () => {
             // Total Stocks
             document.getElementById('kpiTotal').innerText = `${data.total_emiten} Saham`;
 
-            // Update Auto-Update status badge
+            // Update Auto-Update & Live Market Status badge
             try {
                 const statusRes = await fetch('/api/status');
                 const statusData = await statusRes.json();
                 const statusEl = document.querySelector('.live-status');
-                if (statusEl && statusData.last_updated_wib) {
-                    statusEl.title = `Pembaruan Terakhir: ${statusData.last_updated_wib}`;
-                    statusEl.innerHTML = `<span class="pulse-dot"></span> Auto-Update Aktif (${statusData.last_updated_wib.split(' ')[0]})`;
+                if (statusEl && statusData.market) {
+                    const m = statusData.market;
+                    const lastEod = statusData.last_updated_wib ? statusData.last_updated_wib.split(',')[0] : '24/11/2026';
+
+                    if (m.state === 'OPEN') {
+                        statusEl.className = 'live-status status-open';
+                        statusEl.innerHTML = `<span class="pulse-dot"></span> <strong>Pasar Buka</strong> • Live BEI`;
+                        statusEl.title = `Sesi Perdagangan BEI Aktif (09:00 - 16:00 WIB)\n• Pembaruan data harian berikutnya: 16:30 WIB\n• Jam server: ${m.currentTimeWib}`;
+                    } else if (m.state === 'PRE_OPEN') {
+                        statusEl.className = 'live-status status-preopen';
+                        statusEl.innerHTML = `<span class="amber-dot"></span> <strong>Pra-Buka</strong> • Buka 09:00`;
+                        statusEl.title = `Sesi Pra-Pembukaan BEI Aktif\n• Perdagangan reguler dimulai pukul 09:00 WIB`;
+                    } else if (m.state === 'WEEKEND') {
+                        statusEl.className = 'live-status status-closed';
+                        statusEl.innerHTML = `<span class="gray-dot"></span> <strong>Libur Akhir Pekan</strong>`;
+                        statusEl.title = `Bursa BEI libur di akhir pekan\n• Buka kembali Senin pukul 09:00 WIB\n• Data penutupan terakhir: ${lastEod}`;
+                    } else {
+                        // Pasar Tutup (Malam / Dini Hari)
+                        statusEl.className = 'live-status status-closed';
+                        statusEl.innerHTML = `<span class="blue-dot"></span> <strong>Pasar Tutup</strong> • Buka 09:00 WIB`;
+                        statusEl.title = `Bursa BEI belum buka (Perdagangan hari ini dimulai pukul 09:00 WIB)\n• Data penutupan terakhir tersedia: ${lastEod}\n• Jadwal auto-update harian: Pukul 16:30 WIB setiap sore setelah bursa tutup`;
+                    }
                 }
             } catch (e) {}
 
