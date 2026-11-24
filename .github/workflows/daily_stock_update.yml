@@ -28,6 +28,9 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm install
 
+      - name: 🧪 Run Automated Tests
+        run: npm test
+
       - name: 🔄 Run Daily Stock Update (167 Emiten)
         run: node backend/cronUpdater.js
 
