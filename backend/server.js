@@ -18,16 +18,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Static Frontend Directory
+// Static Frontend & Data Directories
 const ROOT_DIR = path.resolve(__dirname, '..');
 const FRONTEND_DIR = path.join(ROOT_DIR, 'frontend');
-const WEB_DIR = path.join(ROOT_DIR, 'web');
+const DATA_DIR = path.join(ROOT_DIR, 'data');
 
-// Serve static assets
+// Serve static assets & clean data
 app.use(express.static(FRONTEND_DIR));
 app.use('/static', express.static(FRONTEND_DIR));
-app.use(express.static(WEB_DIR));
-app.use('/static', express.static(WEB_DIR));
+app.use('/data', express.static(DATA_DIR));
 
 // ==============================================================================
 // API ROUTES

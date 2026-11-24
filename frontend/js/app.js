@@ -619,10 +619,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('searchMulti').addEventListener('input', debounce(loadMultiHariTable, 300));
 
-    // CSV Export Multi
+    // CSV Export Multi (Clean Readable CSV)
     document.getElementById('btnExportMulti').addEventListener('click', () => {
-        if (!currentMultiData.length) return;
-        exportToCsv(currentMultiData, 'prediksi_multihari_167_emiten.csv');
+        window.location.href = '/data/rekomendasi_saham_multihari_rapi.csv';
     });
 
     // -------------------------------------------------------------------------
@@ -692,10 +691,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filterSectorScalp').addEventListener('change', loadScalpingTable);
     document.getElementById('searchScalp').addEventListener('input', debounce(loadScalpingTable, 300));
 
-    // CSV Export Scalp
+    // CSV Export Scalp (Clean Readable CSV)
     document.getElementById('btnExportScalp').addEventListener('click', () => {
-        if (!currentScalpData.length) return;
-        exportToCsv(currentScalpData, 'prediksi_scalping_5m_60m.csv');
+        window.location.href = '/data/rekomendasi_saham_scalping_rapi.csv';
     });
 
     // -------------------------------------------------------------------------
