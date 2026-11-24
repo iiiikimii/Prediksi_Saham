@@ -53,21 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Animate words upward with stagger
         gsap.from(".hero-word", {
             opacity: 0,
-            y: 40,
-            stagger: 0.08,
-            duration: 0.9,
-            ease: "power4.out",
-            delay: 0.2
+            y: 25,
+            stagger: 0.06,
+            duration: 0.7,
+            ease: "power3.out",
+            clearProps: "opacity,transform"
         });
 
         // Animate KPI cards
         gsap.from(".kpi-card", {
-            opacity: 0,
-            y: 25,
-            stagger: 0.1,
-            duration: 0.8,
-            ease: "power3.out",
-            delay: 0.6
+            y: 15,
+            stagger: 0.08,
+            duration: 0.6,
+            ease: "power2.out",
+            clearProps: "all"
         });
 
         // Section entrance scroll triggers
@@ -76,12 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 gsap.from(section, {
                     scrollTrigger: {
                         trigger: section,
-                        start: "top 85%"
+                        start: "top 90%"
                     },
-                    opacity: 0,
-                    y: 35,
-                    duration: 0.7,
-                    ease: "power2.out"
+                    y: 20,
+                    duration: 0.6,
+                    ease: "power2.out",
+                    clearProps: "transform"
                 });
             });
         }

@@ -61,46 +61,43 @@
     <!-- Main Content Container (Lenis smoothly scrolls this) -->
     <main class="main-wrapper">
 
-        <!-- HERO SECTION (GSAP Title Animated Word-by-Word) -->
+        <!-- HERO SECTION -->
         <section id="overview" class="hero-section">
             <div class="hero-content">
                 <div class="pill-badge">
                     <span class="pill-dot"></span>
-                    <span>SCREENING & PROYEKSI HARGA SAHAM BURSA EFEK INDONESIA (IDX)</span>
+                    <span>BURSA EFEK INDONESIA • KUANTITATIF & TEKNIKAL</span>
                 </div>
                 
-                <!-- Title where words will be animated by GSAP -->
                 <h1 class="hero-title" id="heroTitle">
-                    Terminal Analisis & Proyeksi Saham BEI
+                    Terminal Proyeksi & Analisis Saham BEI
                 </h1>
                 
                 <p class="hero-subtitle">
-                    Pantau peluang trading objektif untuk <strong>167 emiten BEI</strong> lintas 4 sektor utama:
-                    <em>Perbankan, Barang Konsumsi, Perkebunan, dan Mineral & Logam</em>. Dilengkapi proyeksi target harga harian & menit,
-                    indikator momentum, serta kalkulator alokasi lot realistis.
+                    Sistem analisis teknikal kuantitatif untuk <strong>167 saham BEI</strong> (Perbankan, Konsumsi, Perkebunan, Mineral). Dilengkapi proyeksi target swing 31 hari, sinyal scalping 5 menit, dan alokasi lot risiko realistis.
                 </p>
 
-                <!-- Quick KPI Row (Animated Cards) -->
+                <!-- Quick Market KPI Row -->
                 <div class="kpi-grid">
-                    <div class="kpi-card" data-speed="1.1">
+                    <div class="kpi-card">
                         <div class="kpi-header">Semesta Saham BEI</div>
                         <div class="kpi-value" id="kpiTotal">167 Saham</div>
                         <div class="kpi-sub">4 Sektor Utama Terdaftar</div>
                     </div>
 
-                    <div class="kpi-card" data-speed="1.1">
+                    <div class="kpi-card">
                         <div class="kpi-header">Top Rekomendasi Swing</div>
                         <div class="kpi-value text-green" id="kpiTopSwing">-</div>
                         <div class="kpi-sub" id="kpiTopSwingSub">Memuat proyeksi H+31...</div>
                     </div>
 
-                    <div class="kpi-card" data-speed="1.1">
+                    <div class="kpi-card">
                         <div class="kpi-header">Top Rekomendasi Scalping</div>
                         <div class="kpi-value text-cyan" id="kpiTopScalp">-</div>
                         <div class="kpi-sub" id="kpiTopScalpSub">Net gain pasca fee 0.4%</div>
                     </div>
 
-                    <div class="kpi-card" data-speed="1.1">
+                    <div class="kpi-card">
                         <div class="kpi-header">Sektor Performa Tertinggi</div>
                         <div class="kpi-value text-gold" id="kpiStrongSector">-</div>
                         <div class="kpi-sub" id="kpiStrongSectorSub">Rata-rata return prospektif</div>
@@ -113,9 +110,9 @@
         <section class="section-container">
             <div class="section-header">
                 <div>
-                    <span class="section-tag">Peta Industri</span>
-                    <h2 class="section-title">Kinerja Komparatif 4 Sektor BEI</h2>
-                    <p class="section-desc">Bandingkan potensi pertumbuhan, rata-rata akurasi model, dan jumlah emiten dengan sinyal beli di setiap industri.</p>
+                    <span class="section-tag">Peta Sektoral</span>
+                    <h2 class="section-title">Performa Komparatif 4 Sektor BEI</h2>
+                    <p class="section-desc">Rata-rata estimasi return H+31, akurasi model historis (MAPE), dan konsentrasi sinyal beli di masing-masing sektor.</p>
                 </div>
             </div>
 
@@ -126,59 +123,19 @@
 
         <!-- MODULE 1: DEEP STOCK INSPECTOR & INTERACTIVE CHART -->
         <section id="inspector" class="section-container">
-            <div class="section-header">
-                <div>
-                    <span class="section-tag">Analisis Komprehensif</span>
-                    <h2 class="section-title">Grafik Proyeksi Harga & Sinyal Masuk</h2>
-                    <p class="section-desc">Pilih salah satu dari 167 emiten untuk menganalisis kurva 31 hari ke depan, indikator momentum, dan rencana trading.</p>
-                </div>
-
-                <div class="inspector-controls">
-                    <div class="inspector-search-wrapper">
-                        <input type="text" id="inspectorSearch" class="custom-input inspector-search-input" placeholder="🔍 Ketik Ticker (misal: BBCA, ANTM, INDF)..." autocomplete="off">
-                    </div>
-                    <div class="select-wrapper">
-                        <select id="stockSelector" class="custom-select">
-                            <option value="">Memuat daftar emiten...</option>
-                        </select>
-                    </div>
-                    <button id="btnLiveForecast" class="btn btn-primary">
-                        <span class="btn-icon">⚡</span> Cek Real-time Yahoo Finance
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Ticker Shortcuts Bar -->
-            <div class="quick-chips-wrapper">
-                <span class="chips-label">Akses Cepat Emiten Populer:</span>
-                <div class="quick-chips-list">
-                    <button type="button" class="ticker-chip active" data-ticker="BBCA">BBCA</button>
-                    <button type="button" class="ticker-chip" data-ticker="BBRI">BBRI</button>
-                    <button type="button" class="ticker-chip" data-ticker="BMRI">BMRI</button>
-                    <button type="button" class="ticker-chip" data-ticker="BBNI">BBNI</button>
-                    <button type="button" class="ticker-chip" data-ticker="ICBP">ICBP</button>
-                    <button type="button" class="ticker-chip" data-ticker="INDF">INDF</button>
-                    <button type="button" class="ticker-chip" data-ticker="ANTM">ANTM</button>
-                    <button type="button" class="ticker-chip" data-ticker="ADRO">ADRO</button>
-                    <button type="button" class="ticker-chip" data-ticker="PTBA">PTBA</button>
-                    <button type="button" class="ticker-chip" data-ticker="AALI">AALI</button>
-                </div>
-            </div>
-
-            <!-- Inspector Dashboard Grid -->
             <div class="inspector-grid">
-                <!-- Left: Chart & Trajectory (2 Cols wide) -->
+                <!-- Left: Interactive Chart & Target Trajectory (Prominent Focus Area) -->
                 <div class="chart-panel card">
                     <div class="chart-header">
-                        <div>
+                        <div class="chart-title-group">
                             <span class="chart-ticker" id="chartTicker">BBCA</span>
                             <span class="chart-sector" id="chartSector">Perbankan</span>
                             <span class="chart-price" id="chartPrice">Rp -</span>
                             <span class="chart-badge badge-strong-buy" id="chartSignal">STRONG BUY</span>
                         </div>
                         <div class="chart-legend-pills">
-                            <span class="legend-pill"><span class="dot dot-white"></span> Historis 60 Hari</span>
-                            <span class="legend-pill"><span class="dot dot-cyan"></span> Proyeksi 31 Hari</span>
+                            <span class="legend-pill"><span class="dot dot-white"></span> Historis 60H</span>
+                            <span class="legend-pill"><span class="dot dot-cyan"></span> Proyeksi 31H</span>
                             <span class="legend-pill"><span class="dot dot-green"></span> Target Price</span>
                             <span class="legend-pill"><span class="dot dot-red"></span> Stop Loss</span>
                         </div>
@@ -194,11 +151,54 @@
                     </div>
                 </div>
 
-                <!-- Right: Confluence Indicators & Action Plan -->
+                <!-- Right: Dedicated Controls, Stock Selector, Confluence & Trading Plan -->
                 <div class="action-panel">
+                    <!-- Control & Ticker Selection Card -->
+                    <div class="card inspector-control-card">
+                        <div class="panel-header-compact">
+                            <span class="section-tag">Analisis Saham</span>
+                            <h3 class="panel-title">Pilih & Cari Emiten</h3>
+                            <p class="panel-desc-compact">Pilih salah satu dari 167 emiten untuk menganalisis kurva proyeksi dan rencana trading.</p>
+                        </div>
+
+                        <!-- Instant Ticker Search Box -->
+                        <div class="inspector-search-wrapper">
+                            <input type="text" id="inspectorSearch" class="custom-input inspector-search-input" placeholder="🔍 Ketik Ticker (misal: BBCA, ANTM)..." autocomplete="off">
+                        </div>
+
+                        <!-- Dropdown Select -->
+                        <div class="select-wrapper">
+                            <select id="stockSelector" class="custom-select">
+                                <option value="">Memuat daftar 167 emiten...</option>
+                            </select>
+                        </div>
+
+                        <!-- Live Yahoo Finance Trigger -->
+                        <button id="btnLiveForecast" class="btn btn-primary btn-block">
+                            <span class="btn-icon">⚡</span> Cek Real-time Yahoo Finance
+                        </button>
+
+                        <!-- Quick Ticker Shortcuts Bar (Docked on Right) -->
+                        <div class="quick-chips-wrapper-compact">
+                            <span class="chips-label">Akses Cepat Emiten Populer:</span>
+                            <div class="quick-chips-list">
+                                <button type="button" class="ticker-chip active" data-ticker="BBCA">BBCA</button>
+                                <button type="button" class="ticker-chip" data-ticker="BBRI">BBRI</button>
+                                <button type="button" class="ticker-chip" data-ticker="BMRI">BMRI</button>
+                                <button type="button" class="ticker-chip" data-ticker="BBNI">BBNI</button>
+                                <button type="button" class="ticker-chip" data-ticker="ICBP">ICBP</button>
+                                <button type="button" class="ticker-chip" data-ticker="INDF">INDF</button>
+                                <button type="button" class="ticker-chip" data-ticker="ANTM">ANTM</button>
+                                <button type="button" class="ticker-chip" data-ticker="ADRO">ADRO</button>
+                                <button type="button" class="ticker-chip" data-ticker="PTBA">PTBA</button>
+                                <button type="button" class="ticker-chip" data-ticker="AALI">AALI</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Confluence Card -->
                     <div class="card confluence-card">
-                        <div class="card-title">Kekuatan Sinyal & Momentum Pasar</div>
+                        <div class="card-title">Kekuatan Sinyal & Momentum</div>
                         <div class="confluence-meter-wrapper">
                             <div class="confluence-meter-circle">
                                 <span class="confluence-number" id="confluenceScore">--</span>
@@ -210,15 +210,15 @@
                                     <span class="breakdown-value" id="valRsi">--</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span class="breakdown-label">Status MACD:</span>
+                                    <span class="breakdown-label">MACD:</span>
                                     <span class="breakdown-value" id="valMacd">--</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span class="breakdown-label">Tren EMA 20/50:</span>
+                                    <span class="breakdown-label">EMA 20/50:</span>
                                     <span class="breakdown-value" id="valEma">--</span>
                                 </div>
                                 <div class="breakdown-item">
-                                    <span class="breakdown-label">Volume Transaksi:</span>
+                                    <span class="breakdown-label">Volume:</span>
                                     <span class="breakdown-value" id="valVol">--</span>
                                 </div>
                             </div>
@@ -227,7 +227,7 @@
 
                     <!-- Trading Plan Card -->
                     <div class="card plan-card">
-                        <div class="card-title">Rencana Trading Terukur (Trading Plan)</div>
+                        <div class="card-title">Rencana Trading Terukur</div>
                         <div class="plan-grid">
                             <div class="plan-item">
                                 <span class="plan-label">Area Entry</span>
