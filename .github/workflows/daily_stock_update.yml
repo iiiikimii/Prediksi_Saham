@@ -1,0 +1,45 @@
+name: Daily IDX Stock Update & Auto-Deploy
+
+on:
+  schedule:
+    # Berjalan otomatis setiap Senin - Jumat pukul 16:30 WIB (09:30 UTC) setelah bursa BEI tutup
+    - cron: '30 9 * * 1-5'
+  workflow_dispatch: # Mengizinkan trigger manual 1-klik dari dashboard GitHub Actions
+
+permissions:
+  contents: write
+
+jobs:
+  update-stock-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🔄 Run Daily Stock Update (167 Emiten)
+        run: node backend/cronUpdater.js
+
+      - name: 🚀 Commit & Push Updated Data to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "Tidak ada perubahan data hari ini."
+          else
+            git commit -m "[Automated] Daily IDX Stock Prediction Update - $(date +'%Y-%m-%d')"
+            git push origin main
+            echo "Data terbaru berhasil di-push ke GitHub! Auto-deploy Vercel/Render terpicu."
+          fi

@@ -75,6 +75,25 @@ Website ini menggunakan **Node.js & Express** murni sehingga sangat ringan (< 25
 
 ---
 
+## 🔄 Sistem Pembaruan Data Otomatis Harian (100% Cloud Auto-Update)
+
+Ketika proyek ini dideploy ke cloud, **Anda TIDAK PERLU menjalankan skrip secara manual setiap hari**. Sistem pembaruan otomatis telah terintegrasi di 3 lapisan:
+
+1. **GitHub Actions Scheduled Cron ([.github/workflows/daily_stock_update.yml](.github/workflows/daily_stock_update.yml)):**
+   - Berjalan otomatis di cloud GitHub **setiap hari bursa (Senin - Jumat) pukul 16:30 WIB** (30 menit setelah pasar BEI tutup).
+   - Menjalankan `node backend/cronUpdater.js` untuk menarik data candle penutupan terbaru 167 emiten dari Yahoo Finance.
+   - Menghitung ulang proyeksi return, sinyal trading, level TP/SL, dan memperbarui seluruh file CSV di `data/`.
+   - Melakukan *git commit & push* otomatis ke branch `main`, yang langsung memicu **auto-redeploy** di Vercel atau Render.
+   - *Komputer Anda tidak perlu menyala!* Semuanya berjalan gratis dan otomatis di server cloud GitHub.
+
+2. **Vercel Cron Jobs ([vercel.json](vercel.json)):**
+   - Memanggil endpoint backend `/api/cron/update` setiap hari bursa pukul 16:30 WIB sebagai redundansi pembaruan otomatis.
+
+3. **Live On-Demand Inspection:**
+   - Tombol *"⚡ Cek Real-time Yahoo Finance"* di halaman web memungkinkan pengunjung melihat harga live detik itu juga untuk emiten mana saja.
+
+---
+
 ## ☁️ Panduan Deploy ke Cloud (Free Hosting)
 
 ### Opsi A: Deploy ke Vercel (Rekomendasi - Sangat Mudah)

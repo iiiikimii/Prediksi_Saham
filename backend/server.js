@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const {
     getMultiHariRecords,
     getScalpingRecords,
@@ -10,6 +11,7 @@ const {
     TICKER_TO_SECTOR
 } = require('./dataService');
 const { fetchLiveStock } = require('./yahooService');
+const { runDailyUpdate } = require('./cronUpdater');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -302,6 +304,45 @@ app.get('/api/screener', (req, res) => {
     res.json({
         top_swing_10: topSwing,
         top_scalp_10: topScalp
+    });
+});
+
+// 9. Automated Daily Cron Endpoint (Triggerable by Vercel Cron or External Webhook)
+let isUpdating = false;
+app.all('/api/cron/update', async (req, res) => {
+    if (isUpdating) {
+        return res.status(429).json({ status: 'in_progress', message: 'Pembaruan data sedang berjalan...' });
+    }
+
+    try {
+        isUpdating = true;
+        console.log('[CRON] Menerima pemicu pembaruan data harian...');
+        const meta = await runDailyUpdate();
+        isUpdating = false;
+        res.json({
+            status: 'success',
+            message: 'Data 167 emiten berhasil diperbarui secara otomatis',
+            meta: meta
+        });
+    } catch (err) {
+        isUpdating = false;
+        console.error('[CRON ERROR]:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 10. Update Status Endpoint
+app.get('/api/status', (req, res) => {
+    const statusFile = path.join(DATA_DIR, 'update_status.json');
+    if (fs.existsSync(statusFile)) {
+        try {
+            const meta = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
+            return res.json(meta);
+        } catch (e) {}
+    }
+    res.json({
+        last_updated_wib: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) + ' WIB',
+        status: 'Active Auto-Update'
     });
 });
 

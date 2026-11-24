@@ -282,6 +282,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Total Stocks
             document.getElementById('kpiTotal').innerText = `${data.total_emiten} Saham`;
 
+            // Update Auto-Update status badge
+            try {
+                const statusRes = await fetch('/api/status');
+                const statusData = await statusRes.json();
+                const statusEl = document.querySelector('.live-status');
+                if (statusEl && statusData.last_updated_wib) {
+                    statusEl.title = `Pembaruan Terakhir: ${statusData.last_updated_wib}`;
+                    statusEl.innerHTML = `<span class="pulse-dot"></span> Auto-Update Aktif (${statusData.last_updated_wib.split(' ')[0]})`;
+                }
+            } catch (e) {}
+
             // Top Swing Pick
             if (data.top_swing && data.top_swing.kode) {
                 document.getElementById('kpiTopSwing').innerText = `${data.top_swing.kode} (+${data.top_swing.potensi.toFixed(1)}%)`;
