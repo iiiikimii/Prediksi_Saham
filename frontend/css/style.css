@@ -721,25 +721,73 @@ body.dark-terminal {
 .hidden { display: none !important; }
 
 /* ==============================================================================
-   LOT & MONEY MANAGEMENT CALCULATOR
+   LOT & MONEY MANAGEMENT CALCULATOR (REALISTIC IDX BEI SPEC)
    ============================================================================== */
 .calc-card {
-    background: linear-gradient(135deg, rgba(22, 28, 43, 0.9) 0%, rgba(17, 22, 34, 0.9) 100%);
-    border: 1px solid rgba(0, 210, 255, 0.2);
+    background: linear-gradient(135deg, rgba(22, 28, 43, 0.95) 0%, rgba(15, 20, 32, 0.95) 100%);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.calc-risk-preset-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    flex-wrap: wrap;
+}
+
+.preset-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn-preset {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-preset:hover {
+    background: rgba(0, 210, 255, 0.15);
+    color: var(--text-primary);
+    border-color: var(--accent-cyan);
+}
+
+.btn-preset.active {
+    background: rgba(0, 210, 255, 0.2);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
 }
 
 .calc-inputs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 1.2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem;
 }
 
 .calc-input-group label {
     display: block;
     font-size: 0.8rem;
     color: var(--text-secondary);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.35rem;
     font-weight: 600;
 }
 
@@ -751,7 +799,7 @@ body.dark-terminal {
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-family: var(--font-mono);
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     outline: none;
     transition: var(--transition);
@@ -762,45 +810,281 @@ body.dark-terminal {
     box-shadow: 0 0 10px rgba(0, 210, 255, 0.25);
 }
 
+.input-hint {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+    font-family: var(--font-mono);
+}
+
+.calc-fee-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.fee-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.fee-checkbox-label input[type="checkbox"] {
+    accent-color: var(--accent-cyan);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.idx-lot-rule-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    background: rgba(255, 179, 0, 0.1);
+    border: 1px solid rgba(255, 179, 0, 0.25);
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+}
+
 .calc-results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
 }
 
 .calc-res-box {
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.35);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    padding: 1.2rem;
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
 }
 
 .highlight-box {
-    border-color: var(--accent-cyan);
-    background: rgba(0, 210, 255, 0.05);
+    border-color: rgba(0, 210, 255, 0.4);
+    background: rgba(0, 210, 255, 0.04);
+    box-shadow: 0 4px 20px rgba(0, 210, 255, 0.1);
+}
+
+.scenario-profit {
+    border-left: 3px solid var(--accent-green);
+    background: rgba(0, 230, 118, 0.03);
+}
+
+.scenario-loss {
+    border-left: 3px solid var(--accent-red);
+    background: rgba(255, 23, 68, 0.03);
 }
 
 .res-label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
     font-weight: 600;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .res-value {
     display: block;
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     font-weight: 800;
     font-family: var(--font-mono);
-    margin: 0.3rem 0;
+    margin: 0.35rem 0 0.2rem;
 }
 
 .res-sub {
     font-size: 0.8rem;
     color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+}
+
+.res-pill {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    margin-top: 0.4rem;
+    color: var(--text-primary);
+}
+
+.res-status {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+}
+
+.scenario-details {
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: var(--text-secondary);
+}
+
+.scenario-details strong {
+    color: var(--text-primary);
+}
+
+.calc-footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 20, 32, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.4rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.stat-name {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.stat-val {
+    font-size: 1.15rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.stat-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.stat-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+/* ==============================================================================
+   TABLE TOOLBAR, PAGINATION & SCROLLING CONTROLS
+   ============================================================================== */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background: rgba(17, 22, 34, 0.85);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.table-counts-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.table-counts-info strong {
+    color: var(--accent-cyan);
+    font-family: var(--font-mono);
+}
+
+.table-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.page-size-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-right: 0.2rem;
+}
+
+.custom-select-sm {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    outline: none;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.btn-page {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-page:hover:not(:disabled) {
+    background: rgba(0, 210, 255, 0.2);
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.btn-page:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    font-weight: 700;
+    padding: 0 0.5rem;
+    min-width: 50px;
+    text-align: center;
+}
+
+.table-scroll-hint {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.5rem 0.8rem;
+    font-style: italic;
 }
 
 /* ==============================================================================
@@ -816,11 +1100,13 @@ body.dark-terminal {
 .table-container {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
     padding: 0;
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 560px;
+    max-height: 540px;
+    overscroll-behavior: contain;
     position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     transform: none !important;
@@ -833,17 +1119,18 @@ body.dark-terminal {
     transform: none !important;
 }
 
-/* Custom Scrollbar for Tables */
+/* Prominent Custom Scrollbar for High-Speed Table Scrolling */
 .table-container::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
 }
 .table-container::-webkit-scrollbar-track {
-    background: var(--bg-surface);
+    background: rgba(10, 15, 24, 0.9);
 }
 .table-container::-webkit-scrollbar-thumb {
-    background: #2a3447;
+    background: #334155;
     border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .table-container::-webkit-scrollbar-thumb:hover {
     background: var(--accent-cyan);

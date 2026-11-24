@@ -526,49 +526,175 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------------------
-    // 8. INTERACTIVE MONEY MANAGEMENT & LOT CALCULATOR
+    // 8. INTERACTIVE MONEY MANAGEMENT & REALISTIC LOT CALCULATOR (IDX BEI)
     // -------------------------------------------------------------------------
+    // Preset Risk Buttons
+    document.querySelectorAll('.btn-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const risk = parseFloat(btn.getAttribute('data-risk')) || 2.0;
+            const riskInput = document.getElementById('calcRiskPct');
+            if (riskInput) {
+                riskInput.value = risk;
+                calculatePositionSize();
+            }
+        });
+    });
+
+    const feeToggle = document.getElementById('calcIncludeFees');
+    if (feeToggle) {
+        feeToggle.addEventListener('change', calculatePositionSize);
+    }
+
     function calculatePositionSize() {
         const capital = parseFloat(document.getElementById('calcCapital').value) || 0;
         const riskPct = parseFloat(document.getElementById('calcRiskPct').value) || 0;
         const entry = parseFloat(document.getElementById('calcEntryPrice').value) || 0;
         const sl = parseFloat(document.getElementById('calcStopLoss').value) || 0;
         const tp = parseFloat(document.getElementById('calcTargetPrice').value) || 0;
+        const includeFees = document.getElementById('calcIncludeFees')?.checked ?? true;
+
+        // Broker Fees (Indonesian Standard: 0.15% Buy, 0.25% Sell incl 0.1% PPh Final)
+        const BUY_FEE_RATE = includeFees ? 0.0015 : 0.0000;
+        const SELL_FEE_RATE = includeFees ? 0.0025 : 0.0000;
+
+        // Dynamic Input Hints
+        const maxRiskBudget = capital * (riskPct / 100);
+        const riskSummaryEl = document.getElementById('calcRiskSummary');
+        if (riskSummaryEl) riskSummaryEl.innerText = `Batas rugi maksimal: ${formatRupiah(maxRiskBudget)}`;
+
+        const slDelta = entry - sl;
+        const slDeltaPct = entry > 0 ? ((sl - entry) / entry) * 100 : 0;
+        const slHintEl = document.getElementById('calcSlPctHint');
+        if (slHintEl) {
+            slHintEl.innerText = entry > 0 ? `Jarak SL: ${slDeltaPct.toFixed(1)}% (-${formatRupiah(slDelta)})` : 'Jarak SL: -';
+        }
+
+        const tpDelta = tp - entry;
+        const tpDeltaPct = entry > 0 ? ((tp - entry) / entry) * 100 : 0;
+        const tpHintEl = document.getElementById('calcTpPctHint');
+        if (tpHintEl) {
+            tpHintEl.innerText = entry > 0 ? `Potensi TP: +${tpDeltaPct.toFixed(1)}% (+${formatRupiah(tpDelta)})` : 'Potensi TP: -';
+        }
 
         if (capital <= 0 || entry <= 0 || sl >= entry) {
-            document.getElementById('resMaxRisk').innerText = "Rp 0";
             document.getElementById('resLots').innerText = "0 Lot";
             document.getElementById('resShares').innerText = "0 Lembar";
-            document.getElementById('resTotalBuy').innerText = "Rp 0";
+            document.getElementById('resTotalBuy').innerText = "Total Beli: Rp 0";
+            document.getElementById('resCapStatus').innerText = sl >= entry ? "⚠️ Stop Loss harus lebih rendah dari harga Entry" : "⚠️ Periksa input modal dan harga";
+            document.getElementById('resCapStatus').className = "res-status text-red";
+            document.getElementById('resMaxRisk').innerText = "Rp 0";
+            document.getElementById('resRiskExplanation').innerText = "Belum ada posisi yang dihitung.";
+            document.getElementById('resRiskPerShare').innerText = "Risiko: Rp 0 / lembar";
             document.getElementById('resProfit').innerText = "Rp 0";
+            document.getElementById('resProfitPct').innerText = "Return Bersih: 0.0%";
+            document.getElementById('resGrossTP').innerText = "Rp 0";
+            document.getElementById('resFeeTP').innerText = "-Rp 0";
+            document.getElementById('resEndingCapitalTP').innerText = formatRupiah(capital);
+            document.getElementById('resLoss').innerText = "-Rp 0";
+            document.getElementById('resLossPct').innerText = "Rugi Bersih: 0.0%";
+            document.getElementById('resGrossSL').innerText = "Rp 0";
+            document.getElementById('resFeeSL').innerText = "-Rp 0";
+            document.getElementById('resEndingCapitalSL').innerText = formatRupiah(capital);
+            document.getElementById('resRRR').innerText = "1 : 0.00";
+            document.getElementById('resBEP').innerText = formatRupiah(entry);
             return;
         }
 
-        // Max Risk in Rupiah
-        const maxRiskRp = capital * (riskPct / 100);
-        // Risk per share
+        // 1. Position Sizing by Risk Budget
         const riskPerShare = entry - sl;
-        // Total shares
-        const allowedShares = Math.floor(maxRiskRp / riskPerShare);
-        // Convert to lots (1 lot = 100 shares in IDX)
-        const lots = Math.max(1, Math.floor(allowedShares / 100));
+        const rawAllowedShares = Math.floor(maxRiskBudget / riskPerShare);
+        
+        // 2. Cash Limit Safety Check (no over-leverage beyond 100% portfolio)
+        const maxAffordableShares = Math.floor(capital / entry);
+        let actualAllowedShares = Math.min(rawAllowedShares, maxAffordableShares);
+
+        // 3. IDX BEI Rule: 1 Lot = 100 Shares
+        let lots = Math.floor(actualAllowedShares / 100);
+        if (lots < 1) lots = 1; // Minimum 1 lot order in IDX
+
         const actualShares = lots * 100;
-        const totalBuyRp = actualShares * entry;
-        const capPct = (totalBuyRp / capital) * 100;
+        const totalBuyGross = actualShares * entry;
+        const buyFee = totalBuyGross * BUY_FEE_RATE;
+        const totalOutflow = totalBuyGross + buyFee;
+        const capPct = (totalBuyGross / capital) * 100;
 
-        // Profit
-        const profitPerShare = Math.max(0, tp - entry);
-        const totalProfitRp = actualShares * profitPerShare;
-        const actualRiskRp = actualShares * riskPerShare;
-        const rrr = actualRiskRp > 0 ? (totalProfitRp / actualRiskRp).toFixed(2) : "0.0";
+        // Check if buying 1 lot exceeds capital
+        const capStatusEl = document.getElementById('resCapStatus');
+        if (totalOutflow > capital) {
+            capStatusEl.innerText = `⚠️ Total beli (${formatRupiah(totalOutflow)}) melampaui modal tunai portofolio!`;
+            capStatusEl.className = "res-status text-red";
+        } else if (rawAllowedShares > maxAffordableShares) {
+            capStatusEl.innerText = `⚠️ Dibatasi oleh kas tunai (${capPct.toFixed(1)}% modal) agar tidak over-leverage`;
+            capStatusEl.className = "res-status text-gold";
+        } else {
+            capStatusEl.innerText = `✅ Sesuai batas risiko & kas (${capPct.toFixed(1)}% modal)`;
+            capStatusEl.className = "res-status text-green";
+        }
 
-        document.getElementById('resMaxRisk').innerText = formatRupiah(actualRiskRp);
+        // 4. Scenario: Take Profit (TP)
+        const grossTP = actualShares * tp;
+        const sellFeeTP = grossTP * SELL_FEE_RATE;
+        const totalFeesTP = buyFee + sellFeeTP;
+        const netProfitRp = grossTP - totalBuyGross - totalFeesTP;
+        const netProfitPct = totalBuyGross > 0 ? (netProfitRp / totalBuyGross) * 100 : 0;
+        const endingCapitalTP = capital + netProfitRp;
+
+        // 5. Scenario: Stop Loss (SL)
+        const grossSL = actualShares * sl;
+        const sellFeeSL = grossSL * SELL_FEE_RATE;
+        const totalFeesSL = buyFee + sellFeeSL;
+        const netLossRp = (totalBuyGross - grossSL) + totalFeesSL;
+        const netLossPctOfCapital = capital > 0 ? (netLossRp / capital) * 100 : 0;
+        const endingCapitalSL = Math.max(0, capital - netLossRp);
+
+        // 6. Risk-Reward Ratio (Net of fees)
+        const rrr = netLossRp > 0 ? (netProfitRp / netLossRp).toFixed(2) : "0.00";
+        const rrrBadge = document.getElementById('resRRRBadge');
+        if (rrrBadge) {
+            if (rrr >= 2.0) {
+                rrrBadge.className = "stat-badge badge-strong-buy";
+                rrrBadge.innerText = "Sangat Sehat (≥ 1:2)";
+            } else if (rrr >= 1.5) {
+                rrrBadge.className = "stat-badge badge-buy";
+                rrrBadge.innerText = "Cukup Layak (≥ 1:1.5)";
+            } else {
+                rrrBadge.className = "stat-badge badge-hold";
+                rrrBadge.innerText = "Kurang Disarankan (< 1:1.5)";
+            }
+        }
+
+        // 7. Break-Even Price (BEP)
+        // Price at which: sellPrice * (1 - SELL_FEE_RATE) = entry * (1 + BUY_FEE_RATE)
+        const bep = entry * ((1 + BUY_FEE_RATE) / (1 - SELL_FEE_RATE));
+
+        // Render Values to UI
         document.getElementById('resLots').innerText = `${lots} Lot`;
         document.getElementById('resShares').innerText = `${actualShares.toLocaleString('id-ID')} Lembar Saham`;
-        document.getElementById('resTotalBuy').innerText = formatRupiah(totalBuyRp);
-        document.getElementById('resCapPct').innerText = `${capPct.toFixed(1)}% dari total modal`;
-        document.getElementById('resProfit').innerText = formatRupiah(totalProfitRp);
-        document.getElementById('resRRR').innerText = `RRR ${rrr} : 1.0`;
+        document.getElementById('resTotalBuy').innerText = `Total Beli: ${formatRupiah(totalBuyGross)} (${capPct.toFixed(1)}% modal)`;
+        
+        document.getElementById('resMaxRisk').innerText = formatRupiah(netLossRp);
+        document.getElementById('resRiskExplanation').innerText = `Jika kena SL di ${formatRupiah(sl)}, modal Anda HANYA berkurang ${formatRupiah(netLossRp)} (${netLossPctOfCapital.toFixed(2)}%), BUKAN modal seluruhnya!`;
+        document.getElementById('resRiskPerShare').innerText = `Risiko: ${formatRupiah(riskPerShare)} / lembar`;
+
+        // Profit Box
+        document.getElementById('resProfit').innerText = `+${formatRupiah(netProfitRp)}`;
+        document.getElementById('resProfitPct').innerText = `Return Bersih: +${netProfitPct.toFixed(2)}% (setelah fee)`;
+        document.getElementById('resGrossTP').innerText = formatRupiah(grossTP);
+        document.getElementById('resFeeTP').innerText = `-${formatRupiah(totalFeesTP)}`;
+        document.getElementById('resEndingCapitalTP').innerText = formatRupiah(endingCapitalTP);
+
+        // Loss Box
+        document.getElementById('resLoss').innerText = `-${formatRupiah(netLossRp)}`;
+        document.getElementById('resLossPct').innerText = `Rugi Bersih: -${netLossPctOfCapital.toFixed(2)}% modal (termasuk fee)`;
+        document.getElementById('resGrossSL').innerText = formatRupiah(grossSL);
+        document.getElementById('resFeeSL').innerText = `-${formatRupiah(totalFeesSL)}`;
+        document.getElementById('resEndingCapitalSL').innerText = formatRupiah(endingCapitalSL);
+
+        // Footer Stats
+        document.getElementById('resRRR').innerText = `1 : ${rrr}`;
+        document.getElementById('resBEP').innerText = formatRupiah(Math.ceil(bep));
     }
 
     ['calcCapital', 'calcRiskPct', 'calcEntryPrice', 'calcStopLoss', 'calcTargetPrice'].forEach(id => {
@@ -577,9 +703,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // -------------------------------------------------------------------------
-    // 9. MULTI-HARI TABLE (167 STOCKS)
+    // 9. MULTI-HARI TABLE WITH SCROLLING & STATEFUL PAGINATION (167 STOCKS)
     // -------------------------------------------------------------------------
     let currentMultiData = [];
+    let multiCurrentPage = 1;
+    let multiPageSize = 25;
+
+    function renderMultiTablePage() {
+        const tbody = document.getElementById('tbodyMulti');
+        tbody.innerHTML = '';
+
+        const totalRecords = currentMultiData.length;
+        document.getElementById('multiTotalCount').innerText = totalRecords;
+
+        if (totalRecords === 0) {
+            tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding: 25px; color: #94a3b8;">Tidak ada data emiten yang cocok dengan filter pencarian.</td></tr>';
+            document.getElementById('multiShowingCount').innerText = '0';
+            document.getElementById('multiPageInfo').innerText = '0 / 0';
+            document.getElementById('btnMultiPrev').disabled = true;
+            document.getElementById('btnMultiNext').disabled = true;
+            document.getElementById('btnMultiFirst').disabled = true;
+            document.getElementById('btnMultiLast').disabled = true;
+            return;
+        }
+
+        const effectiveSize = multiPageSize === 'ALL' ? totalRecords : parseInt(multiPageSize, 10);
+        const totalPages = Math.ceil(totalRecords / effectiveSize);
+        if (multiCurrentPage > totalPages) multiCurrentPage = totalPages;
+        if (multiCurrentPage < 1) multiCurrentPage = 1;
+
+        const startIdx = (multiCurrentPage - 1) * effectiveSize;
+        const endIdx = Math.min(startIdx + effectiveSize, totalRecords);
+        const pageRows = currentMultiData.slice(startIdx, endIdx);
+
+        document.getElementById('multiShowingCount').innerText = `${startIdx + 1} - ${endIdx}`;
+        document.getElementById('multiPageInfo').innerText = `${multiCurrentPage} / ${totalPages}`;
+
+        document.getElementById('btnMultiFirst').disabled = multiCurrentPage <= 1;
+        document.getElementById('btnMultiPrev').disabled = multiCurrentPage <= 1;
+        document.getElementById('btnMultiNext').disabled = multiCurrentPage >= totalPages;
+        document.getElementById('btnMultiLast').disabled = multiCurrentPage >= totalPages;
+
+        pageRows.forEach(row => {
+            const tr = document.createElement('tr');
+            const p31 = row['Potensi_H+31(%)'];
+            const badgeClass = row.Sinyal_Swing === 'STRONG BUY' ? 'badge-strong-buy' :
+                               row.Sinyal_Swing === 'BUY' ? 'badge-buy' :
+                               row.Sinyal_Swing.includes('SELL') ? 'badge-sell' : 'badge-hold';
+
+            tr.innerHTML = `
+                <td>${row.Sektor}</td>
+                <td><strong>${row.Kode}</strong></td>
+                <td>${formatRupiah(row.Close_Terakhir)}</td>
+                <td>${formatRupiah(row['H+1'])}</td>
+                <td>${formatRupiah(row['H+7'])}</td>
+                <td>${formatRupiah(row['H+14'])}</td>
+                <td>${formatRupiah(row['H+21'])}</td>
+                <td>${formatRupiah(row['H+30'])}</td>
+                <td>${formatRupiah(row['H+31'])}</td>
+                <td class="${p31 >= 0 ? 'text-green' : 'text-red'}"><strong>${formatPercent(p31)}</strong></td>
+                <td><span class="badge ${badgeClass}">${row.Sinyal_Swing}</span></td>
+                <td>${formatRupiah(row.Target_Price)}</td>
+                <td>${formatRupiah(row.Stop_Loss)}</td>
+                <td>${row.RRR} : 1.0</td>
+                <td><button class="btn-sm-view" data-ticker="${row.Kode}">Analisis</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Add click listeners to "Analisis" buttons
+        tbody.querySelectorAll('.btn-sm-view').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const t = btn.getAttribute('data-ticker');
+                document.getElementById('stockSelector').value = t;
+                loadStockDetail(t);
+                const inspectorEl = document.getElementById('inspector');
+                if (lenis && typeof lenis.scrollTo === 'function') {
+                    lenis.scrollTo(inspectorEl, { offset: -60 });
+                } else if (inspectorEl) {
+                    inspectorEl.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }
 
     async function loadMultiHariTable() {
         const sector = document.getElementById('filterSectorMulti').value;
@@ -595,61 +801,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`/api/predictions/multihari?${params.toString()}`);
             const result = await res.json();
             currentMultiData = result.data || [];
-
-            const tbody = document.getElementById('tbodyMulti');
-            tbody.innerHTML = '';
-
-            if (currentMultiData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding: 20px;">Tidak ada data emiten yang cocok dengan filter.</td></tr>';
-                return;
-            }
-
-            currentMultiData.forEach(row => {
-                const tr = document.createElement('tr');
-                const p31 = row['Potensi_H+31(%)'];
-                const badgeClass = row.Sinyal_Swing === 'STRONG BUY' ? 'badge-strong-buy' :
-                                   row.Sinyal_Swing === 'BUY' ? 'badge-buy' :
-                                   row.Sinyal_Swing.includes('SELL') ? 'badge-sell' : 'badge-hold';
-
-                tr.innerHTML = `
-                    <td>${row.Sektor}</td>
-                    <td><strong>${row.Kode}</strong></td>
-                    <td>${formatRupiah(row.Close_Terakhir)}</td>
-                    <td>${formatRupiah(row['H+1'])}</td>
-                    <td>${formatRupiah(row['H+7'])}</td>
-                    <td>${formatRupiah(row['H+14'])}</td>
-                    <td>${formatRupiah(row['H+21'])}</td>
-                    <td>${formatRupiah(row['H+30'])}</td>
-                    <td>${formatRupiah(row['H+31'])}</td>
-                    <td class="${p31 >= 0 ? 'text-green' : 'text-red'}"><strong>${formatPercent(p31)}</strong></td>
-                    <td><span class="badge ${badgeClass}">${row.Sinyal_Swing}</span></td>
-                    <td>${formatRupiah(row.Target_Price)}</td>
-                    <td>${formatRupiah(row.Stop_Loss)}</td>
-                    <td>${row.RRR} : 1.0</td>
-                    <td><button class="btn-sm-view" data-ticker="${row.Kode}">Analisis</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            // Add click listeners to "Analisis" buttons
-            tbody.querySelectorAll('.btn-sm-view').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const t = btn.getAttribute('data-ticker');
-                    document.getElementById('stockSelector').value = t;
-                    loadStockDetail(t);
-                    const inspectorEl = document.getElementById('inspector');
-                    if (lenis && typeof lenis.scrollTo === 'function') {
-                        lenis.scrollTo(inspectorEl, { offset: -60 });
-                    } else if (inspectorEl) {
-                        inspectorEl.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-
+            multiCurrentPage = 1;
+            renderMultiTablePage();
         } catch (e) {
             console.error("Failed to load multi-hari table:", e);
         }
     }
+
+    // Pagination Listeners for Multi-Hari
+    document.getElementById('pageSizeMulti')?.addEventListener('change', (e) => {
+        multiPageSize = e.target.value === 'ALL' ? 'ALL' : parseInt(e.target.value, 10);
+        multiCurrentPage = 1;
+        renderMultiTablePage();
+    });
+
+    document.getElementById('btnMultiFirst')?.addEventListener('click', () => {
+        multiCurrentPage = 1;
+        renderMultiTablePage();
+    });
+
+    document.getElementById('btnMultiPrev')?.addEventListener('click', () => {
+        if (multiCurrentPage > 1) {
+            multiCurrentPage--;
+            renderMultiTablePage();
+        }
+    });
+
+    document.getElementById('btnMultiNext')?.addEventListener('click', () => {
+        multiCurrentPage++;
+        renderMultiTablePage();
+    });
+
+    document.getElementById('btnMultiLast')?.addEventListener('click', () => {
+        const effectiveSize = multiPageSize === 'ALL' ? currentMultiData.length : parseInt(multiPageSize, 10);
+        multiCurrentPage = Math.ceil(currentMultiData.length / effectiveSize);
+        renderMultiTablePage();
+    });
 
     // Filter listeners
     ['filterSectorMulti', 'filterSignalMulti'].forEach(id => {
@@ -663,9 +850,85 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // -------------------------------------------------------------------------
-    // 10. SCALPING TABLE (5m - 60m)
+    // 10. SCALPING TABLE WITH SCROLLING & STATEFUL PAGINATION (5m - 60m)
     // -------------------------------------------------------------------------
     let currentScalpData = [];
+    let scalpCurrentPage = 1;
+    let scalpPageSize = 25;
+
+    function renderScalpTablePage() {
+        const tbody = document.getElementById('tbodyScalp');
+        tbody.innerHTML = '';
+
+        const totalRecords = currentScalpData.length;
+        document.getElementById('scalpTotalCount').innerText = totalRecords;
+
+        if (totalRecords === 0) {
+            tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding: 25px; color: #94a3b8;">Tidak ada data scalping yang cocok.</td></tr>';
+            document.getElementById('scalpShowingCount').innerText = '0';
+            document.getElementById('scalpPageInfo').innerText = '0 / 0';
+            document.getElementById('btnScalpPrev').disabled = true;
+            document.getElementById('btnScalpNext').disabled = true;
+            document.getElementById('btnScalpFirst').disabled = true;
+            document.getElementById('btnScalpLast').disabled = true;
+            return;
+        }
+
+        const effectiveSize = scalpPageSize === 'ALL' ? totalRecords : parseInt(scalpPageSize, 10);
+        const totalPages = Math.ceil(totalRecords / effectiveSize);
+        if (scalpCurrentPage > totalPages) scalpCurrentPage = totalPages;
+        if (scalpCurrentPage < 1) scalpCurrentPage = 1;
+
+        const startIdx = (scalpCurrentPage - 1) * effectiveSize;
+        const endIdx = Math.min(startIdx + effectiveSize, totalRecords);
+        const pageRows = currentScalpData.slice(startIdx, endIdx);
+
+        document.getElementById('scalpShowingCount').innerText = `${startIdx + 1} - ${endIdx}`;
+        document.getElementById('scalpPageInfo').innerText = `${scalpCurrentPage} / ${totalPages}`;
+
+        document.getElementById('btnScalpFirst').disabled = scalpCurrentPage <= 1;
+        document.getElementById('btnScalpPrev').disabled = scalpCurrentPage <= 1;
+        document.getElementById('btnScalpNext').disabled = scalpCurrentPage >= totalPages;
+        document.getElementById('btnScalpLast').disabled = scalpCurrentPage >= totalPages;
+
+        pageRows.forEach(row => {
+            const tr = document.createElement('tr');
+            const net = row['Net_Gain_60m(%)'];
+            const isSurge = row.Volume_Status === 'SURGE';
+
+            tr.innerHTML = `
+                <td>${row.Sektor}</td>
+                <td><strong>${row.Kode}</strong></td>
+                <td>${formatRupiah(row.Last_Close)}</td>
+                <td>${formatRupiah(row['+5m'])}</td>
+                <td>${formatRupiah(row['+15m'])}</td>
+                <td>${formatRupiah(row['+30m'])}</td>
+                <td>${formatRupiah(row['+60m'])}</td>
+                <td class="${net > 0 ? 'text-green' : 'text-red'}"><strong>${formatPercent(net)}</strong></td>
+                <td><span class="badge ${isSurge ? 'badge-strong-buy' : 'badge-hold'}">${row.Volume_Status}</span></td>
+                <td><span class="badge badge-buy">${row.Sinyal_Scalp}</span></td>
+                <td>${formatRupiah(row.TP_Scalp)}</td>
+                <td>${formatRupiah(row.SL_Scalp)}</td>
+                <td>${row['MAPE_60m(%)']}%</td>
+                <td><button class="btn-sm-view" data-ticker="${row.Kode}">Analisis</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('.btn-sm-view').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const t = btn.getAttribute('data-ticker');
+                document.getElementById('stockSelector').value = t;
+                loadStockDetail(t);
+                const inspectorEl = document.getElementById('inspector');
+                if (lenis && typeof lenis.scrollTo === 'function') {
+                    lenis.scrollTo(inspectorEl, { offset: -60 });
+                } else if (inspectorEl) {
+                    inspectorEl.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }
 
     async function loadScalpingTable() {
         const sector = document.getElementById('filterSectorScalp').value;
@@ -679,57 +942,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`/api/predictions/scalping?${params.toString()}`);
             const result = await res.json();
             currentScalpData = result.data || [];
-
-            const tbody = document.getElementById('tbodyScalp');
-            tbody.innerHTML = '';
-
-            if (currentScalpData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding: 20px;">Tidak ada data scalping yang cocok.</td></tr>';
-                return;
-            }
-
-            currentScalpData.forEach(row => {
-                const tr = document.createElement('tr');
-                const net = row['Net_Gain_60m(%)'];
-                const isSurge = row.Volume_Status === 'SURGE';
-
-                tr.innerHTML = `
-                    <td>${row.Sektor}</td>
-                    <td><strong>${row.Kode}</strong></td>
-                    <td>${formatRupiah(row.Last_Close)}</td>
-                    <td>${formatRupiah(row['+5m'])}</td>
-                    <td>${formatRupiah(row['+15m'])}</td>
-                    <td>${formatRupiah(row['+30m'])}</td>
-                    <td>${formatRupiah(row['+60m'])}</td>
-                    <td class="${net > 0 ? 'text-green' : 'text-red'}"><strong>${formatPercent(net)}</strong></td>
-                    <td><span class="badge ${isSurge ? 'badge-strong-buy' : 'badge-hold'}">${row.Volume_Status}</span></td>
-                    <td><span class="badge badge-buy">${row.Sinyal_Scalp}</span></td>
-                    <td>${formatRupiah(row.TP_Scalp)}</td>
-                    <td>${formatRupiah(row.SL_Scalp)}</td>
-                    <td>${row['MAPE_60m(%)']}%</td>
-                    <td><button class="btn-sm-view" data-ticker="${row.Kode}">Analisis</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            tbody.querySelectorAll('.btn-sm-view').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const t = btn.getAttribute('data-ticker');
-                    document.getElementById('stockSelector').value = t;
-                    loadStockDetail(t);
-                    const inspectorEl = document.getElementById('inspector');
-                    if (lenis && typeof lenis.scrollTo === 'function') {
-                        lenis.scrollTo(inspectorEl, { offset: -60 });
-                    } else if (inspectorEl) {
-                        inspectorEl.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-
+            scalpCurrentPage = 1;
+            renderScalpTablePage();
         } catch (e) {
             console.error("Failed to load scalping table:", e);
         }
     }
+
+    // Pagination Listeners for Scalping
+    document.getElementById('pageSizeScalp')?.addEventListener('change', (e) => {
+        scalpPageSize = e.target.value === 'ALL' ? 'ALL' : parseInt(e.target.value, 10);
+        scalpCurrentPage = 1;
+        renderScalpTablePage();
+    });
+
+    document.getElementById('btnScalpFirst')?.addEventListener('click', () => {
+        scalpCurrentPage = 1;
+        renderScalpTablePage();
+    });
+
+    document.getElementById('btnScalpPrev')?.addEventListener('click', () => {
+        if (scalpCurrentPage > 1) {
+            scalpCurrentPage--;
+            renderScalpTablePage();
+        }
+    });
+
+    document.getElementById('btnScalpNext')?.addEventListener('click', () => {
+        scalpCurrentPage++;
+        renderScalpTablePage();
+    });
+
+    document.getElementById('btnScalpLast')?.addEventListener('click', () => {
+        const effectiveSize = scalpPageSize === 'ALL' ? currentScalpData.length : parseInt(scalpPageSize, 10);
+        scalpCurrentPage = Math.ceil(currentScalpData.length / effectiveSize);
+        renderScalpTablePage();
+    });
 
     document.getElementById('filterSectorScalp').addEventListener('change', loadScalpingTable);
     document.getElementById('searchScalp').addEventListener('input', debounce(loadScalpingTable, 300));

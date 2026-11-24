@@ -241,58 +241,110 @@
             <div class="section-header">
                 <div>
                     <span class="section-tag">Money Management & Position Sizing</span>
-                    <h2 class="section-title">Kalkulator Lot Saham & Manajemen Risiko</h2>
-                    <p class="section-desc">Hitung alokasi modal dan jumlah lot optimal agar risiko tidak melebihi batas toleransi Anda.</p>
+                    <h2 class="section-title">Kalkulator Lot Saham & Manajemen Risiko Realistis</h2>
+                    <p class="section-desc">Hitung alokasi modal, jumlah lot optimal (1 Lot = 100 Lembar), dan simulasi untung/rugi bersih setelah memperhitungkan fee transaksi bursa.</p>
                 </div>
             </div>
 
             <div class="calc-card card">
+                <!-- Preset Risk Level Selector -->
+                <div class="calc-risk-preset-bar">
+                    <span class="preset-label">Pilih Profil Risiko Cepat:</span>
+                    <div class="preset-buttons">
+                        <button type="button" class="btn-preset" data-risk="1.0">🛡️ 1.0% (Konservatif)</button>
+                        <button type="button" class="btn-preset active" data-risk="2.0">⚖️ 2.0% (Standar Disarankan)</button>
+                        <button type="button" class="btn-preset" data-risk="3.0">🚀 3.0% (Agresif / Scalping)</button>
+                    </div>
+                </div>
+
                 <div class="calc-inputs-grid">
                     <div class="calc-input-group">
-                        <label for="calcCapital">Total Modal Trading Portofolio (Rp):</label>
+                        <label for="calcCapital">Total Modal Portofolio (Rp):</label>
                         <input type="number" id="calcCapital" class="calc-input" value="10000000" step="500000">
+                        <span class="input-hint">Total saldo kas trading Anda</span>
                     </div>
                     <div class="calc-input-group">
-                        <label for="calcRiskPct">Maksimal Risiko per Trade (%):</label>
-                        <input type="number" id="calcRiskPct" class="calc-input" value="2.0" step="0.5" min="0.5" max="10">
+                        <label for="calcRiskPct">Maksimal Toleransi Risiko (% Modal):</label>
+                        <input type="number" id="calcRiskPct" class="calc-input" value="2.0" step="0.5" min="0.1" max="10">
+                        <span class="input-hint" id="calcRiskSummary">Batas rugi maksimal: Rp 200.000</span>
                     </div>
                     <div class="calc-input-group">
                         <label for="calcEntryPrice">Harga Beli / Entry Price (Rp):</label>
                         <input type="number" id="calcEntryPrice" class="calc-input" value="10000" step="25">
+                        <span class="input-hint">Harga masuk per lembar</span>
                     </div>
                     <div class="calc-input-group">
                         <label for="calcStopLoss">Harga Stop Loss (Rp):</label>
                         <input type="number" id="calcStopLoss" class="calc-input" value="9500" step="25">
+                        <span class="input-hint" id="calcSlPctHint">Jarak SL: -5.0% (-Rp 500)</span>
                     </div>
                     <div class="calc-input-group">
-                        <label for="calcTargetPrice">Harga Target Price (Rp):</label>
+                        <label for="calcTargetPrice">Target Price / Take Profit (Rp):</label>
                         <input type="number" id="calcTargetPrice" class="calc-input" value="11200" step="25">
+                        <span class="input-hint" id="calcTpPctHint">Potensi TP: +12.0% (+Rp 1.200)</span>
                     </div>
                 </div>
 
-                <div class="calc-results-grid">
-                    <div class="calc-res-box">
-                        <span class="res-label">Maksimal Risiko Modal</span>
-                        <span class="res-value text-red" id="resMaxRisk">Rp 200,000</span>
-                        <span class="res-sub">2.0% dari total modal</span>
-                    </div>
+                <!-- Fee Toggle & IDX Regulation Info -->
+                <div class="calc-fee-options">
+                    <label class="fee-checkbox-label">
+                        <input type="checkbox" id="calcIncludeFees" checked>
+                        <span>Sertakan Estimasi Fee Sekuritas (Fee Beli 0.15% + Fee Jual 0.25% termasuk PPh 0.1%)</span>
+                    </label>
+                    <span class="idx-lot-rule-badge">🏛️ Regulasi BEI: 1 Lot = 100 Lembar Saham</span>
+                </div>
 
+                <!-- Realistic Position Sizing Results -->
+                <div class="calc-results-grid">
                     <div class="calc-res-box highlight-box">
-                        <span class="res-label">Jumlah Lot Disarankan</span>
+                        <span class="res-label">Ukuran Posisi Disarankan</span>
                         <span class="res-value text-cyan" id="resLots">4 Lot</span>
                         <span class="res-sub" id="resShares">400 Lembar Saham</span>
+                        <div class="res-pill" id="resTotalBuy">Total Beli: Rp 4.000.000 (40.0% modal)</div>
+                        <div class="res-status text-green" id="resCapStatus">✅ Sesuai ketersediaan kas modal</div>
                     </div>
 
                     <div class="calc-res-box">
-                        <span class="res-label">Total Pembelian Saham</span>
-                        <span class="res-value" id="resTotalBuy">Rp 4,000,000</span>
-                        <span class="res-sub" id="resCapPct">40.0% dari portofolio</span>
+                        <span class="res-label">Batas Risiko Riil Portofolio</span>
+                        <span class="res-value text-red" id="resMaxRisk">Rp 200.000</span>
+                        <span class="res-sub" id="resRiskExplanation">Jika kena SL, modal berkurang HANYA Rp 200.000 (2.0%), BUKAN modal seluruhnya!</span>
+                        <div class="res-pill" id="resRiskPerShare">Risiko: Rp 500 / lembar</div>
                     </div>
 
-                    <div class="calc-res-box">
-                        <span class="res-label">Potensi Keuntungan (TP)</span>
-                        <span class="res-value text-green" id="resProfit">Rp 480,000</span>
-                        <span class="res-sub text-gold" id="resRRR">RRR 2.40 : 1.0</span>
+                    <div class="calc-res-box scenario-box scenario-profit">
+                        <span class="res-label">🟢 Skenario Untung (TP Tercapai)</span>
+                        <span class="res-value text-green" id="resProfit">+Rp 462.800</span>
+                        <span class="res-sub" id="resProfitPct">Return Bersih: +11.57% (setelah fee)</span>
+                        <div class="scenario-details">
+                            <div>Nilai Jual: <strong id="resGrossTP">Rp 4.480.000</strong></div>
+                            <div>Estimasi Fee: <span id="resFeeTP">-Rp 17.200</span></div>
+                            <div>Portofolio Akhir: <strong id="resEndingCapitalTP">Rp 10.462.800</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="calc-res-box scenario-box scenario-loss">
+                        <span class="res-label">🔴 Skenario Rugi (SL Tersentuh)</span>
+                        <span class="res-value text-red" id="resLoss">-Rp 215.500</span>
+                        <span class="res-sub" id="resLossPct">Rugi Bersih: -2.16% modal (termasuk fee)</span>
+                        <div class="scenario-details">
+                            <div>Nilai Jual SL: <strong id="resGrossSL">Rp 3.800.000</strong></div>
+                            <div>Estimasi Fee: <span id="resFeeSL">-Rp 15.500</span></div>
+                            <div>Sisa Modal Terlindungi: <strong id="resEndingCapitalSL">Rp 9.784.500</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Summary Ratio & BEP -->
+                <div class="calc-footer-bar">
+                    <div class="footer-stat">
+                        <span class="stat-name">Risk-Reward Ratio (RRR):</span>
+                        <span class="stat-val text-gold" id="resRRR">1 : 2.15</span>
+                        <span class="stat-badge badge-strong-buy" id="resRRRBadge">Ideal (Sehat)</span>
+                    </div>
+                    <div class="footer-stat">
+                        <span class="stat-name">Break-Even Price (Titik Impas):</span>
+                        <span class="stat-val" id="resBEP">Rp 10.040</span>
+                        <span class="stat-hint">(Harga jual minimal agar menutup fee sekuritas)</span>
                     </div>
                 </div>
             </div>
@@ -327,7 +379,28 @@
                 </div>
             </div>
 
-            <div class="table-container">
+            <!-- Scroll Tips & Pagination Toolbar Top -->
+            <div class="table-toolbar">
+                <div class="table-counts-info">
+                    Menampilkan <strong id="multiShowingCount">1 - 25</strong> dari <strong id="multiTotalCount">167</strong> saham
+                </div>
+                <div class="table-pagination-controls">
+                    <span class="page-size-label">Baris:</span>
+                    <select id="pageSizeMulti" class="custom-select-sm">
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="ALL">Semua (167)</option>
+                    </select>
+                    <button id="btnMultiFirst" class="btn-page" title="Halaman Pertama">⏮</button>
+                    <button id="btnMultiPrev" class="btn-page" title="Halaman Sebelumnya">◀</button>
+                    <span id="multiPageInfo" class="page-indicator">1 / 7</span>
+                    <button id="btnMultiNext" class="btn-page" title="Halaman Selanjutnya">▶</button>
+                    <button id="btnMultiLast" class="btn-page" title="Halaman Terakhir">⏭</button>
+                </div>
+            </div>
+
+            <div class="table-container" data-lenis-prevent>
                 <table class="data-table" id="tableMulti">
                     <thead>
                         <tr>
@@ -353,6 +426,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="table-scroll-hint">
+                <span>⇄ Geser tabel secara horizontal untuk melihat semua kolom harga target dan RRR</span>
+            </div>
         </section>
 
         <!-- MODULE 4: SCALPING INTRADAY (+5m to +60m) -->
@@ -367,7 +443,7 @@
                 <div class="table-actions">
                     <input type="text" id="searchScalp" class="custom-input" placeholder="🔍 Cari Ticker Scalping...">
                     <select id="filterSectorScalp" class="custom-select">
-                        <option value="ALL">Semua Sektor</option>
+                        <option value="ALL">Semua Sektor (167)</option>
                         <option value="Perbankan">Perbankan</option>
                         <option value="Makanan">Makanan</option>
                         <option value="Perkebunan">Perkebunan</option>
@@ -377,7 +453,28 @@
                 </div>
             </div>
 
-            <div class="table-container">
+            <!-- Scroll Tips & Pagination Toolbar Top -->
+            <div class="table-toolbar">
+                <div class="table-counts-info">
+                    Menampilkan <strong id="scalpShowingCount">1 - 25</strong> dari <strong id="scalpTotalCount">158</strong> saham scalping
+                </div>
+                <div class="table-pagination-controls">
+                    <span class="page-size-label">Baris:</span>
+                    <select id="pageSizeScalp" class="custom-select-sm">
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="ALL">Semua</option>
+                    </select>
+                    <button id="btnScalpFirst" class="btn-page" title="Halaman Pertama">⏮</button>
+                    <button id="btnScalpPrev" class="btn-page" title="Halaman Sebelumnya">◀</button>
+                    <span id="scalpPageInfo" class="page-indicator">1 / 7</span>
+                    <button id="btnScalpNext" class="btn-page" title="Halaman Selanjutnya">▶</button>
+                    <button id="btnScalpLast" class="btn-page" title="Halaman Terakhir">⏭</button>
+                </div>
+            </div>
+
+            <div class="table-container" data-lenis-prevent>
                 <table class="data-table" id="tableScalp">
                     <thead>
                         <tr>
@@ -401,6 +498,9 @@
                         <!-- Populated by JS -->
                     </tbody>
                 </table>
+            </div>
+            <div class="table-scroll-hint">
+                <span>⇄ Geser tabel secara horizontal untuk melihat proyeksi menit demi menit dan level TP/SL</span>
             </div>
         </section>
 
