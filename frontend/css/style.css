@@ -1220,17 +1220,77 @@ body.dark-terminal {
     border-color: var(--accent-cyan);
 }
 
+/* Quick Ticker Shortcuts Bar */
+.quick-chips-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.4rem;
+    flex-wrap: wrap;
+}
+
+.chips-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.quick-chips-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.ticker-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.ticker-chip:hover {
+    border-color: var(--accent-cyan);
+    color: var(--text-primary);
+    background: rgba(0, 210, 255, 0.1);
+}
+
+.ticker-chip.active {
+    background: rgba(0, 210, 255, 0.2);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.25);
+}
+
 /* ==============================================================================
-   WHAT WAS MISSING (IMPROVEMENTS GRID)
+   TRADING PLAYBOOK & STRATEGY RULES (FORMERLY WHAT WAS MISSING)
    ============================================================================== */
 .improvements-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
 }
 
 .improvement-card {
     padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.improvement-card:hover {
+    border-color: rgba(0, 210, 255, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
 .imp-icon {
@@ -1239,39 +1299,47 @@ body.dark-terminal {
 }
 
 .imp-title {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.8rem;
 }
 
-.imp-problem {
-    background: rgba(255, 23, 68, 0.06);
-    border-left: 3px solid var(--accent-red);
-    padding: 0.8rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.88rem;
-    color: #fca5a5;
-    margin-bottom: 0.8rem;
-    line-height: 1.5;
+.imp-body {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    flex-grow: 1;
 }
 
-.imp-solution {
-    background: rgba(0, 230, 118, 0.06);
-    border-left: 3px solid var(--accent-green);
-    padding: 0.8rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.88rem;
-    color: #86efac;
-    line-height: 1.5;
+.imp-body strong {
+    color: var(--text-primary);
+}
+
+.imp-body em {
+    color: var(--accent-cyan);
+    font-style: normal;
+}
+
+.imp-badge-rule {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    background: rgba(0, 210, 255, 0.08);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    width: fit-content;
 }
 
 /* ==============================================================================
-   DEVELOPER LIBRARIES & PROMPTS
+   DEVELOPER LIBRARIES & INTERACTIVE PROMPT SHOWCASE
    ============================================================================== */
 .library-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
@@ -1290,13 +1358,13 @@ body.dark-terminal {
 }
 
 .lib-name {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--text-primary);
 }
 
 .lib-link {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--accent-cyan);
     text-decoration: none;
     font-weight: 600;
@@ -1311,15 +1379,23 @@ body.dark-terminal {
 
 .lib-desc {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     margin-bottom: 1.2rem;
+    line-height: 1.5;
 }
 
 .prompt-box {
     background: rgba(0, 0, 0, 0.35);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    padding: 0.8rem;
+    padding: 0.9rem;
+}
+
+.prompt-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
 
 .prompt-header {
@@ -1327,15 +1403,39 @@ body.dark-terminal {
     color: var(--accent-gold);
     font-weight: 700;
     text-transform: uppercase;
-    margin-bottom: 0.3rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-copy-prompt {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-copy-prompt:hover {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    background: rgba(0, 210, 255, 0.1);
+}
+
+.btn-copy-prompt.copied {
+    background: rgba(0, 230, 118, 0.2);
+    color: var(--accent-green);
+    border-color: var(--accent-green);
 }
 
 .prompt-box code {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--text-primary);
     display: block;
-    line-height: 1.4;
+    line-height: 1.45;
 }
 
 .pro-tip-box {
@@ -1345,7 +1445,8 @@ body.dark-terminal {
     background: rgba(255, 179, 0, 0.08);
     border: 1px solid rgba(255, 179, 0, 0.25);
     color: #fde68a;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    padding: 1.2rem;
 }
 
 .tip-icon {
@@ -1372,6 +1473,7 @@ body.dark-terminal {
     margin-top: 0.5rem;
     font-size: 0.78rem;
     color: var(--text-muted);
+    line-height: 1.5;
 }
 
 /* Utility Colors */
@@ -1379,3 +1481,264 @@ body.dark-terminal {
 .text-cyan { color: var(--accent-cyan) !important; }
 .text-red { color: var(--accent-red) !important; }
 .text-gold { color: var(--accent-gold) !important; }
+
+/* ==============================================================================
+   RESPONSIVE DESIGN (DESKTOP, TABLET, MOBILE COMPREHENSIVE SPEC)
+   ============================================================================== */
+
+/* Tablet & Smaller Laptops */
+@media (max-width: 1024px) {
+    .navbar {
+        padding: 0.8rem 1.2rem;
+    }
+
+    .main-wrapper {
+        padding: 1.5rem 1.2rem 4rem;
+    }
+
+    .hero-title {
+        font-size: 2.4rem;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .inspector-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Standard Mobile & Phablet */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    .navbar {
+        padding: 0.6rem 1rem;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+    }
+
+    .nav-container > div:first-child {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Horizontal swipeable pill navigation bar for mobile */
+    .nav-links {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 0.4rem;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-full);
+        flex-shrink: 0;
+    }
+
+    .nav-actions {
+        display: none; /* Merged in status or header on mobile */
+    }
+
+    .main-wrapper {
+        padding: 1rem 1rem 3.5rem;
+    }
+
+    .hero-section {
+        padding: 1.5rem 0 1rem;
+    }
+
+    .hero-title {
+        font-size: 1.9rem;
+        line-height: 1.25;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+
+    .kpi-card {
+        padding: 1rem;
+    }
+
+    .kpi-value {
+        font-size: 1.35rem;
+    }
+
+    .section-container {
+        margin-top: 3rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .section-title {
+        font-size: 1.35rem;
+    }
+
+    .inspector-controls {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.6rem;
+    }
+
+    .select-wrapper, .custom-select, #btnLiveForecast {
+        width: 100% !important;
+    }
+
+    .quick-chips-wrapper {
+        gap: 0.5rem;
+    }
+
+    .quick-chips-list {
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+        width: 100%;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ticker-chip {
+        flex-shrink: 0;
+    }
+
+    .chart-canvas-wrapper {
+        height: 280px;
+    }
+
+    .milestones-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem;
+    }
+
+    /* Calculator Mobile */
+    .calc-inputs-grid {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+    }
+
+    .calc-risk-preset-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    .preset-buttons {
+        width: 100%;
+    }
+
+    .btn-preset {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 6px 8px;
+    }
+
+    .calc-results-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .calc-footer-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+
+    /* Table Toolbar Mobile */
+    .table-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.6rem;
+    }
+
+    .table-actions input, .table-actions select, .table-actions button {
+        width: 100% !important;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.8rem;
+    }
+
+    .table-pagination-controls {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+    }
+
+    .btn-page {
+        min-height: 38px;
+        min-width: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pro-tip-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Compact Mobile (iPhone SE, 360px - 430px) */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.65rem;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .milestones-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .table-pagination-controls {
+        font-size: 0.75rem;
+    }
+}
+

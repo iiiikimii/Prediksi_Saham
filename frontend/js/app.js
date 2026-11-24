@@ -320,6 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const card = document.createElement('div');
                 card.className = 'sector-card card';
+                card.style.cursor = 'pointer';
+                card.title = `Klik untuk memfilter daftar saham sektor ${sec.sektor}`;
                 card.innerHTML = `
                     <div class="sector-card-top">
                         <span class="sector-card-name">${sec.sektor}</span>
@@ -344,6 +346,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="sector-metric-val text-cyan">${sec.strong_buys + sec.buys} Saham</span>
                     </div>
                 `;
+
+                // Interactive: Click sector card to filter Multi-Hari table immediately
+                card.addEventListener('click', () => {
+                    const multiFilter = document.getElementById('filterSectorMulti');
+                    if (multiFilter) {
+                        multiFilter.value = sec.sektor;
+                        loadMultiHariTable();
+                        const tableEl = document.getElementById('multihari');
+                        if (lenis && typeof lenis.scrollTo === 'function') {
+                            lenis.scrollTo(tableEl, { offset: -60 });
+                        } else if (tableEl) {
+                            tableEl.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+
                 sectorGrid.appendChild(card);
             });
 
@@ -384,6 +402,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 selector.appendChild(optGroup);
             }
 
+            // Quick Ticker Chips Interaction
+            document.querySelectorAll('.ticker-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const t = chip.getAttribute('data-ticker');
+                    if (selector) selector.value = t;
+                    loadStockDetail(t);
+                });
+            });
+
             // Default selection: BBCA if exists, else first
             selector.value = "BBCA";
             loadStockDetail("BBCA");
@@ -399,6 +426,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadStockDetail(ticker) {
         if (!ticker) return;
+
+        // Synchronize Active Ticker Chip
+        document.querySelectorAll('.ticker-chip').forEach(chip => {
+            if (chip.getAttribute('data-ticker') === ticker) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+
         try {
             const res = await fetch(`/api/stock/${ticker}`);
             const data = await res.json();
@@ -1015,6 +1052,60 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         document.body.removeChild(a);
     }
+
+    // -------------------------------------------------------------------------
+    // 11. DEVELOPER PROMPT COPY INTERACTION & SCROLL SPY
+    // -------------------------------------------------------------------------
+    document.querySelectorAll('.btn-copy-prompt').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const textToCopy = btn.getAttribute('data-copy');
+            if (!textToCopy) return;
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(textToCopy);
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = textToCopy;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '✓ Tersalin!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('copied');
+                }, 2200);
+            } catch (err) {
+                console.error("Gagal menyalin teks prompt:", err);
+            }
+        });
+    });
+
+    // Active navigation highlight on scroll
+    window.addEventListener('scroll', debounce(() => {
+        const sections = document.querySelectorAll('section[id]');
+        const scrollPosition = window.pageYOffset + 140;
+
+        sections.forEach(sec => {
+            const top = sec.offsetTop;
+            const height = sec.offsetHeight;
+            const id = sec.getAttribute('id');
+
+            if (scrollPosition >= top && scrollPosition < top + height) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, 100));
 
     // -------------------------------------------------------------------------
     // INITIAL BOOTSTRAP
