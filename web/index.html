@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDX AI Stock Terminal — Deep Learning RNN & Technical Confluence</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Lenis Smooth Scroll CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Chart.js & Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Lenis Library -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+</head>
+<body class="dark-terminal">
+
+    <!-- Top Glow / Background Elements -->
+    <div class="ambient-glow glow-cyan"></div>
+    <div class="ambient-glow glow-indigo"></div>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-badge">IDX AI</span>
+                <span class="brand-title">Stock Terminal</span>
+                <span class="brand-tag">v2.0 Hybrid</span>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#overview" class="nav-link active">Overview</a>
+                <a href="#inspector" class="nav-link">Deep Inspector</a>
+                <a href="#multihari" class="nav-link">Multi-Hari (31D)</a>
+                <a href="#scalping" class="nav-link">Scalping (5m)</a>
+                <a href="#calculator" class="nav-link">Lot Calculator</a>
+                <a href="#improvements" class="nav-link">Improvements</a>
+                <a href="#libraries" class="nav-link">Dev Libraries</a>
+            </nav>
+
+            <div class="nav-actions">
+                <span class="live-status"><span class="pulse-dot"></span> Live 167 Emiten</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container (Lenis smoothly scrolls this) -->
+    <main class="main-wrapper">
+
+        <!-- HERO SECTION (GSAP Title Animated Word-by-Word) -->
+        <section id="overview" class="hero-section">
+            <div class="hero-content">
+                <div class="pill-badge">
+                    <span class="pill-dot"></span>
+                    <span>DEEP LEARNING RNN MULTI-OUTPUT + TECHNICAL CONFLUENCE</span>
+                </div>
+                
+                <!-- Title where words will be animated by GSAP -->
+                <h1 class="hero-title" id="heroTitle">
+                    Prediksi Saham AI Bursa Efek Indonesia (IDX)
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Platform analisis terintegrasi untuk <strong>167 emiten BEI</strong> lintas 4 sektor strategis:
+                    <em>Perbankan, Makanan & Minuman, Perkebunan, dan Mineral & Logam</em>. Menggabungkan RNN Multi-Horizon,
+                    RSI, MACD, Volume Spike, dan kalkulator money management otomatis.
+                </p>
+
+                <!-- Quick KPI Row (Animated Cards) -->
+                <div class="kpi-grid">
+                    <div class="kpi-card" data-speed="1.1">
+                        <div class="kpi-header">Total Emiten Terdaftar</div>
+                        <div class="kpi-value" id="kpiTotal">167 Saham</div>
+                        <div class="kpi-sub">4 Sektor Penuh BEI</div>
+                    </div>
+
+                    <div class="kpi-card" data-speed="1.1">
+                        <div class="kpi-header">Top Swing Pick (H+31)</div>
+                        <div class="kpi-value text-green" id="kpiTopSwing">-</div>
+                        <div class="kpi-sub" id="kpiTopSwingSub">Memuat proyeksi...</div>
+                    </div>
+
+                    <div class="kpi-card" data-speed="1.1">
+                        <div class="kpi-header">Top Scalp Pick (+60m)</div>
+                        <div class="kpi-value text-cyan" id="kpiTopScalp">-</div>
+                        <div class="kpi-sub" id="kpiTopScalpSub">Net gain pasca fee 0.4%</div>
+                    </div>
+
+                    <div class="kpi-card" data-speed="1.1">
+                        <div class="kpi-header">Sektor Terkuat</div>
+                        <div class="kpi-value text-gold" id="kpiStrongSector">-</div>
+                        <div class="kpi-sub" id="kpiStrongSectorSub">Rata-rata return tertinggi</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTOR PERFORMANCE COMPARISON BARS -->
+        <section class="section-container">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Kinerja Komparatif Sektor (Multi-Hari)</h2>
+                    <p class="section-desc">Rata-rata proyeksi imbal hasil H+31 dan tingkat kepastian model per sektor</p>
+                </div>
+            </div>
+
+            <div class="sector-cards-grid" id="sectorCardsGrid">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- MODULE 1: DEEP STOCK INSPECTOR & INTERACTIVE CHART -->
+        <section id="inspector" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Interactive AI Visualizer</span>
+                    <h2 class="section-title">Detail Emiten & Kurva Proyeksi 31 Hari</h2>
+                    <p class="section-desc">Pilih salah satu dari 167 emiten untuk menganalisis kurva masa depan, indikator teknikal, dan sinyal konfluensi.</p>
+                </div>
+
+                <div class="inspector-controls">
+                    <div class="select-wrapper">
+                        <select id="stockSelector" class="custom-select">
+                            <option value="">Memuat daftar emiten...</option>
+                        </select>
+                    </div>
+                    <button id="btnLiveForecast" class="btn btn-primary">
+                        <span class="btn-icon">⚡</span> Cek Real-time Yahoo Finance
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inspector Dashboard Grid -->
+            <div class="inspector-grid">
+                <!-- Left: Chart & Trajectory (2 Cols wide) -->
+                <div class="chart-panel card">
+                    <div class="chart-header">
+                        <div>
+                            <span class="chart-ticker" id="chartTicker">BBCA</span>
+                            <span class="chart-sector" id="chartSector">Perbankan</span>
+                            <span class="chart-price" id="chartPrice">Rp -</span>
+                            <span class="chart-badge badge-strong-buy" id="chartSignal">STRONG BUY</span>
+                        </div>
+                        <div class="chart-legend-pills">
+                            <span class="legend-pill"><span class="dot dot-white"></span> Historis 60 Hari</span>
+                            <span class="legend-pill"><span class="dot dot-cyan"></span> Proyeksi RNN 31 Hari</span>
+                            <span class="legend-pill"><span class="dot dot-green"></span> Target Price</span>
+                            <span class="legend-pill"><span class="dot dot-red"></span> Stop Loss</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="stockForecastChart"></canvas>
+                    </div>
+
+                    <!-- Target Milestones Row -->
+                    <div class="milestones-row" id="milestonesRow">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Right: Confluence Indicators & Action Plan -->
+                <div class="action-panel">
+                    <!-- Confluence Card -->
+                    <div class="card confluence-card">
+                        <div class="card-title">AI Technical Confluence Score</div>
+                        <div class="confluence-meter-wrapper">
+                            <div class="confluence-meter-circle">
+                                <span class="confluence-number" id="confluenceScore">--</span>
+                                <span class="confluence-unit">/ 100</span>
+                            </div>
+                            <div class="confluence-breakdown">
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">RSI (14):</span>
+                                    <span class="breakdown-value" id="valRsi">--</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">MACD Status:</span>
+                                    <span class="breakdown-value" id="valMacd">--</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Trend EMA 20/50:</span>
+                                    <span class="breakdown-value" id="valEma">--</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Volume Spike:</span>
+                                    <span class="breakdown-value" id="valVol">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trading Plan Card -->
+                    <div class="card plan-card">
+                        <div class="card-title">Actionable Trading Plan</div>
+                        <div class="plan-grid">
+                            <div class="plan-item">
+                                <span class="plan-label">Entry Zone</span>
+                                <span class="plan-value" id="planEntry">Rp -</span>
+                            </div>
+                            <div class="plan-item">
+                                <span class="plan-label">Target Price (TP)</span>
+                                <span class="plan-value text-green" id="planTP">Rp -</span>
+                            </div>
+                            <div class="plan-item">
+                                <span class="plan-label">Stop Loss (SL)</span>
+                                <span class="plan-value text-red" id="planSL">Rp -</span>
+                            </div>
+                            <div class="plan-item">
+                                <span class="plan-label">Risk-Reward Ratio</span>
+                                <span class="plan-value text-gold" id="planRRR">- : 1.0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Update Status Banner -->
+                    <div id="liveBanner" class="live-banner hidden">
+                        <span class="live-dot"></span>
+                        <span id="liveBannerText">Data diperbarui secara real-time dari Yahoo Finance</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: INTERACTIVE LOT & MONEY MANAGEMENT CALCULATOR -->
+        <section id="calculator" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Money Management & Position Sizing</span>
+                    <h2 class="section-title">Kalkulator Lot Saham & Manajemen Risiko</h2>
+                    <p class="section-desc">Hitung alokasi modal dan jumlah lot optimal agar risiko tidak melebihi batas toleransi Anda.</p>
+                </div>
+            </div>
+
+            <div class="calc-card card">
+                <div class="calc-inputs-grid">
+                    <div class="calc-input-group">
+                        <label for="calcCapital">Total Modal Trading Portofolio (Rp):</label>
+                        <input type="number" id="calcCapital" class="calc-input" value="10000000" step="500000">
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="calcRiskPct">Maksimal Risiko per Trade (%):</label>
+                        <input type="number" id="calcRiskPct" class="calc-input" value="2.0" step="0.5" min="0.5" max="10">
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="calcEntryPrice">Harga Beli / Entry Price (Rp):</label>
+                        <input type="number" id="calcEntryPrice" class="calc-input" value="10000" step="25">
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="calcStopLoss">Harga Stop Loss (Rp):</label>
+                        <input type="number" id="calcStopLoss" class="calc-input" value="9500" step="25">
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="calcTargetPrice">Harga Target Price (Rp):</label>
+                        <input type="number" id="calcTargetPrice" class="calc-input" value="11200" step="25">
+                    </div>
+                </div>
+
+                <div class="calc-results-grid">
+                    <div class="calc-res-box">
+                        <span class="res-label">Maksimal Risiko Modal</span>
+                        <span class="res-value text-red" id="resMaxRisk">Rp 200,000</span>
+                        <span class="res-sub">2.0% dari total modal</span>
+                    </div>
+
+                    <div class="calc-res-box highlight-box">
+                        <span class="res-label">Jumlah Lot Disarankan</span>
+                        <span class="res-value text-cyan" id="resLots">4 Lot</span>
+                        <span class="res-sub" id="resShares">400 Lembar Saham</span>
+                    </div>
+
+                    <div class="calc-res-box">
+                        <span class="res-label">Total Pembelian Saham</span>
+                        <span class="res-value" id="resTotalBuy">Rp 4,000,000</span>
+                        <span class="res-sub" id="resCapPct">40.0% dari portofolio</span>
+                    </div>
+
+                    <div class="calc-res-box">
+                        <span class="res-label">Potensi Keuntungan (TP)</span>
+                        <span class="res-value text-green" id="resProfit">Rp 480,000</span>
+                        <span class="res-sub text-gold" id="resRRR">RRR 2.40 : 1.0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: MULTI-HARI PREDICTION TABLE (167 STOCKS) -->
+        <section id="multihari" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Swing Trading Projections</span>
+                    <h2 class="section-title">Daftar Proyeksi Multi-Hari (H+1 s.d. H+31)</h2>
+                    <p class="section-desc">Seluruh 167 emiten dari 4 sektor dengan level target, sinyal, dan rasio risiko.</p>
+                </div>
+
+                <div class="table-actions">
+                    <input type="text" id="searchMulti" class="custom-input" placeholder="🔍 Cari Ticker (contoh: BBCA, ANTM)...">
+                    <select id="filterSectorMulti" class="custom-select">
+                        <option value="ALL">Semua Sektor (167)</option>
+                        <option value="Perbankan">Perbankan (47)</option>
+                        <option value="Makanan">Makanan (52)</option>
+                        <option value="Perkebunan">Perkebunan (34)</option>
+                        <option value="Mineral">Mineral (34)</option>
+                    </select>
+                    <select id="filterSignalMulti" class="custom-select">
+                        <option value="ALL">Semua Sinyal</option>
+                        <option value="STRONG BUY">STRONG BUY</option>
+                        <option value="BUY">BUY</option>
+                        <option value="HOLD / WAIT">HOLD / WAIT</option>
+                        <option value="TAKE PROFIT / SELL">SELL</option>
+                    </select>
+                    <button id="btnExportMulti" class="btn btn-secondary">📥 Download CSV</button>
+                </div>
+            </div>
+
+            <div class="table-container card">
+                <table class="data-table" id="tableMulti">
+                    <thead>
+                        <tr>
+                            <th>Sektor</th>
+                            <th>Kode</th>
+                            <th>Close</th>
+                            <th>H+1</th>
+                            <th>H+7</th>
+                            <th>H+14</th>
+                            <th>H+21</th>
+                            <th>H+30</th>
+                            <th>H+31</th>
+                            <th>Potensi H+31</th>
+                            <th>Sinyal</th>
+                            <th>Target Price</th>
+                            <th>Stop Loss</th>
+                            <th>RRR</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyMulti">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MODULE 4: SCALPING INTRADAY (+5m to +60m) -->
+        <section id="scalping" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">High-Frequency Intraday</span>
+                    <h2 class="section-title">Proyeksi Scalping Intraday (5 Menit)</h2>
+                    <p class="section-desc">Pergerakan jangka sangat pendek (+5m s.d. +60m) dengan perlindungan komisi bursa 0.40%.</p>
+                </div>
+
+                <div class="table-actions">
+                    <input type="text" id="searchScalp" class="custom-input" placeholder="🔍 Cari Ticker Scalping...">
+                    <select id="filterSectorScalp" class="custom-select">
+                        <option value="ALL">Semua Sektor</option>
+                        <option value="Perbankan">Perbankan</option>
+                        <option value="Makanan">Makanan</option>
+                        <option value="Perkebunan">Perkebunan</option>
+                        <option value="Mineral">Mineral</option>
+                    </select>
+                    <button id="btnExportScalp" class="btn btn-secondary">📥 Download CSV</button>
+                </div>
+            </div>
+
+            <div class="table-container card">
+                <table class="data-table" id="tableScalp">
+                    <thead>
+                        <tr>
+                            <th>Sektor</th>
+                            <th>Kode</th>
+                            <th>Last Price</th>
+                            <th>+5m</th>
+                            <th>+15m</th>
+                            <th>+30m</th>
+                            <th>+60m</th>
+                            <th>Net Gain (+60m)</th>
+                            <th>Volume Surge</th>
+                            <th>Sinyal Scalp</th>
+                            <th>TP Scalp</th>
+                            <th>SL Scalp</th>
+                            <th>MAPE (+60m)</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyScalp">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MODULE 5: WHAT WAS MISSING & HOW WE IMPROVED IT -->
+        <section id="improvements" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">System Architecture & Analysis</span>
+                    <h2 class="section-title">What Was Missing? & How We Improved It</h2>
+                    <p class="section-desc">Analisis komprehensif kelemahan sistem prediksi saham konvensional dan solusi nyata yang kami bangun.</p>
+                </div>
+            </div>
+
+            <div class="improvements-grid">
+                <!-- Improvement 1 -->
+                <div class="improvement-card card">
+                    <div class="imp-icon">🎯</div>
+                    <h3 class="imp-title">1. Kelemahan "Pure RNN" & Solusi Confluence</h3>
+                    <div class="imp-problem">
+                        <strong>Kelemahan Awal:</strong> Model RNN murni hanya melihat sekuens harga historis (*univariate sequence*). Tanpa indikator momentum, RNN kerap memberikan sinyal beli (*False Breakout*) pada saham yang sedang overbought atau minim volume.
+                    </div>
+                    <div class="imp-solution">
+                        <strong>Solusi Kami:</strong> Kami menambahkan **AI Technical Confluence** (RSI 14, MACD, EMA 20/50, dan Volume Spike Ratio). Sinyal *STRONG BUY* hanya diberikan jika prediksi AI sejalan dengan indikator momentum sehat.
+                    </div>
+                </div>
+
+                <!-- Improvement 2 -->
+                <div class="improvement-card card">
+                    <div class="imp-icon">⚡</div>
+                    <h3 class="imp-title">2. Data Statis vs Live On-Demand Sync</h3>
+                    <div class="imp-problem">
+                        <strong>Kelemahan Awal:</strong> Menjalankan notebook memakan waktu beberapa jam untuk 167 saham dan hasilnya menjadi usang saat pasar bursa dibuka keesokan harinya.
+                    </div>
+                    <div class="imp-solution">
+                        <strong>Solusi Kami:</strong> Kami membangun backend **FastAPI Async** dengan tombol <em>"Cek Real-time Yahoo Finance"</em>. Pengguna dapat menarik harga terkini dalam 1 detik tanpa perlu melatih ulang model.
+                    </div>
+                </div>
+
+                <!-- Improvement 3 -->
+                <div class="improvement-card card">
+                    <div class="imp-icon">🧮</div>
+                    <h3 class="imp-title">3. Actionable Position Sizing (Lot Calculator)</h3>
+                    <div class="imp-problem">
+                        <strong>Kelemahan Awal:</strong> Memiliki Target Price dan Stop Loss tidak cukup jika trader tidak tahu berapa banyak lot yang boleh dibeli tanpa mempertaruhkan modalnya secara berlebihan.
+                    </div>
+                    <div class="imp-solution">
+                        <strong>Solusi Kami:</strong> Terintegrasi **Kalkulator Manajemen Risiko Otomatis**. Cukup masukkan modal dan persentase risiko (misal 2%), sistem otomatis menghitung jumlah lot lembar saham yang aman dibeli.
+                    </div>
+                </div>
+
+                <!-- Improvement 4 -->
+                <div class="improvement-card card">
+                    <div class="imp-icon">🛡️</div>
+                    <h3 class="imp-title">4. Batas Regulasi BEI (ARA / ARB Guard)</h3>
+                    <div class="imp-problem">
+                        <strong>Kelemahan Awal:</strong> Saham tidur atau lapis tiga kadang memproyeksikan kenaikan 40% dalam 1 hari, padahal BEI menerapkan Auto Rejection Atas (ARA) 20% - 35%.
+                    </div>
+                    <div class="imp-solution">
+                        <strong>Solusi Kami:</strong> Dilengkapi validasi likuiditas dan batas simetris ARA/ARB BEI untuk memfilter saham suspensi atau saham tidur yang tidak memiliki antrean bid/offer.
+                    </div>
+                </div>
+
+                <!-- Improvement 5 -->
+                <div class="improvement-card card">
+                    <div class="imp-icon">🚀</div>
+                    <h3 class="imp-title">5. Modern Web Stack (Zero Reloads)</h3>
+                    <div class="imp-problem">
+                        <strong>Kelemahan Awal:</strong> Streamlit me-reload seluruh halaman pada setiap klik widget, menyebabkan jeda loading dan grafik yang berkedip.
+                    </div>
+                    <div class="imp-solution">
+                        <strong>Solusi Kami:</strong> Membangun Web Frontend mandiri dengan **Lenis Smooth Scroll** dan **GSAP Animations** untuk pengalaman navigasi 60 FPS yang responsif dan elegan.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 6: DEVELOPER LIBRARIES & PROMPTS SECTION -->
+        <section id="libraries" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Developer Toolkit & Reference</span>
+                    <h2 class="section-title">Modern Animation Libraries</h2>
+                    <p class="section-desc">Pustaka animasi dan smooth-scroll modern yang digunakan dalam proyek ini beserta prompt siap pakai.</p>
+                </div>
+            </div>
+
+            <div class="library-grid">
+                <!-- GSAP Card -->
+                <div class="library-card card">
+                    <div class="lib-top">
+                        <span class="lib-name">GSAP</span>
+                        <a href="https://gsap.com" target="_blank" rel="noopener noreferrer" class="lib-link">gsap.com ↗</a>
+                    </div>
+                    <p class="lib-desc">Standard industri untuk animasi web berkinerja tinggi, timeline multi-tahap, dan manipulasi elemen berbasis scroll (*ScrollTrigger*).</p>
+                    <div class="prompt-box">
+                        <div class="prompt-header">Prompt Siap Salin:</div>
+                        <code>"Pakai GSAP + ScrollTrigger, judul muncul per kata saat discroll"</code>
+                    </div>
+                </div>
+
+                <!-- Motion Card -->
+                <div class="library-card card">
+                    <div class="lib-top">
+                        <span class="lib-name">Motion</span>
+                        <a href="https://motion.dev" target="_blank" rel="noopener noreferrer" class="lib-link">motion.dev ↗</a>
+                    </div>
+                    <p class="lib-desc">Library animasi deklaratif yang sangat ringan dan mulus untuk komponen, hover, gestures, dan transisi layout modern.</p>
+                    <div class="prompt-box">
+                        <div class="prompt-header">Prompt Siap Salin:</div>
+                        <code>"Pakai Motion untuk animasi masuk card dan hover"</code>
+                    </div>
+                </div>
+
+                <!-- Lenis Card -->
+                <div class="library-card card">
+                    <div class="lib-top">
+                        <span class="lib-name">Lenis</span>
+                        <a href="https://lenis.dev" target="_blank" rel="noopener noreferrer" class="lib-link">lenis.dev ↗</a>
+                    </div>
+                    <p class="lib-desc">Smooth scroll engine ultra-ringan dengan kurva inersia alami yang bekerja harmonis dengan GSAP ScrollTrigger dan CSS native.</p>
+                    <div class="prompt-box">
+                        <div class="prompt-header">Prompt Siap Salin:</div>
+                        <code>"Pasang Lenis untuk smooth scroll"</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pro-tip-box card">
+                <span class="tip-icon">💡</span>
+                <div>
+                    <strong>Tips Arsitektur Frontend:</strong>
+                    Pilih salah satu antara <em>GSAP</em> atau <em>Motion</em> untuk project skala kecil/menengah, lalu tambahkan <em>Lenis</em> untuk pengalaman smooth scroll. Tidak perlu membebani bundle dengan memakai semua sekaligus.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <strong>IDX Stock Forecasting Terminal</strong> — Deep Learning RNN Multi-Horizon (H+1 s.d. H+31 & Intraday 5m).
+            </div>
+            <div class="footer-note">
+                Disclaimer: Alat prediksi ini merupakan sarana bantu analisis teknikal dan kuantitatif. Keputusan investasi dan risiko sepenuhnya berada di tangan investor.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

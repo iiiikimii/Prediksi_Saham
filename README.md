@@ -1,6 +1,6 @@
-# Prediksi Saham BEI Menggunakan Recurrent Neural Network (RNN) & Interactive Web Terminal
+# Prediksi Saham BEI Menggunakan Recurrent Neural Network (RNN) & Modern Web Terminal
 
-Sistem prediksi dan analisis saham Bursa Efek Indonesia (BEI/IDX) berbasis Deep Learning Recurrent Neural Network (RNN) yang dirancang untuk **analisis dan trading sehari-hari (*Everyday Use*)**.
+Sistem prediksi dan analisis saham Bursa Efek Indonesia (BEI/IDX) berbasis Deep Learning Recurrent Neural Network (RNN) dan **Technical Confluence** yang dirancang untuk **analisis dan trading sehari-hari (*Everyday Use*)**.
 
 Mendukung dua mode proyeksi utama:
 1. **Multi-Hari (Swing Trading)**: Memprediksi harga penutupan ke **H+1, H+7, H+14, H+21, H+30, dan H+31**.
@@ -8,38 +8,70 @@ Mendukung dua mode proyeksi utama:
 
 ---
 
-## 🌐 Web-Based Prediction Tool (Streamlit Web Terminal)
+## 🌐 1. Modern Web Terminal (FastAPI + GSAP + Lenis + Chart.js)
 
-Aplikasi berbasis web interaktif siap pakai yang memuat **seluruh 167 emiten** dari 4 sektor tanpa batasan kuota.
+Antarmuka web modern mandiri dengan kinerja tinggi (60 FPS), smooth scrolling menggunakan **Lenis**, animasi judul word-by-word menggunakan **GSAP ScrollTrigger**, kurva interaktif Chart.js, serta integrasi **Kalkulator Manajemen Risiko & Lot Otomatis**.
 
-### Cara Menjalankan Web App:
-- **Cara 1 (Windows 1-Click Launch):** Cukup klik dua kali file [Jalankan_Web_App.bat](Jalankan_Web_App.bat).
+### Cara Menjalankan Modern Web Terminal:
+- **Cara 1 (Windows 1-Click Launch):** Cukup klik dua kali file [Jalankan_Website.bat](Jalankan_Website.bat).
 - **Cara 2 (Terminal / Command Prompt / PowerShell):**
   ```bash
-  python -m streamlit run app.py
-  # atau
-  streamlit run app.py
+  python server.py
   ```
-  Web browser akan terbuka otomatis di alamat `http://localhost:8501`.
+  Buka browser di alamat: **`http://localhost:8000`** (Dokumentasi API otomatis tersedia di `http://localhost:8000/docs`).
 
-### Fitur Modul Web App:
-1. **📈 Multi-Hari (1 - 31 Hari):**
-   - Tabel proyeksi lengkap H+1, H+7, H+14, H+21, H+30, H+31.
-   - Dilengkapi sinyal trading (`STRONG BUY`, `BUY`, `HOLD`, `SELL`), Target Price (TP), Stop Loss (SL), dan Risk-Reward Ratio (RRR).
-   - Fitur pencarian ticker, filter sektor, filter sinyal, dan tombol ekspor CSV.
-2. **⚡ Scalping Intraday (5 Menit):**
-   - Proyeksi +5m, +15m, +30m, +60m.
-   - Analisis *Net Gain* bersih setelah potongan komisi bursa (0.40%).
-   - Indikator lonjakan volume (*Volume Surge*), Entry Zone, TP, dan SL Scalp.
-3. **🔍 Detail Emiten & Live Interactive Forecast:**
-   - Dropdown interaktif seluruh 167 saham.
-   - Grafik interaktif Plotly: garis tren historis 60 hari, kurva proyeksi masa depan 31 hari, titik target H+1..H+31, garis TP, dan garis SL.
-   - Kartu rekomendasi *Actionable Trading Plan*.
-4. **📊 Screener & Performa Sektoral:**
-   - Grafik batang perbandingan performa rata-rata return 4 sektor.
-   - Top 10 Saham Potensi Tertinggi Swing Trading (H+31).
-   - Top 10 Saham Pilihan Scalping Intraday (+60m).
-   - Rangkuman disiplin trading, jadwal sesi bursa WIB, dan *money management*.
+### Fitur Modern Web Terminal:
+1. **Interactive Deep Stock Inspector:**
+   - Dropdown seluruh 167 saham dari 4 sektor.
+   - Grafik interaktif Chart.js (Data aktual 60 hari + Proyeksi RNN 31 hari + Target Milestones + Garis TP & SL).
+   - Tombol **"⚡ Cek Real-time Yahoo Finance"**: Mengambil harga terkini langsung dari Yahoo Finance secara on-demand tanpa perlu melatih ulang model.
+   - **AI Technical Confluence Score (0 - 100)**: Penggabungan sinyal RNN dengan RSI-14, MACD Crossover, EMA 20/50 Trend, dan Volume Spike Ratio.
+2. **Kalkulator Lot Saham & Money Management:**
+   - Menghitung batas risiko modal maksimal dalam Rupiah sesuai persentase toleransi risiko (contoh: 2%).
+   - Menghitung jumlah lot lembar saham optimal yang aman dibeli.
+   - Menghitung potensi keuntungan di Target Price dan Risk-to-Reward Ratio (RRR).
+3. **Multi-Hari & Scalping Screener:**
+   - Pencarian cepat ticker, filter sektor, filter sinyal beli/jual, dan ekspor CSV 1-klik.
+4. **Smooth Scroll & Animasi Modern:**
+   - Inersia scroll alami berkat **Lenis**.
+   - Animasi entrance judul per kata dan cards menggunakan **GSAP + ScrollTrigger**.
+
+---
+
+## 💡 What Was Missing? & How We Improved It
+
+| Aspek | Masalah / Kelemahan Sistem Lama | Solusi & Peningkatan yang Kami Bangun |
+|---|---|---|
+| **Model Signal** | **Pure RNN Lag / False Breakout:** RNN murni hanya membaca sekuens harga tanpa mempedulikan momentum atau kejenuhan pasar, rentan memberikan sinyal beli saat saham overbought. | **Hybrid Technical Confluence:** Mengombinasikan RNN dengan RSI(14), MACD, EMA 20/50, dan Volume Spike. Sinyal STRONG BUY hanya aktif jika momentum terkonfirmasi sehat. |
+| **Pembaruan Data** | **Data Statis:** Hasil prediksi hanya berupa snapshot saat notebook selesai dijalankan. Cepat usang ketika pasar buka keesokan harinya. | **Live On-Demand Yahoo Finance Sync:** Endpoint API `/api/stock/{ticker}/live-forecast` yang menarik candle terbaru via Yahoo Finance API dan memperbarui proyeksi secara instan. |
+| **Manajemen Modal** | **Tidak Ada Panduan Ukuran Posisi:** Memberikan TP dan SL tidak membantu jika trader tidak tahu berapa lot yang boleh dibeli sesuai portofolionya. | **Kalkulator Lot Otomatis:** Fitur kalkulator interaktif terintegrasi yang menghitung alokasi lot dan rupiah maksimal berdasarkan toleransi risiko per trade (1% - 2%). |
+| **Batas Regulasi** | **Prediksi Melebihi Batas IDX:** Saham tidur terkadang diproyeksikan melonjak 40% dalam 1 hari yang melanggar batas bursa. | **IDX ARA/ARB & Liquidity Guard:** Membatasi proyeksi sesuai batas Auto Rejection Atas/Bawah BEI dan menyaring saham yang minim antrean likuiditas. |
+| **Antarmuka Web** | **Reload Halaman Lambat:** Dashboard lama memuat ulang (*rerun*) seluruh skrip pada setiap klik tombol. | **FastAPI + Asynchronous Frontend:** Navigasi instan tanpa reload, 60 FPS scrolling dengan Lenis, dan animasi responsif dengan GSAP. |
+
+---
+
+## 🎨 Animation & Smooth Scroll Libraries
+
+Pustaka yang digunakan untuk tampilan antarmuka interaktif:
+
+* **GSAP** → [gsap.com](https://gsap.com)
+  - Standar animasi web berkinerja tinggi dan timeline ScrollTrigger.
+  - *Prompt siap pakai:* `"Pakai GSAP + ScrollTrigger, judul muncul per kata saat discroll"`
+* **Motion** → [motion.dev](https://motion.dev)
+  - Animasi deklaratif untuk gestures, micro-interactions, dan card hover.
+  - *Prompt siap pakai:* `"Pakai Motion untuk animasi masuk card dan hover"`
+* **Lenis** → [lenis.dev](https://lenis.dev)
+  - Engine smooth scroll ultra-ringan dengan kurva inersia alami.
+  - *Prompt siap pakai:* `"Pasang Lenis untuk smooth scroll"`
+
+> 💡 **Tips Penggunaan:** Pilih salah satu antara GSAP atau Motion untuk project skala kecil/menengah, lalu tambahkan Lenis untuk smooth scroll. Tidak perlu memakai semua sekaligus agar bundle tetap efisien.
+
+---
+
+## 🌐 2. Alternatif: Streamlit Web Terminal
+
+Jika Anda ingin antarmuka alternatif berbasis Streamlit:
+- **Cara Menjalankan:** Klik ganda [Jalankan_Web_App.bat](Jalankan_Web_App.bat) atau jalankan `streamlit run app.py` (Port: `8501`).
 
 ---
 
@@ -63,31 +95,20 @@ Aplikasi berbasis web interaktif siap pakai yang memuat **seluruh 167 emiten** d
 
 ---
 
-## Fitur Utama
-
-- **Dual-Interface**: Dapat dioperasikan melalui **Web Terminal Interaktif ([app.py](app.py))** maupun **Jupyter Notebook / Google Colab ([Prediksi_saham.ipynb](Prediksi_saham.ipynb))**.
-- **Everyday Operational Mode**:
-  - `MODE_RUN = "TOP_LIQUID"`: Scan kilat saham-saham paling likuid (~2-3 menit).
-  - `MODE_RUN = "CUSTOM"`: Analisis cepat watchlist saham pilihan.
-  - `MODE_RUN = "SCAN_ALL"`: Pemindaian menyeluruh 167 emiten.
-- **Model Caching (`RETRAIN_MODEL = False`)**: Muat model yang telah dilatih untuk inferensi instan dalam hitungan detik.
-- **Actionable Trading Plan**: Setiap emiten dilengkapi sinyal (`STRONG BUY`, `BUY`, `HOLD`, `SELL`), Target Price (TP), Stop Loss (SL), dan Risk-Reward Ratio (RRR).
-- **Auto-Export & Visualisasi**: Grafik resolusi tinggi otomatis tersimpan ke folder `reports/`, serta ringkasan rekomendasi diekspor ke file CSV.
-
----
-
 ## Cara Menjalankan
 
-1. Clone repositori ini:
+1. Clone repositori:
    ```bash
    git clone https://github.com/iiiikimii/Prediksi_Saham.git
    cd Prediksi_Saham
    ```
-2. Pasang dependensi yang diperlukan:
+2. Pasang dependensi:
    ```bash
    pip install -r requirements.txt
    ```
-3. Menjalankan Web App:
+3. Menjalankan Website Utama (Modern Web Terminal):
+   - Klik ganda [Jalankan_Website.bat](Jalankan_Website.bat) atau jalankan `python server.py`
+4. Menjalankan Streamlit Web App:
    - Klik ganda [Jalankan_Web_App.bat](Jalankan_Web_App.bat) atau jalankan `streamlit run app.py`
-4. Menjalankan Notebook:
+5. Menjalankan Model Batch Training / Google Colab:
    - Buka dan jalankan [Prediksi_saham.ipynb](Prediksi_saham.ipynb).
