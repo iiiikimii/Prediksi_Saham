@@ -169,8 +169,16 @@ function calculateIndicators(bars) {
  * Includes automated fallback generator for stocks with missing daily files (e.g. GOLL, MAGP)
  */
 function getStockDailyHistory(sektor, ticker) {
-    const filename = `${sektor}_${ticker}_1d.csv`;
-    const filePath = path.join(DAILY_DATA_DIR, filename);
+    // Strict path traversal and injection prevention
+    const cleanSector = String(sektor || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    const cleanTicker = String(ticker || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const filename = `${cleanSector}_${cleanTicker}_1d.csv`;
+    const filePath = path.resolve(DAILY_DATA_DIR, filename);
+
+    // Verify filePath remains safely inside DAILY_DATA_DIR
+    if (!filePath.startsWith(path.resolve(DAILY_DATA_DIR))) {
+        return [];
+    }
 
     let bars = [];
 
@@ -191,7 +199,7 @@ function getStockDailyHistory(sektor, ticker) {
     // Fallback if stock file is missing or has insufficient bars (ensures 100% of 167 stocks have rich history)
     if (!bars || bars.length < 15) {
         const multiRecords = getMultiHariRecords();
-        const multiData = multiRecords.find(r => r.Kode === ticker) || {};
+        const multiData = multiRecords.find(r => r.Kode === cleanTicker) || {};
         const closeBase = Number(multiData.Close_Terakhir || 1000);
 
         bars = [];

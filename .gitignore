@@ -29,6 +29,5 @@ desktop.ini
 .agents/
 
 # Project Data and Models (Keep structure, ignore large generated files)
-Stock_RNN_Project/data_daily/*.csv
 Stock_RNN_Project/data_scalping/*.csv
 Stock_RNN_Project/models/*.keras
