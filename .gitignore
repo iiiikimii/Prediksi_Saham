@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and checkpoints
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project Data and Models (Keep structure, ignore large generated files)
+Stock_RNN_Project/data_daily/*.csv
+Stock_RNN_Project/data_scalping/*.csv
+Stock_RNN_Project/models/*.keras
