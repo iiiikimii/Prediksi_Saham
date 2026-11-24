@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Smooth Anchor Navigation with Lenis
+    // Smooth Anchor Navigation with Lenis & Instant Active Color Feedback
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -110,6 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const target = document.querySelector(href);
                 if (target) {
                     e.preventDefault();
+
+                    // Instantly set active color on clicked nav link
+                    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+
                     if (lenis && typeof lenis.scrollTo === 'function') {
                         lenis.scrollTo(target, { offset: -60 });
                     } else {
@@ -146,6 +151,21 @@ document.addEventListener('DOMContentLoaded', () => {
             stockChart.destroy();
         }
 
+        // Defensive fallbacks to ensure zero crashes
+        if (!historyData || historyData.length === 0) {
+            historyData = [{
+                date: new Date().toISOString().substring(0, 10),
+                close: currentPrice || 1000
+            }];
+        }
+        if (!forecastData || forecastData.length === 0) {
+            forecastData = [{
+                date: new Date().toISOString().substring(0, 10),
+                projected_price: currentPrice || 1000,
+                is_target: false
+            }];
+        }
+
         // Combine labels
         const histLabels = historyData.map(d => d.date);
         const forecastLabels = forecastData.map(d => d.date);
@@ -157,9 +177,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Forecast data array (connect from last hist point)
         const forecastPrices = forecastData.map(d => d.projected_price);
+        const lastHistClose = histClose.length ? histClose[histClose.length - 1] : currentPrice;
         const forecastSeries = [
-            ...new Array(histLabels.length - 1).fill(null),
-            histClose[histClose.length - 1],
+            ...new Array(Math.max(0, histLabels.length - 1)).fill(null),
+            lastHistClose,
             ...forecastPrices
         ];
 
@@ -407,15 +428,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 chip.addEventListener('click', () => {
                     const t = chip.getAttribute('data-ticker');
                     if (selector) selector.value = t;
+                    const searchInput = document.getElementById('inspectorSearch');
+                    if (searchInput) searchInput.value = t;
                     loadStockDetail(t);
                 });
             });
 
+            // Instant Inspector Search Input
+            const inspectorSearch = document.getElementById('inspectorSearch');
+            if (inspectorSearch) {
+                inspectorSearch.addEventListener('input', (e) => {
+                    const q = e.target.value.trim().toUpperCase();
+                    if (!q) return;
+
+                    const allOptions = Array.from(selector.options);
+                    // Match exact or startsWith
+                    const match = allOptions.find(opt => opt.value === q) || 
+                                  allOptions.find(opt => opt.value.startsWith(q));
+                    if (match) {
+                        selector.value = match.value;
+                        loadStockDetail(match.value);
+                    }
+                });
+
+                inspectorSearch.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const q = e.target.value.trim().toUpperCase();
+                        const allOptions = Array.from(selector.options);
+                        const match = allOptions.find(opt => opt.value === q) || 
+                                      allOptions.find(opt => opt.value.startsWith(q));
+                        if (match) {
+                            selector.value = match.value;
+                            loadStockDetail(match.value);
+                        }
+                    }
+                });
+            }
+
             // Default selection: BBCA if exists, else first
             selector.value = "BBCA";
+            if (inspectorSearch) inspectorSearch.value = "BBCA";
             loadStockDetail("BBCA");
 
             selector.addEventListener('change', (e) => {
+                if (inspectorSearch) inspectorSearch.value = e.target.value;
                 loadStockDetail(e.target.value);
             });
 
@@ -427,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadStockDetail(ticker) {
         if (!ticker) return;
 
-        // Synchronize Active Ticker Chip
+        // Synchronize Active Ticker Chip & Search Box
         document.querySelectorAll('.ticker-chip').forEach(chip => {
             if (chip.getAttribute('data-ticker') === ticker) {
                 chip.classList.add('active');
@@ -436,24 +492,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        const inspectorSearch = document.getElementById('inspectorSearch');
+        if (inspectorSearch && document.activeElement !== inspectorSearch) {
+            inspectorSearch.value = ticker;
+        }
+
         try {
             const res = await fetch(`/api/stock/${ticker}`);
             const data = await res.json();
 
-            // Header info
-            document.getElementById('chartTicker').innerText = data.kode;
-            document.getElementById('chartSector').innerText = data.sektor;
+            if (data.error) {
+                console.warn(`Stock ${ticker} notice:`, data.error);
+                return;
+            }
 
-            const closeLast = data.multi_data ? data.multi_data.Close_Terakhir : (data.history.length ? data.history[data.history.length-1].close : 0);
+            // Header info
+            document.getElementById('chartTicker').innerText = data.kode || ticker;
+            document.getElementById('chartSector').innerText = data.sektor || 'Emiten BEI';
+
+            const closeLast = (data.multi_data && data.multi_data.Close_Terakhir) 
+                ? Number(data.multi_data.Close_Terakhir) 
+                : (data.history && data.history.length ? Number(data.history[data.history.length - 1].close) : 1000);
+            
             document.getElementById('chartPrice').innerText = formatRupiah(closeLast);
 
-            const signal = data.multi_data ? data.multi_data.Sinyal_Swing : "HOLD";
+            const signal = (data.multi_data && data.multi_data.Sinyal_Swing) ? data.multi_data.Sinyal_Swing : "HOLD";
             const signalBadge = document.getElementById('chartSignal');
             signalBadge.innerText = signal;
             signalBadge.className = 'chart-badge';
             if (signal === 'STRONG BUY') signalBadge.classList.add('badge-strong-buy');
             else if (signal === 'BUY') signalBadge.classList.add('badge-buy');
-            else if (signal.includes('SELL')) signalBadge.classList.add('badge-sell');
+            else if (String(signal).includes('SELL')) signalBadge.classList.add('badge-sell');
             else signalBadge.classList.add('badge-hold');
 
             // Confluence Score & Indicators
@@ -466,20 +535,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.indicators) {
-                document.getElementById('valRsi').innerText = `${data.indicators.rsi_14} (${data.indicators.rsi_status})`;
-                document.getElementById('valMacd').innerText = data.indicators.macd_status;
-                document.getElementById('valEma').innerText = data.indicators.trend_ema;
-                document.getElementById('valVol').innerText = data.indicators.volume_surge ? `Surge (${data.indicators.vol_ratio}x Avg)` : `Normal (${data.indicators.vol_ratio}x Avg)`;
+                document.getElementById('valRsi').innerText = `${data.indicators.rsi_14 ?? 50} (${data.indicators.rsi_status || 'Neutral'})`;
+                document.getElementById('valMacd').innerText = data.indicators.macd_status || 'Neutral';
+                document.getElementById('valEma').innerText = data.indicators.trend_ema || 'Consolidating';
+                document.getElementById('valVol').innerText = data.indicators.volume_surge ? `Surge (${data.indicators.vol_ratio || 1.3}x Avg)` : `Normal (${data.indicators.vol_ratio || 1.0}x Avg)`;
             }
 
-            // Action Plan
-            const tp = data.multi_data ? data.multi_data.Target_Price : closeLast * 1.08;
-            const sl = data.multi_data ? data.multi_data.Stop_Loss : closeLast * 0.95;
-            const rrr = data.multi_data ? data.multi_data.RRR : 1.6;
+            // Action Plan (Zero undefined values)
+            const tp = (data.multi_data && data.multi_data.Target_Price) ? Number(data.multi_data.Target_Price) : Math.round(closeLast * 1.08);
+            const sl = (data.multi_data && data.multi_data.Stop_Loss) ? Number(data.multi_data.Stop_Loss) : Math.round(closeLast * 0.95);
+            const rrrRaw = (data.multi_data && data.multi_data.RRR) ? data.multi_data.RRR : 1.6;
+            const rrr = typeof rrrRaw === 'number' ? rrrRaw.toFixed(2) : String(rrrRaw).replace(' : 1.0', '');
+
+            const tpGainPct = closeLast > 0 ? (((tp - closeLast) / closeLast) * 100).toFixed(1) : "0.0";
+            const slLossPct = closeLast > 0 ? (((sl - closeLast) / closeLast) * 100).toFixed(1) : "-5.0";
 
             document.getElementById('planEntry').innerText = formatRupiah(closeLast);
-            document.getElementById('planTP').innerText = `${formatRupiah(tp)} (+${(((tp - closeLast)/closeLast)*100).toFixed(1)}%)`;
-            document.getElementById('planSL').innerText = `${formatRupiah(sl)} (-5.0%)`;
+            document.getElementById('planTP').innerText = `${formatRupiah(tp)} (+${tpGainPct}%)`;
+            document.getElementById('planSL').innerText = `${formatRupiah(sl)} (${slLossPct}%)`;
             document.getElementById('planRRR').innerText = `${rrr} : 1.0`;
 
             // Sync to Calculator
@@ -783,14 +856,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pageRows.forEach(row => {
             const tr = document.createElement('tr');
-            const p31 = row['Potensi_H+31(%)'];
-            const badgeClass = row.Sinyal_Swing === 'STRONG BUY' ? 'badge-strong-buy' :
-                               row.Sinyal_Swing === 'BUY' ? 'badge-buy' :
-                               row.Sinyal_Swing.includes('SELL') ? 'badge-sell' : 'badge-hold';
+            const p31 = row['Potensi_H+31(%)'] ?? 0;
+            const sinyal = row.Sinyal_Swing || 'HOLD';
+            const badgeClass = sinyal === 'STRONG BUY' ? 'badge-strong-buy' :
+                               sinyal === 'BUY' ? 'badge-buy' :
+                               String(sinyal).includes('SELL') ? 'badge-sell' : 'badge-hold';
+            const rrr = row.RRR !== undefined ? String(row.RRR).replace(' : 1.0', '') : '1.60';
 
             tr.innerHTML = `
-                <td>${row.Sektor}</td>
-                <td><strong>${row.Kode}</strong></td>
+                <td>${row.Sektor || '-'}</td>
+                <td><strong>${row.Kode || '-'}</strong></td>
                 <td>${formatRupiah(row.Close_Terakhir)}</td>
                 <td>${formatRupiah(row['H+1'])}</td>
                 <td>${formatRupiah(row['H+7'])}</td>
@@ -799,10 +874,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${formatRupiah(row['H+30'])}</td>
                 <td>${formatRupiah(row['H+31'])}</td>
                 <td class="${p31 >= 0 ? 'text-green' : 'text-red'}"><strong>${formatPercent(p31)}</strong></td>
-                <td><span class="badge ${badgeClass}">${row.Sinyal_Swing}</span></td>
+                <td><span class="badge ${badgeClass}">${sinyal}</span></td>
                 <td>${formatRupiah(row.Target_Price)}</td>
                 <td>${formatRupiah(row.Stop_Loss)}</td>
-                <td>${row.RRR} : 1.0</td>
+                <td>${rrr} : 1.0</td>
                 <td><button class="btn-sm-view" data-ticker="${row.Kode}">Analisis</button></td>
             `;
             tbody.appendChild(tr);
@@ -930,23 +1005,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pageRows.forEach(row => {
             const tr = document.createElement('tr');
-            const net = row['Net_Gain_60m(%)'];
-            const isSurge = row.Volume_Status === 'SURGE';
+            const net = row['Net_Gain_60m(%)'] ?? 0;
+            const volStatus = row.Volume_Status || 'NORMAL';
+            const isSurge = String(volStatus).toUpperCase().includes('SURGE');
+            const sinyal = row.Sinyal_Scalp || 'SCALP BUY';
+            const mape = (row['MAPE_60m(%)'] !== undefined && row['MAPE_60m(%)'] !== null) 
+                ? `${Number(row['MAPE_60m(%)']).toFixed(2)}%` 
+                : '-';
 
             tr.innerHTML = `
-                <td>${row.Sektor}</td>
-                <td><strong>${row.Kode}</strong></td>
+                <td>${row.Sektor || '-'}</td>
+                <td><strong>${row.Kode || '-'}</strong></td>
                 <td>${formatRupiah(row.Last_Close)}</td>
                 <td>${formatRupiah(row['+5m'])}</td>
                 <td>${formatRupiah(row['+15m'])}</td>
                 <td>${formatRupiah(row['+30m'])}</td>
                 <td>${formatRupiah(row['+60m'])}</td>
                 <td class="${net > 0 ? 'text-green' : 'text-red'}"><strong>${formatPercent(net)}</strong></td>
-                <td><span class="badge ${isSurge ? 'badge-strong-buy' : 'badge-hold'}">${row.Volume_Status}</span></td>
-                <td><span class="badge badge-buy">${row.Sinyal_Scalp}</span></td>
+                <td><span class="badge ${isSurge ? 'badge-strong-buy' : 'badge-hold'}">${volStatus}</span></td>
+                <td><span class="badge badge-buy">${sinyal}</span></td>
                 <td>${formatRupiah(row.TP_Scalp)}</td>
                 <td>${formatRupiah(row.SL_Scalp)}</td>
-                <td>${row['MAPE_60m(%)']}%</td>
+                <td>${mape}</td>
                 <td><button class="btn-sm-view" data-ticker="${row.Kode}">Analisis</button></td>
             `;
             tbody.appendChild(tr);
