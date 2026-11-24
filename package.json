@@ -1,0 +1,30 @@
+{
+  "name": "idx-stock-forecasting-terminal",
+  "version": "2.0.0",
+  "description": "Platform Prediksi & Analisis 167 Saham BEI (IDX) berbasis Node.js, Express, Lenis Smooth Scroll, GSAP, dan Chart.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "idx",
+    "saham",
+    "stock-prediction",
+    "deep-learning",
+    "rnn",
+    "technical-analysis",
+    "gsap",
+    "lenis",
+    "express"
+  ],
+  "author": "iiiikimii",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

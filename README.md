@@ -1,6 +1,6 @@
-# Prediksi Saham BEI Menggunakan Recurrent Neural Network (RNN) & Modern Web Terminal
+# Prediksi Saham BEI Menggunakan Recurrent Neural Network (RNN) & Node.js Web Terminal
 
-Sistem prediksi dan analisis saham Bursa Efek Indonesia (BEI/IDX) berbasis Deep Learning Recurrent Neural Network (RNN) dan **Technical Confluence** yang dirancang untuk **analisis dan trading sehari-hari (*Everyday Use*)**.
+Sistem prediksi dan analisis saham Bursa Efek Indonesia (BEI/IDX) berbasis Deep Learning Recurrent Neural Network (RNN) dan **Technical Confluence** yang dirancang untuk **analisis dan trading sehari-hari (*Everyday Use*)**, siap dideploy (*deployment-ready*).
 
 Mendukung dua mode proyeksi utama:
 1. **Multi-Hari (Swing Trading)**: Memprediksi harga penutupan ke **H+1, H+7, H+14, H+21, H+30, dan H+31**.
@@ -8,33 +8,76 @@ Mendukung dua mode proyeksi utama:
 
 ---
 
-## 🌐 1. Modern Web Terminal (FastAPI + GSAP + Lenis + Chart.js)
+## 📁 Struktur Folder Proyek (Terorganisir & Siap Deploy)
 
-Antarmuka web modern mandiri dengan kinerja tinggi (60 FPS), smooth scrolling menggunakan **Lenis**, animasi judul word-by-word menggunakan **GSAP ScrollTrigger**, kurva interaktif Chart.js, serta integrasi **Kalkulator Manajemen Risiko & Lot Otomatis**.
+Struktur proyek telah ditata secara modular agar mudah di-deploy ke berbagai platform hosting seperti **Vercel**, **Render**, **Railway**, atau **VPS**:
 
-### Cara Menjalankan Modern Web Terminal:
+```text
+Prediksi Saham/
+├── backend/                  # Backend Node.js & Express API
+│   ├── server.js             # Server Express utama & routing API
+│   ├── dataService.js        # Parser CSV, kalkulator indikator teknikal (RSI, MACD, EMA) & interpolasi
+│   ├── yahooService.js       # Live API Yahoo Finance real-time (Pure JavaScript fetch)
+│   └── sectors.js            # Database klasifikasi 167 emiten di 4 sektor
+├── frontend/                 # Frontend Modern Web Terminal (Clean Static Web)
+│   ├── index.html            # UI Dark Cyber Terminal (Hero, Chart, Calculator, Tables)
+│   ├── css/
+│   │   └── style.css         # Styling Glassmorphism, Neon Accents & Badge System
+│   └── js/
+│       └── app.js            # Client-side Logic (Lenis Smooth Scroll + GSAP + Chart.js)
+├── data/                     # Data Prediksi Siap Deploy (Mandiri tanpa Python)
+│   ├── latest_multihari.csv  # Data hasil prediksi H+1 s.d. H+31 (165 saham)
+│   └── latest_scalping.csv   # Data hasil scalping +5m s.d. +60m (158 saham)
+├── Stock_RNN_Project/        # Mesin Training Offline (Python & TensorFlow)
+│   ├── models/               # Model RNN terkompilasi (.keras)
+│   ├── data_daily/           # Dataset historis OHLCV per emiten
+│   └── logs/                 # Log hasil inferensi
+├── Prediksi_saham.ipynb      # Notebook Jupyter untuk melatih dan update model batch
+├── app.py                    # Alternatif antarmuka Streamlit (Python)
+├── server.py                 # Alternatif server FastAPI (Python)
+├── server.js                 # Entry point utama Node.js (Root)
+├── package.json              # Konfigurasi npm, dependensi Express & script start
+├── vercel.json               # Konfigurasi deployment Vercel
+├── Procfile                  # Konfigurasi deployment Railway / Render / Heroku
+├── Jalankan_Website.bat      # 1-Click Launcher Website (Node.js Port 3000)
+├── Jalankan_Web_App.bat      # 1-Click Launcher Streamlit (Python Port 8501)
+├── requirements.txt          # Dependensi Python untuk notebook/training
+└── README.md                 # Dokumentasi komprehensif
+```
+
+---
+
+## 🌐 1. Cara Menjalankan Website (Node.js & JavaScript)
+
+Aplikasi web sekarang menggunakan **JavaScript (Node.js & Express)** sehingga dapat berjalan cepat tanpa kendala konfigurasi Python di Windows, serta langsung siap dideploy ke cloud.
+
+### Cara Menjalankan Secara Lokal:
 - **Cara 1 (Windows 1-Click Launch):** Cukup klik dua kali file [Jalankan_Website.bat](Jalankan_Website.bat).
 - **Cara 2 (Terminal / Command Prompt / PowerShell):**
   ```bash
-  python server.py
+  npm install
+  npm start
   ```
-  Buka browser di alamat: **`http://localhost:8000`** (Dokumentasi API otomatis tersedia di `http://localhost:8000/docs`).
+  Buka browser Anda di alamat: **`http://localhost:3000`**.
 
-### Fitur Modern Web Terminal:
-1. **Interactive Deep Stock Inspector:**
-   - Dropdown seluruh 167 saham dari 4 sektor.
-   - Grafik interaktif Chart.js (Data aktual 60 hari + Proyeksi RNN 31 hari + Target Milestones + Garis TP & SL).
-   - Tombol **"⚡ Cek Real-time Yahoo Finance"**: Mengambil harga terkini langsung dari Yahoo Finance secara on-demand tanpa perlu melatih ulang model.
-   - **AI Technical Confluence Score (0 - 100)**: Penggabungan sinyal RNN dengan RSI-14, MACD Crossover, EMA 20/50 Trend, dan Volume Spike Ratio.
-2. **Kalkulator Lot Saham & Money Management:**
-   - Menghitung batas risiko modal maksimal dalam Rupiah sesuai persentase toleransi risiko (contoh: 2%).
-   - Menghitung jumlah lot lembar saham optimal yang aman dibeli.
-   - Menghitung potensi keuntungan di Target Price dan Risk-to-Reward Ratio (RRR).
-3. **Multi-Hari & Scalping Screener:**
-   - Pencarian cepat ticker, filter sektor, filter sinyal beli/jual, dan ekspor CSV 1-klik.
-4. **Smooth Scroll & Animasi Modern:**
-   - Inersia scroll alami berkat **Lenis**.
-   - Animasi entrance judul per kata dan cards menggunakan **GSAP + ScrollTrigger**.
+---
+
+## ☁️ Panduan Deploy ke Cloud (Free Hosting)
+
+### Opsi A: Deploy ke Vercel (Rekomendasi - Sangat Mudah)
+1. Push repositori ke GitHub Anda.
+2. Buka dashboard [Vercel](https://vercel.com) dan klik **"Add New Project"**.
+3. Hubungkan repositori GitHub `Prediksi_Saham`.
+4. File [vercel.json](vercel.json) dan [package.json](package.json) yang telah kami siapkan akan langsung mendeteksi `server.js` sebagai Serverless Function secara otomatis.
+5. Klik **Deploy**! Website Anda akan langsung online dengan domain gratis `.vercel.app`.
+
+### Opsi B: Deploy ke Render atau Railway
+1. Buat akun di [Render](https://render.com) atau [Railway](https://railway.app).
+2. Pilih **New Web Service** dan hubungkan repositori `Prediksi_Saham`.
+3. Pilih Environment: **Node.js**.
+4. Build Command: `npm install`
+5. Start Command: `npm start` (atau otomatis membaca [Procfile](Procfile)).
+6. Klik **Deploy Web Service**.
 
 ---
 
@@ -42,11 +85,11 @@ Antarmuka web modern mandiri dengan kinerja tinggi (60 FPS), smooth scrolling me
 
 | Aspek | Masalah / Kelemahan Sistem Lama | Solusi & Peningkatan yang Kami Bangun |
 |---|---|---|
+| **Runtime & Deploy** | **Ketergantungan Python Berat:** Menjalankan website dengan Python memerlukan instalasi TensorFlow/CUDA yang besar (~2GB), menyulitkan hosting gratis. | **Pure Node.js & Express:** Membangun backend JS berukuran ringan (<15MB), API native fetch ke Yahoo Finance, dan data cache terstruktur yang siap dideploy instan. |
 | **Model Signal** | **Pure RNN Lag / False Breakout:** RNN murni hanya membaca sekuens harga tanpa mempedulikan momentum atau kejenuhan pasar, rentan memberikan sinyal beli saat saham overbought. | **Hybrid Technical Confluence:** Mengombinasikan RNN dengan RSI(14), MACD, EMA 20/50, dan Volume Spike. Sinyal STRONG BUY hanya aktif jika momentum terkonfirmasi sehat. |
-| **Pembaruan Data** | **Data Statis:** Hasil prediksi hanya berupa snapshot saat notebook selesai dijalankan. Cepat usang ketika pasar buka keesokan harinya. | **Live On-Demand Yahoo Finance Sync:** Endpoint API `/api/stock/{ticker}/live-forecast` yang menarik candle terbaru via Yahoo Finance API dan memperbarui proyeksi secara instan. |
+| **Pembaruan Data** | **Data Statis:** Hasil prediksi hanya berupa snapshot saat notebook selesai dijalankan. Cepat usang ketika pasar buka keesokan harinya. | **Live On-Demand Yahoo Finance Sync:** Tombol *"⚡ Cek Real-time Yahoo Finance"* menarik candle terbaru via Yahoo Finance API secara asinkron tanpa perlu restart server. |
 | **Manajemen Modal** | **Tidak Ada Panduan Ukuran Posisi:** Memberikan TP dan SL tidak membantu jika trader tidak tahu berapa lot yang boleh dibeli sesuai portofolionya. | **Kalkulator Lot Otomatis:** Fitur kalkulator interaktif terintegrasi yang menghitung alokasi lot dan rupiah maksimal berdasarkan toleransi risiko per trade (1% - 2%). |
-| **Batas Regulasi** | **Prediksi Melebihi Batas IDX:** Saham tidur terkadang diproyeksikan melonjak 40% dalam 1 hari yang melanggar batas bursa. | **IDX ARA/ARB & Liquidity Guard:** Membatasi proyeksi sesuai batas Auto Rejection Atas/Bawah BEI dan menyaring saham yang minim antrean likuiditas. |
-| **Antarmuka Web** | **Reload Halaman Lambat:** Dashboard lama memuat ulang (*rerun*) seluruh skrip pada setiap klik tombol. | **FastAPI + Asynchronous Frontend:** Navigasi instan tanpa reload, 60 FPS scrolling dengan Lenis, dan animasi responsif dengan GSAP. |
+| **Antarmuka Web** | **Reload Halaman Lambat:** Dashboard lama memuat ulang (*rerun*) seluruh skrip pada setiap klik tombol. | **Modern Web Terminal:** Navigasi instan tanpa reload, 60 FPS scrolling dengan Lenis, dan animasi responsif dengan GSAP. |
 
 ---
 
@@ -68,10 +111,12 @@ Pustaka yang digunakan untuk tampilan antarmuka interaktif:
 
 ---
 
-## 🌐 2. Alternatif: Streamlit Web Terminal
+## 🌐 2. Alternatif Antarmuka Lainnya
 
-Jika Anda ingin antarmuka alternatif berbasis Streamlit:
-- **Cara Menjalankan:** Klik ganda [Jalankan_Web_App.bat](Jalankan_Web_App.bat) atau jalankan `streamlit run app.py` (Port: `8501`).
+1. **Python Streamlit Terminal:**
+   - Jalankan [Jalankan_Web_App.bat](Jalankan_Web_App.bat) atau `streamlit run app.py` (Port: `8501`).
+2. **Jupyter Notebook (Model Training):**
+   - Buka dan jalankan [Prediksi_saham.ipynb](Prediksi_saham.ipynb) untuk retraining model batch 167 saham.
 
 ---
 
