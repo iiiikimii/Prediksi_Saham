@@ -481,6 +481,184 @@ body.dark-terminal {
 }
 
 /* ==============================================================================
+   IHSG REAL-TIME COMPOSITE INDEX TRACKER BAR
+   ============================================================================== */
+.ihsg-tracker-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(17, 24, 39, 0.95));
+    border: 1px solid rgba(0, 210, 255, 0.28);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.6rem;
+    margin-top: 1.2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.ihsg-tracker-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #00d2ff, #0072ff);
+}
+
+.ihsg-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ihsg-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.ihsg-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(0, 210, 255, 0.12);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+}
+
+.ihsg-code {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ihsg-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+}
+
+.ihsg-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.ihsg-val {
+    font-size: 2.1rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #ffffff;
+    letter-spacing: -0.5px;
+}
+
+.ihsg-unit {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.ihsg-change-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+.ihsg-change-pill.positive {
+    background: rgba(0, 230, 118, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(0, 230, 118, 0.3);
+}
+
+.ihsg-change-pill.negative {
+    background: rgba(255, 23, 68, 0.15);
+    color: var(--accent-red);
+    border: 1px solid rgba(255, 23, 68, 0.3);
+}
+
+.ihsg-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+}
+
+.ihsg-meta-row strong {
+    color: var(--text-primary);
+}
+
+.meta-sep {
+    color: var(--text-muted);
+}
+
+.btn-ihsg-chart {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 9px 18px;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 210, 255, 0.08);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-ihsg-chart:hover {
+    background: var(--accent-cyan);
+    color: #000;
+    box-shadow: 0 0 16px rgba(0, 210, 255, 0.45);
+}
+
+.auto-sync-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--accent-cyan);
+    background: rgba(0, 210, 255, 0.1);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+}
+
+.ticker-chip-ihsg {
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(0, 114, 255, 0.25)) !important;
+    border-color: rgba(0, 210, 255, 0.5) !important;
+    color: #38bdf8 !important;
+    font-weight: 700 !important;
+}
+
+.ticker-chip-ihsg.active {
+    background: linear-gradient(135deg, #00d2ff, #0072ff) !important;
+    color: #031c18 !important;
+    border-color: #00d2ff !important;
+    box-shadow: 0 0 16px rgba(0, 210, 255, 0.6) !important;
+}
+
+/* ==============================================================================
    SECTOR PERFORMANCE CARDS
    ============================================================================== */
 .sector-cards-grid {

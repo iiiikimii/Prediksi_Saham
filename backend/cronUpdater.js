@@ -7,6 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const { SEKTOR_SAHAM, TICKER_TO_SECTOR } = require('./sectors');
+const { buildIhsgData } = require('./ihsgService');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
@@ -355,6 +356,14 @@ async function runDailyUpdate() {
     fs.writeFileSync(path.join(DATA_DIR, 'latest_scalping.csv'), cleanScalpLines.join('\n'));
     fs.writeFileSync(path.join(DATA_DIR, 'rekomendasi_saham_multihari_rapi.csv'), readableMultiLines.join('\n'));
     fs.writeFileSync(path.join(DATA_DIR, 'rekomendasi_saham_scalping_rapi.csv'), readableScalpLines.join('\n'));
+
+    // Also update IHSG Composite Index baseline
+    try {
+        console.log('[CRON] Memperbarui data indeks komposit IHSG (^JKSE)...');
+        await buildIhsgData(true);
+    } catch (e) {
+        console.warn('[CRON] Peringatan pembaruan IHSG:', e.message);
+    }
 
     // Write timestamp of last update
     const updateMeta = {

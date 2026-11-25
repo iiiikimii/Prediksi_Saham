@@ -109,6 +109,36 @@
                         <div class="kpi-sub" id="kpiStrongSectorSub">Rata-rata return prospektif</div>
                     </div>
                 </div>
+
+                <!-- LIVE IHSG COMPOSITE INDEX TRACKER BAR -->
+                <div class="ihsg-tracker-card card" id="ihsgTrackerCard">
+                    <div class="ihsg-left">
+                        <div class="ihsg-badge-row">
+                            <span class="ihsg-tag">Indeks Komposit BEI</span>
+                            <span class="ihsg-code">IHSG • ^JKSE</span>
+                            <span class="ihsg-live-badge" id="ihsgLiveBadge">
+                                <span class="pulse-dot"></span> Auto-Sync: <span id="ihsgSyncTimer">60s</span>
+                            </span>
+                        </div>
+                        <div class="ihsg-price-row">
+                            <span class="ihsg-val" id="ihsgLivePrice">--</span>
+                            <span class="ihsg-unit">Pts</span>
+                            <span class="ihsg-change-pill" id="ihsgChangePill">--</span>
+                        </div>
+                        <div class="ihsg-meta-row">
+                            <span>Rentang Sesi: <strong id="ihsgDayRange">--</strong></span>
+                            <span class="meta-sep">•</span>
+                            <span>Outlook: <strong id="ihsgSentiment">Memuat...</strong></span>
+                            <span class="meta-sep">•</span>
+                            <span>Update: <span id="ihsgAsOf">Sinkronisasi bursa...</span></span>
+                        </div>
+                    </div>
+                    <div class="ihsg-right">
+                        <button type="button" class="btn btn-outline btn-ihsg-chart" id="btnOpenIhsgChart">
+                            📈 Buka Grafik IHSG
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -138,6 +168,7 @@
                             <span class="chart-sector" id="chartSector">Perbankan</span>
                             <span class="chart-price" id="chartPrice">Rp -</span>
                             <span class="chart-badge badge-strong-buy" id="chartSignal">STRONG BUY</span>
+                            <span class="auto-sync-indicator" id="chartAutoSyncIndicator" title="Data IHSG & Emiten auto-update otomatis"><span class="pulse-dot"></span> Auto-Sync: Aktif (<span id="chartSyncTimer">60s</span>)</span>
                         </div>
                         <div class="chart-legend-pills">
                             <span class="legend-pill"><span class="dot dot-white"></span> Historis 60H</span>
@@ -186,8 +217,9 @@
 
                         <!-- Quick Ticker Shortcuts Bar (Docked on Right) -->
                         <div class="quick-chips-wrapper-compact">
-                            <span class="chips-label">Akses Cepat Emiten Populer:</span>
+                            <span class="chips-label">Akses Cepat Indeks & Emiten:</span>
                             <div class="quick-chips-list">
+                                <button type="button" class="ticker-chip ticker-chip-ihsg" data-ticker="IHSG" title="Grafik Indeks Acuan Komposit IHSG (^JKSE)">📊 IHSG</button>
                                 <button type="button" class="ticker-chip active" data-ticker="BBCA">BBCA</button>
                                 <button type="button" class="ticker-chip" data-ticker="BBRI">BBRI</button>
                                 <button type="button" class="ticker-chip" data-ticker="BMRI">BMRI</button>

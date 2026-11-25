@@ -12,6 +12,7 @@ const {
 } = require('./dataService');
 const { fetchLiveStock } = require('./yahooService');
 const { runDailyUpdate } = require('./cronUpdater');
+const { buildIhsgData, fetchLiveIhsg, getIhsgSummary } = require('./ihsgService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -227,9 +228,21 @@ app.get('/api/predictions/scalping', (req, res) => {
     });
 });
 
-// 6. Deep Single Stock Details & Interactive Trajectory
-app.get('/api/stock/:ticker', (req, res) => {
-    const ticker = req.params.ticker.toUpperCase();
+// 6. Deep Single Stock Details & Interactive Trajectory (Supports 167 Emiten + IHSG ^JKSE)
+app.get('/api/stock/:ticker', async (req, res) => {
+    const rawTicker = (req.params.ticker || '').toUpperCase();
+
+    // Dedicated IHSG Composite Index Handler
+    if (rawTicker === 'IHSG' || rawTicker === '^JKSE' || rawTicker === '%5EJKSE') {
+        try {
+            const ihsgData = await buildIhsgData();
+            return res.json(ihsgData);
+        } catch (err) {
+            return res.status(500).json({ error: 'Failed to retrieve IHSG data: ' + err.message });
+        }
+    }
+
+    const ticker = rawTicker;
     const sektor = TICKER_TO_SECTOR[ticker];
 
     if (!sektor) {
@@ -329,7 +342,19 @@ app.get('/api/stock/:ticker', (req, res) => {
 
 // 7. Real-time Live On-Demand Forecast (Pure JavaScript Yahoo Finance)
 app.post('/api/stock/:ticker/live-forecast', async (req, res) => {
-    const ticker = req.params.ticker.toUpperCase();
+    const rawTicker = (req.params.ticker || '').toUpperCase();
+
+    // Dedicated IHSG Live Forecast Handler
+    if (rawTicker === 'IHSG' || rawTicker === '^JKSE' || rawTicker === '%5EJKSE') {
+        try {
+            const liveResult = await fetchLiveIhsg();
+            return res.json(liveResult);
+        } catch (err) {
+            return res.status(500).json({ error: 'Failed to fetch live IHSG: ' + err.message });
+        }
+    }
+
+    const ticker = rawTicker;
     const sektor = TICKER_TO_SECTOR[ticker];
 
     if (!sektor) {
@@ -344,6 +369,16 @@ app.post('/api/stock/:ticker/live-forecast', async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+// 7b. Dedicated IHSG Real-time Market Status Endpoint
+app.get('/api/ihsg', async (req, res) => {
+    try {
+        const summary = await getIhsgSummary();
+        res.json(summary);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve IHSG summary: ' + err.message });
     }
 });
 

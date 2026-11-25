@@ -299,6 +299,24 @@ async function runTestSuite() {
         assert(res.body.last_updated_wib.includes('WIB'), 'Timestamp must indicate WIB');
     });
 
+    await test('GET /api/ihsg and /api/stock/IHSG returns complete composite index data', async () => {
+        const summary = await request('/api/ihsg');
+        assert.strictEqual(summary.status, 200);
+        assert.strictEqual(summary.body.symbol, '^JKSE');
+        assert(typeof summary.body.price === 'number', 'IHSG price must be numeric');
+
+        const stockRes = await request('/api/stock/IHSG');
+        assert.strictEqual(stockRes.status, 200);
+        assert.strictEqual(stockRes.body.kode, 'IHSG');
+        assert.strictEqual(stockRes.body.forecast_trajectory.length, 31, 'IHSG forecast must have 31 points');
+        assert(stockRes.body.history.length > 0, 'IHSG must contain historical bars');
+
+        const liveRes = await request('/api/stock/IHSG/live-forecast', { method: 'POST' });
+        assert.strictEqual(liveRes.status, 200);
+        assert.strictEqual(liveRes.body.status, 'success');
+        assert(typeof liveRes.body.live_close === 'number');
+    });
+
     // =========================================================================
     // 4. FRONTEND BUILD & ASSET INTEGRITY
     // =========================================================================

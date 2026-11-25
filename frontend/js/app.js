@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${sign}${num.toFixed(2)}%`;
     }
 
-    function renderStockChart(historyData, forecastData, currentPrice, tp, sl) {
+    function renderStockChart(historyData, forecastData, currentPrice, tp, sl, isIndex = false) {
         if (stockChart) {
             stockChart.destroy();
         }
@@ -201,8 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Compute bounds
         const allValues = [...histClose, ...forecastPrices, tp, sl].filter(v => v !== null && !isNaN(v));
-        const minVal = Math.floor(Math.min(...allValues) * 0.95);
-        const maxVal = Math.ceil(Math.max(...allValues) * 1.05);
+        const minVal = Math.floor(Math.min(...allValues) * (isIndex ? 0.98 : 0.95));
+        const maxVal = Math.ceil(Math.max(...allValues) * (isIndex ? 1.02 : 1.05));
 
         // Chart gradient
         const gradientForecast = ctx.createLinearGradient(0, 0, 0, 400);
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: allLabels,
                 datasets: [
                     {
-                        label: 'Historis Aktual (60 Hari)',
+                        label: isIndex ? 'Historis Aktual IHSG (60 Hari)' : 'Historis Aktual (60 Hari)',
                         data: histSeries,
                         borderColor: '#94a3b8',
                         borderWidth: 2,
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         tension: 0.1
                     },
                     {
-                        label: 'Proyeksi RNN 31 Hari',
+                        label: isIndex ? 'Proyeksi IHSG (31 Hari)' : 'Proyeksi RNN 31 Hari',
                         data: forecastSeries,
                         borderColor: '#00d2ff',
                         borderWidth: 2.5,
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ticks: {
                             color: '#64748b',
                             font: { family: 'JetBrains Mono', size: 11 },
-                            callback: (val) => "Rp " + val.toLocaleString('id-ID')
+                            callback: (val) => isIndex ? Math.round(val).toLocaleString('id-ID') + " Pts" : "Rp " + Math.round(val).toLocaleString('id-ID')
                         }
                     }
                 },
@@ -280,6 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             label: function(context) {
                                 let label = context.dataset.label || '';
                                 if (context.parsed.y !== null) {
+                                    if (isIndex) {
+                                        return `${label}: ${context.parsed.y.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Pts`;
+                                    }
                                     return `${label}: Rp ${Math.round(context.parsed.y).toLocaleString('id-ID')}`;
                                 }
                                 return null;
@@ -407,8 +410,50 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('kpiStrongSector').innerText = strongestSec;
             document.getElementById('kpiStrongSectorSub').innerText = `Rata2 Return +${highestReturn.toFixed(1)}%`;
 
+            // Load IHSG overview in parallel
+            loadIhsgOverview();
+
         } catch (e) {
             console.error("Failed to load overview:", e);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 5b. REAL-TIME IHSG SUMMARY FETCHING & WIDGET SYNC
+    // -------------------------------------------------------------------------
+    async function loadIhsgOverview() {
+        try {
+            const res = await fetch('/api/ihsg');
+            const data = await res.json();
+            if (data.status !== 'success') return;
+
+            const priceEl = document.getElementById('ihsgLivePrice');
+            const pillEl = document.getElementById('ihsgChangePill');
+            const rangeEl = document.getElementById('ihsgDayRange');
+            const sentEl = document.getElementById('ihsgSentiment');
+            const asOfEl = document.getElementById('ihsgAsOf');
+
+            if (priceEl) {
+                priceEl.innerText = Number(data.price).toLocaleString('id-ID', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            if (pillEl) {
+                const sign = data.change >= 0 ? '+' : '';
+                pillEl.innerText = `${sign}${Number(data.change).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${sign}${data.pct_change.toFixed(2)}%)`;
+                pillEl.className = `ihsg-change-pill ${data.change >= 0 ? 'positive' : 'negative'}`;
+            }
+
+            if (rangeEl) {
+                rangeEl.innerText = `${Number(data.day_low).toLocaleString('id-ID', { minimumFractionDigits: 2 })} - ${Number(data.day_high).toLocaleString('id-ID', { minimumFractionDigits: 2 })}`;
+            }
+
+            if (sentEl) sentEl.innerText = data.signal || 'Konsolidasi Sehat';
+            if (asOfEl) asOfEl.innerText = data.as_of;
+        } catch (e) {
+            console.warn("Failed to load IHSG summary:", e);
         }
     }
 
@@ -421,6 +466,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             const selector = document.getElementById('stockSelector');
             selector.innerHTML = '';
+
+            // Add Featured IHSG Option at the top
+            const indexGroup = document.createElement('optgroup');
+            indexGroup.label = '🌟 Indeks Acuan Komposit Pasar BEI';
+            const ihsgOpt = document.createElement('option');
+            ihsgOpt.value = 'IHSG';
+            ihsgOpt.text = '📊 IHSG - Indeks Harga Saham Gabungan (^JKSE)';
+            indexGroup.appendChild(ihsgOpt);
+            selector.appendChild(indexGroup);
 
             // Group stocks by sector
             const grouped = {};
@@ -451,6 +505,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadStockDetail(t);
                 });
             });
+
+            // Dedicated button to open IHSG Chart from Overview Banner
+            const btnOpenIhsg = document.getElementById('btnOpenIhsgChart');
+            if (btnOpenIhsg) {
+                btnOpenIhsg.addEventListener('click', () => {
+                    if (selector) selector.value = 'IHSG';
+                    const searchInput = document.getElementById('inspectorSearch');
+                    if (searchInput) searchInput.value = 'IHSG';
+                    loadStockDetail('IHSG');
+                    const inspectorEl = document.getElementById('inspector');
+                    if (lenis && typeof lenis.scrollTo === 'function') {
+                        lenis.scrollTo(inspectorEl, { offset: -60 });
+                    } else if (inspectorEl) {
+                        inspectorEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
 
             // Instant Inspector Search Input
             const inspectorSearch = document.getElementById('inspectorSearch');
@@ -501,6 +572,8 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadStockDetail(ticker) {
         if (!ticker) return;
 
+        const isIndex = (ticker === 'IHSG' || ticker === '^JKSE');
+
         // Synchronize Active Ticker Chip & Search Box
         document.querySelectorAll('.ticker-chip').forEach(chip => {
             if (chip.getAttribute('data-ticker') === ticker) {
@@ -525,22 +598,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Header info
-            document.getElementById('chartTicker').innerText = data.kode || ticker;
-            document.getElementById('chartSector').innerText = data.sektor || 'Emiten BEI';
+            document.getElementById('chartTicker').innerText = isIndex ? 'IHSG (^JKSE)' : (data.kode || ticker);
+            document.getElementById('chartSector').innerText = isIndex ? 'Indeks Komposit BEI' : (data.sektor || 'Emiten BEI');
 
             const closeLast = (data.multi_data && data.multi_data.Close_Terakhir) 
                 ? Number(data.multi_data.Close_Terakhir) 
                 : (data.history && data.history.length ? Number(data.history[data.history.length - 1].close) : 1000);
             
-            document.getElementById('chartPrice').innerText = formatRupiah(closeLast);
+            document.getElementById('chartPrice').innerText = isIndex 
+                ? `${closeLast.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Pts`
+                : formatRupiah(closeLast);
 
             const signal = (data.multi_data && data.multi_data.Sinyal_Swing) ? data.multi_data.Sinyal_Swing : "HOLD";
             const signalBadge = document.getElementById('chartSignal');
             signalBadge.innerText = signal;
             signalBadge.className = 'chart-badge';
-            if (signal === 'STRONG BUY') signalBadge.classList.add('badge-strong-buy');
-            else if (signal === 'BUY') signalBadge.classList.add('badge-buy');
-            else if (String(signal).includes('SELL')) signalBadge.classList.add('badge-sell');
+            if (signal.includes('BULLISH') || signal === 'STRONG BUY') signalBadge.classList.add('badge-strong-buy');
+            else if (signal.includes('BUY')) signalBadge.classList.add('badge-buy');
+            else if (String(signal).includes('SELL') || signal.includes('WASPADA')) signalBadge.classList.add('badge-sell');
             else signalBadge.classList.add('badge-hold');
 
             // Confluence Score & Indicators
@@ -568,15 +643,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const tpGainPct = closeLast > 0 ? (((tp - closeLast) / closeLast) * 100).toFixed(1) : "0.0";
             const slLossPct = closeLast > 0 ? (((sl - closeLast) / closeLast) * 100).toFixed(1) : "-5.0";
 
-            document.getElementById('planEntry').innerText = formatRupiah(closeLast);
-            document.getElementById('planTP').innerText = `${formatRupiah(tp)} (+${tpGainPct}%)`;
-            document.getElementById('planSL').innerText = `${formatRupiah(sl)} (${slLossPct}%)`;
+            document.getElementById('planEntry').innerText = isIndex 
+                ? `${closeLast.toLocaleString('id-ID', { minimumFractionDigits: 2 })} Pts`
+                : formatRupiah(closeLast);
+            document.getElementById('planTP').innerText = isIndex 
+                ? `${tp.toLocaleString('id-ID', { minimumFractionDigits: 2 })} Pts (+${tpGainPct}%)`
+                : `${formatRupiah(tp)} (+${tpGainPct}%)`;
+            document.getElementById('planSL').innerText = isIndex 
+                ? `${sl.toLocaleString('id-ID', { minimumFractionDigits: 2 })} Pts (${slLossPct}%)`
+                : `${formatRupiah(sl)} (${slLossPct}%)`;
             document.getElementById('planRRR').innerText = `${rrr} : 1.0`;
 
             // Sync to Calculator
-            document.getElementById('calcEntryPrice').value = closeLast;
-            document.getElementById('calcStopLoss').value = sl;
-            document.getElementById('calcTargetPrice').value = tp;
+            document.getElementById('calcEntryPrice').value = Math.round(closeLast);
+            document.getElementById('calcStopLoss').value = Math.round(sl);
+            document.getElementById('calcTargetPrice').value = Math.round(tp);
             calculatePositionSize();
 
             // Milestones Row
@@ -591,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.className = 'milestone-item';
                     item.innerHTML = `
                         <div class="ms-target">Hari ke-${d}</div>
-                        <div class="ms-price">${formatRupiah(dayVal)}</div>
+                        <div class="ms-price">${isIndex ? Number(dayVal).toLocaleString('id-ID', { minimumFractionDigits: 2 }) + ' Pts' : formatRupiah(dayVal)}</div>
                         <div class="ms-delta ${deltaPct >= 0 ? 'text-green' : 'text-red'}">
                             ${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(1)}%
                         </div>
@@ -600,8 +681,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Render Chart
-            renderStockChart(data.history, data.forecast_trajectory, closeLast, tp, sl);
+            // Render Chart with isIndex flag
+            renderStockChart(data.history, data.forecast_trajectory, closeLast, tp, sl, isIndex);
 
         } catch (e) {
             console.error(`Failed to load details for ${ticker}:`, e);
@@ -615,9 +696,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnLiveForecast) {
         btnLiveForecast.addEventListener('click', async () => {
             const selector = document.getElementById('stockSelector');
-            const ticker = selector.value;
+            const ticker = selector.value || 'IHSG';
             if (!ticker) return;
 
+            const isIndex = (ticker === 'IHSG' || ticker === '^JKSE');
             btnLiveForecast.disabled = true;
             btnLiveForecast.innerHTML = '<span class="pulse-dot"></span> Mengambil data Yahoo Finance...';
 
@@ -629,23 +711,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     const liveBanner = document.getElementById('liveBanner');
                     const bannerText = document.getElementById('liveBannerText');
                     liveBanner.classList.remove('hidden');
-                    bannerText.innerHTML = `<strong>Live Sync (${liveData.as_of}):</strong> Harga Terkini Rp ${liveData.live_close.toLocaleString('id-ID')} (${liveData.pct_change_today > 0 ? '+' : ''}${liveData.pct_change_today}% hari ini). Proyeksi H+31: <strong>+${liveData.projected_return_h31}%</strong> (Sinyal: ${liveData.signal}).`;
+
+                    const priceFormatted = isIndex 
+                        ? `${Number(liveData.live_close).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Pts`
+                        : `Rp ${Number(liveData.live_close).toLocaleString('id-ID')}`;
+
+                    bannerText.innerHTML = `<strong>Live Sync (${liveData.as_of}):</strong> ${isIndex ? 'IHSG (^JKSE)' : liveData.kode} Terkini ${priceFormatted} (${liveData.pct_change_today > 0 ? '+' : ''}${liveData.pct_change_today}% hari ini). Proyeksi H+31: <strong>+${liveData.projected_return_h31}%</strong> (Sinyal: ${liveData.signal}).`;
 
                     // Update UI values
-                    document.getElementById('chartPrice').innerText = formatRupiah(liveData.live_close);
-                    document.getElementById('planEntry').innerText = formatRupiah(liveData.live_close);
-                    document.getElementById('planTP').innerText = formatRupiah(liveData.target_price);
-                    document.getElementById('planSL').innerText = formatRupiah(liveData.stop_loss);
+                    document.getElementById('chartPrice').innerText = priceFormatted;
+                    document.getElementById('planEntry').innerText = priceFormatted;
+                    document.getElementById('planTP').innerText = isIndex 
+                        ? `${Number(liveData.target_price).toLocaleString('id-ID', { minimumFractionDigits: 2 })} Pts` 
+                        : formatRupiah(liveData.target_price);
+                    document.getElementById('planSL').innerText = isIndex 
+                        ? `${Number(liveData.stop_loss).toLocaleString('id-ID', { minimumFractionDigits: 2 })} Pts` 
+                        : formatRupiah(liveData.stop_loss);
                     document.getElementById('planRRR').innerText = `${liveData.rrr} : 1.0`;
 
                     // Sync to Calculator
-                    document.getElementById('calcEntryPrice').value = liveData.live_close;
-                    document.getElementById('calcStopLoss').value = liveData.stop_loss;
-                    document.getElementById('calcTargetPrice').value = liveData.target_price;
+                    document.getElementById('calcEntryPrice').value = Math.round(liveData.live_close);
+                    document.getElementById('calcStopLoss').value = Math.round(liveData.stop_loss);
+                    document.getElementById('calcTargetPrice').value = Math.round(liveData.target_price);
                     calculatePositionSize();
+
+                    // Refresh IHSG Overview bar if IHSG
+                    if (isIndex) loadIhsgOverview();
                 }
             } catch (e) {
-                alert(`Gagal mengambil data live: ${e.message}`);
+                console.warn(`Gagal mengambil data live: ${e.message}`);
             } finally {
                 btnLiveForecast.disabled = false;
                 btnLiveForecast.innerHTML = '<span class="btn-icon">⚡</span> Cek Real-time Yahoo Finance';
@@ -1173,10 +1267,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100));
 
     // -------------------------------------------------------------------------
+    // 12. AUTOMATIC LIVE AUTO-UPDATE ENGINE (IHSG & ALL EMITEN)
+    // -------------------------------------------------------------------------
+    let autoUpdateSecondsLeft = 60;
+    const AUTO_UPDATE_INTERVAL = 60;
+
+    function startAutoUpdateTimer() {
+        setInterval(async () => {
+            autoUpdateSecondsLeft--;
+
+            const syncTimerEl = document.getElementById('ihsgSyncTimer');
+            const chartSyncTimerEl = document.getElementById('chartSyncTimer');
+            if (syncTimerEl) syncTimerEl.innerText = `${autoUpdateSecondsLeft}s`;
+            if (chartSyncTimerEl) chartSyncTimerEl.innerText = `${autoUpdateSecondsLeft}s`;
+
+            if (autoUpdateSecondsLeft <= 0) {
+                autoUpdateSecondsLeft = AUTO_UPDATE_INTERVAL;
+
+                // 1. Silent refresh of IHSG summary widget
+                loadIhsgOverview();
+
+                // 2. Silent refresh of currently selected chart ticker (IHSG or Emiten)
+                const selector = document.getElementById('stockSelector');
+                const curTicker = selector ? selector.value : 'BBCA';
+                if (curTicker) {
+                    loadStockDetail(curTicker);
+                }
+            }
+        }, 1000);
+
+        // Instant soft sync when tab becomes visible again
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && autoUpdateSecondsLeft < 30) {
+                autoUpdateSecondsLeft = AUTO_UPDATE_INTERVAL;
+                loadIhsgOverview();
+                const selector = document.getElementById('stockSelector');
+                if (selector && selector.value) loadStockDetail(selector.value);
+            }
+        });
+    }
+
+    // -------------------------------------------------------------------------
     // INITIAL BOOTSTRAP
     // -------------------------------------------------------------------------
     loadOverview();
+    loadIhsgOverview();
     populateStockSelector();
     loadMultiHariTable();
     loadScalpingTable();
+    startAutoUpdateTimer();
 });
