@@ -1032,6 +1032,32 @@ body.dark-terminal {
     gap: 0.2rem;
 }
 
+.sentiment-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.ticker-news-auto-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent-cyan);
+    background: rgba(0, 210, 255, 0.08);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+}
+
+.ticker-news-auto-badge .pulse-dot {
+    width: 6px;
+    height: 6px;
+}
+
 .sentiment-tag {
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -1163,6 +1189,26 @@ body.dark-terminal {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+}
+
+.news-auto-sync-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent-green);
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.25);
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.3px;
+}
+
+.news-auto-sync-indicator .pulse-dot {
+    width: 7px;
+    height: 7px;
 }
 
 .news-controls-bar {

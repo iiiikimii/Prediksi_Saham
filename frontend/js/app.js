@@ -1283,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 13a. Supporting news for active chart ticker
-    async function loadTickerNews(ticker) {
+    async function loadTickerNews(ticker, isAutoUpdate = false) {
         const cleanT = (ticker || 'BBCA').toUpperCase();
         const targetLabel = document.getElementById('newsTickerTarget');
         if (targetLabel) {
@@ -1294,13 +1294,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const badgeConsensus = document.getElementById('sentimentConsensusBadge');
         if (!container) return;
 
+        if (!isAutoUpdate && !container.children.length) {
+            container.innerHTML = '<div class="news-loading-skeleton">Memuat sentimen berita real-time...</div>';
+        }
+
         try {
-            const res = await fetch(`/api/news/ticker/${cleanT}`);
+            const refreshQuery = isAutoUpdate ? '?refresh=true' : '';
+            const res = await fetch(`/api/news/ticker/${cleanT}${refreshQuery}`);
             const json = await res.json();
             const items = json.data || [];
 
             if (items.length === 0) {
-                container.innerHTML = '<div class="news-loading-skeleton">Belum ada berita spesifik hari ini. Mengikuti tren pasar makro.</div>';
+                container.innerHTML = '<div class="news-loading-skeleton">Belum ada berita spesifik hari ini. Mengikuti sentimen umum pasar bursa.</div>';
                 if (badgeConsensus) {
                     badgeConsensus.className = 'sentiment-consensus-pill neutral';
                     badgeConsensus.innerText = '⚪ Sentimen Netral';
@@ -1343,24 +1348,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (e) {
             console.warn('Failed to load ticker news:', e);
-            if (container) container.innerHTML = '<div class="news-loading-skeleton">Sinkronisasi sentimen berita bursa...</div>';
+            if (!container.children.length) {
+                container.innerHTML = '<div class="news-loading-skeleton">Sinkronisasi sentimen berita bursa...</div>';
+            }
         }
     }
 
     // 13b. Full news feed module (IDX & Ekonomi Makro)
-    async function loadMarketNews(category = 'all', searchQuery = '') {
+    async function loadMarketNews(category = 'all', searchQuery = '', isAutoUpdate = false) {
         const grid = document.getElementById('newsCardsGrid');
         if (!grid) return;
 
         currentNewsCategory = category;
 
+        const syncBadge = document.getElementById('newsAutoSyncIndicator');
+        if (syncBadge && isAutoUpdate) {
+            syncBadge.style.borderColor = 'var(--accent-cyan)';
+            setTimeout(() => {
+                if (syncBadge) syncBadge.style.borderColor = 'rgba(0, 230, 118, 0.25)';
+            }, 1000);
+        }
+
         try {
-            const url = `/api/news?category=${category}&limit=12`;
+            const refreshParam = isAutoUpdate ? '&refresh=true' : '';
+            const url = `/api/news?category=${category}&limit=12${refreshParam}`;
             const res = await fetch(url);
             const json = await res.json();
             cachedMarketNews = json.data || [];
 
-            renderNewsGrid(searchQuery);
+            const activeSearch = searchQuery || document.getElementById('newsSearchInput')?.value.trim() || '';
+            renderNewsGrid(activeSearch);
         } catch (e) {
             console.warn('Failed to load market news:', e);
         }
@@ -1430,18 +1447,23 @@ document.addEventListener('DOMContentLoaded', () => {
             btnRefreshNews.disabled = true;
             btnRefreshNews.innerHTML = '<span class="pulse-dot"></span> Memperbarui...';
             const searchVal = newsSearchInput?.value || '';
-            await loadMarketNews(currentNewsCategory, searchVal);
+            await loadMarketNews(currentNewsCategory, searchVal, true);
             const selector = document.getElementById('stockSelector');
             if (selector && selector.value) {
-                await loadTickerNews(selector.value);
+                await loadTickerNews(selector.value, true);
             }
+            autoUpdateSecondsLeft = AUTO_UPDATE_INTERVAL;
+            const newsSyncTimerEl = document.getElementById('newsSyncTimer');
+            const tickerNewsTimerEl = document.getElementById('tickerNewsTimer');
+            if (newsSyncTimerEl) newsSyncTimerEl.innerText = `${AUTO_UPDATE_INTERVAL}s`;
+            if (tickerNewsTimerEl) tickerNewsTimerEl.innerText = `${AUTO_UPDATE_INTERVAL}s`;
             btnRefreshNews.disabled = false;
             btnRefreshNews.innerHTML = '<span class="btn-icon">🔄</span> Segarkan Berita';
         });
     }
 
     // -------------------------------------------------------------------------
-    // 12. AUTOMATIC LIVE AUTO-UPDATE ENGINE (IHSG & ALL EMITEN)
+    // 12. AUTOMATIC LIVE AUTO-UPDATE ENGINE (IHSG, ALL EMITEN & REAL-TIME NEWS)
     // -------------------------------------------------------------------------
     let autoUpdateSecondsLeft = 60;
     const AUTO_UPDATE_INTERVAL = 60;
@@ -1452,8 +1474,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const syncTimerEl = document.getElementById('ihsgSyncTimer');
             const chartSyncTimerEl = document.getElementById('chartSyncTimer');
+            const newsSyncTimerEl = document.getElementById('newsSyncTimer');
+            const tickerNewsTimerEl = document.getElementById('tickerNewsTimer');
+
             if (syncTimerEl) syncTimerEl.innerText = `${autoUpdateSecondsLeft}s`;
             if (chartSyncTimerEl) chartSyncTimerEl.innerText = `${autoUpdateSecondsLeft}s`;
+            if (newsSyncTimerEl) newsSyncTimerEl.innerText = `${autoUpdateSecondsLeft}s`;
+            if (tickerNewsTimerEl) tickerNewsTimerEl.innerText = `${autoUpdateSecondsLeft}s`;
 
             if (autoUpdateSecondsLeft <= 0) {
                 autoUpdateSecondsLeft = AUTO_UPDATE_INTERVAL;
@@ -1466,11 +1493,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const curTicker = selector ? selector.value : 'BBCA';
                 if (curTicker) {
                     loadStockDetail(curTicker);
-                    loadTickerNews(curTicker);
+                    loadTickerNews(curTicker, true);
                 }
 
-                // 3. Silent refresh of market & macro news
-                loadMarketNews(currentNewsCategory);
+                // 3. Silent auto-update refresh of all market & macro news
+                const searchVal = document.getElementById('newsSearchInput')?.value.trim() || '';
+                loadMarketNews(currentNewsCategory, searchVal, true);
             }
         }, 1000);
 
@@ -1482,9 +1510,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const selector = document.getElementById('stockSelector');
                 if (selector && selector.value) {
                     loadStockDetail(selector.value);
-                    loadTickerNews(selector.value);
+                    loadTickerNews(selector.value, true);
                 }
-                loadMarketNews(currentNewsCategory);
+                const searchVal = document.getElementById('newsSearchInput')?.value.trim() || '';
+                loadMarketNews(currentNewsCategory, searchVal, true);
             }
         });
     }

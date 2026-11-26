@@ -386,16 +386,18 @@ app.get('/api/ihsg', async (req, res) => {
 // 7c. Real-Time Market & Macroeconomic News (IDX & Ekonomi Indonesia)
 app.get('/api/news', async (req, res) => {
     try {
-        const { category, ticker, limit } = req.query;
+        const { category, ticker, limit, refresh } = req.query;
         const items = await getMarketNews({
             category: category || 'all',
             ticker: ticker || null,
-            limit: limit ? parseInt(limit, 10) : 12
+            limit: limit ? parseInt(limit, 10) : 12,
+            refresh: refresh === 'true'
         });
         res.json({
             status: 'success',
             count: items.length,
             category: category || 'all',
+            auto_updated_at: new Date().toISOString(),
             data: items
         });
     } catch (err) {
@@ -407,11 +409,13 @@ app.get('/api/news', async (req, res) => {
 app.get('/api/news/ticker/:ticker', async (req, res) => {
     try {
         const ticker = (req.params.ticker || 'BBCA').toUpperCase();
-        const items = await getTickerAnalysisNews(ticker);
+        const refresh = req.query.refresh === 'true';
+        const items = await getTickerAnalysisNews(ticker, refresh);
         res.json({
             status: 'success',
             ticker: ticker,
             count: items.length,
+            auto_updated_at: new Date().toISOString(),
             data: items
         });
     } catch (err) {

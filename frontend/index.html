@@ -207,8 +207,13 @@
                                 <span class="sentiment-tag">Sentimen Katalis Berita</span>
                                 <h4 class="sentiment-ticker-title">Sentimen Terkini: <span id="newsTickerTarget">BBCA</span></h4>
                             </div>
-                            <div class="sentiment-consensus-pill" id="sentimentConsensusBadge">
-                                🟢 Sentimen Positif
+                            <div class="sentiment-header-right">
+                                <span class="ticker-news-auto-badge" id="tickerNewsAutoBadge" title="Berita katalis ticker ini selalu auto-update setiap 60 detik">
+                                    <span class="pulse-dot"></span> Auto-Sync: <span id="tickerNewsTimer">60s</span>
+                                </span>
+                                <div class="sentiment-consensus-pill" id="sentimentConsensusBadge">
+                                    🟢 Sentimen Positif
+                                </div>
                             </div>
                         </div>
                         <div class="ticker-news-items" id="tickerNewsItems">
@@ -337,6 +342,9 @@
                     <p class="section-desc">Pantau katalis berita bursa saham, aksi korporasi emiten, dan data makroekonomi Bank Indonesia terkini untuk melengkapi analisis teknikal.</p>
                 </div>
                 <div class="news-header-actions">
+                    <span class="news-auto-sync-indicator" id="newsAutoSyncIndicator" title="Seluruh berita bursa dan makro diperbarui otomatis setiap 60 detik">
+                        <span class="pulse-dot"></span> Auto-Update: <span id="newsSyncTimer">60s</span>
+                    </span>
                     <button id="btnRefreshNews" class="btn btn-secondary">
                         <span class="btn-icon">🔄</span> Segarkan Berita
                     </button>

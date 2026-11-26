@@ -12,9 +12,9 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 const NEWS_FALLBACK_FILE = path.join(DATA_DIR, 'news_fallback.json');
 
-// In-memory cache with 5 minutes TTL per query key
+// In-memory cache with 60 seconds TTL per query key
 const newsCache = new Map();
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const CACHE_TTL_MS = 60 * 1000;
 
 // Sentiment Lexicon for Indonesian Financial Markets
 const BULLISH_WORDS = [
@@ -176,7 +176,7 @@ function getFallbackNews() {
         try {
             const parsed = JSON.parse(fs.readFileSync(NEWS_FALLBACK_FILE, 'utf8'));
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        } catch (e) {}
+        } catch (e) { }
     }
 
     const todayDate = new Date().toISOString();
@@ -348,11 +348,11 @@ function getFallbackNews() {
 /**
  * Fetch and combine news across categories, guaranteeing diversity
  */
-async function getMarketNews({ category = 'all', ticker = null, limit = 12 } = {}) {
+async function getMarketNews({ category = 'all', ticker = null, limit = 12, refresh = false } = {}) {
     const cacheKey = `${category}_${ticker || 'notick'}_${limit}`;
     const now = Date.now();
 
-    if (newsCache.has(cacheKey)) {
+    if (!refresh && newsCache.has(cacheKey)) {
         const cached = newsCache.get(cacheKey);
         if (now - cached.timestamp < CACHE_TTL_MS) {
             return cached.data;
@@ -365,8 +365,8 @@ async function getMarketNews({ category = 'all', ticker = null, limit = 12 } = {
         if (ticker) {
             const cleanT = String(ticker).toUpperCase();
             const sector = TICKER_TO_SECTOR[cleanT] || '';
-            const query = cleanT === 'IHSG' 
-                ? 'IHSG pergerakan bursa efek indonesia hari ini' 
+            const query = cleanT === 'IHSG'
+                ? 'IHSG pergerakan bursa efek indonesia hari ini'
                 : `saham ${cleanT} BEI target dividen laba`;
 
             const tickerResults = await fetchRssNews(query, 'emiten', 8);
@@ -380,7 +380,7 @@ async function getMarketNews({ category = 'all', ticker = null, limit = 12 } = {
 
             // If few or no specific news items found, supplement with sector-relevant items
             if (resultItems.length < 3) {
-                const fallbacks = getFallbackNews().filter(f => 
+                const fallbacks = getFallbackNews().filter(f =>
                     f.related_sector === sector || f.related_ticker === cleanT || f.related_sector === 'Ekonomi Makro'
                 );
                 resultItems.push(...fallbacks);
@@ -469,7 +469,7 @@ async function getMarketNews({ category = 'all', ticker = null, limit = 12 } = {
         if (uniqueNews.length >= 6) {
             fs.writeFileSync(NEWS_FALLBACK_FILE, JSON.stringify(uniqueNews.slice(0, 16), null, 2), 'utf8');
         }
-    } catch (e) {}
+    } catch (e) { }
 
     // Store in cache
     newsCache.set(cacheKey, { data: finalResult, timestamp: now });
@@ -480,10 +480,10 @@ async function getMarketNews({ category = 'all', ticker = null, limit = 12 } = {
 /**
  * Get news specifically tailored to support analysis of a ticker on the chart
  */
-async function getTickerAnalysisNews(ticker) {
+async function getTickerAnalysisNews(ticker, refresh = false) {
     if (!ticker) return [];
     const cleanT = String(ticker).toUpperCase();
-    return getMarketNews({ ticker: cleanT, limit: 4 });
+    return getMarketNews({ ticker: cleanT, limit: 4, refresh });
 }
 
 module.exports = {
