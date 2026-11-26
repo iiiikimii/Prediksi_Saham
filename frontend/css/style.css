@@ -2300,18 +2300,22 @@ body.dark-terminal {
    RESPONSIVE DESIGN (DESKTOP, TABLET, MOBILE COMPREHENSIVE SPEC)
    ============================================================================== */
 
+/* ==============================================================================
+   RESPONSIVE DESIGN (DESKTOP, TABLET, MOBILE COMPREHENSIVE SPEC)
+   ============================================================================== */
+
 /* Tablet & Smaller Laptops */
 @media (max-width: 1024px) {
     .navbar {
-        padding: 0.8rem 1.2rem;
+        padding: 0.75rem 1.2rem;
     }
 
     .main-wrapper {
-        padding: 1.5rem 1.2rem 4rem;
+        padding: 1.2rem 1.2rem 4rem;
     }
 
     .hero-title {
-        font-size: 2.4rem;
+        font-size: 2.2rem;
     }
 
     .kpi-grid {
@@ -2321,38 +2325,87 @@ body.dark-terminal {
 
     .inspector-grid {
         grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.1rem;
     }
 }
 
-/* Standard Mobile & Phablet */
+/* Standard Mobile & Phablet (Up to 768px) */
 @media (max-width: 768px) {
     html {
         font-size: 14px;
     }
 
+    /* Prevent iOS Safari 16px auto-zoom glitch on focus */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+
     .navbar {
-        padding: 0.6rem 1rem;
+        padding: 0.5rem 0.8rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+        background: rgba(7, 10, 18, 0.94);
     }
 
     .nav-container {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.6rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem 0.4rem;
     }
 
-    .nav-container > div:first-child {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    .brand {
+        order: 1;
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 0.5rem;
+    }
+
+    .brand-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+    }
+
+    .brand-title {
+        font-size: 1.05rem;
+        letter-spacing: -0.2px;
+    }
+
+    .brand-tag {
+        font-size: 0.7rem;
+        padding: 1px 5px;
+    }
+
+    .nav-actions {
+        order: 2;
+        display: flex !important;
+        flex: 0 0 auto;
+    }
+
+    .live-status {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+        white-space: nowrap;
     }
 
     /* Horizontal swipeable pill navigation bar for mobile */
     .nav-links {
+        order: 3;
+        width: 100%;
         display: flex;
         overflow-x: auto;
         white-space: nowrap;
-        gap: 0.4rem;
-        padding-bottom: 4px;
+        gap: 0.35rem;
+        padding: 3px 1px 4px 1px;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
     }
@@ -2362,197 +2415,703 @@ body.dark-terminal {
     }
 
     .nav-link {
-        font-size: 0.8rem;
-        padding: 5px 10px;
+        font-size: 0.78rem;
+        padding: 5px 11px;
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid var(--border-color);
-        border-radius: var(--radius-full);
+        border-radius: var(--radius-sm);
         flex-shrink: 0;
     }
 
-    .nav-actions {
-        display: none; /* Merged in status or header on mobile */
-    }
-
     .main-wrapper {
-        padding: 1rem 1rem 3.5rem;
+        padding: 0.8rem 0.8rem 4rem;
+        padding-bottom: max(3.5rem, env(safe-area-inset-bottom, 20px));
     }
 
     .hero-section {
-        padding: 1.5rem 0 1rem;
+        padding: 0.8rem 0 0.5rem;
+    }
+
+    .pill-badge {
+        font-size: 0.68rem;
+        padding: 3px 9px;
+        margin-bottom: 0.6rem;
     }
 
     .hero-title {
-        font-size: 1.9rem;
+        font-size: 1.85rem;
         line-height: 1.25;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.5rem;
     }
 
     .hero-subtitle {
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.1rem;
     }
 
     .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
+        gap: 0.65rem;
     }
 
     .kpi-card {
-        padding: 1rem;
+        padding: 0.9rem;
+    }
+
+    .kpi-header {
+        font-size: 0.72rem;
     }
 
     .kpi-value {
         font-size: 1.35rem;
+        margin: 0.2rem 0;
     }
 
+    .kpi-sub {
+        font-size: 0.72rem;
+        line-height: 1.3;
+    }
+
+    /* IHSG Tracker Bar Mobile */
+    .ihsg-tracker-card {
+        padding: 1rem;
+        gap: 0.9rem;
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 0.9rem;
+    }
+
+    .ihsg-left {
+        width: 100%;
+        gap: 0.45rem;
+    }
+
+    .ihsg-badge-row {
+        gap: 0.4rem;
+    }
+
+    .ihsg-price-row {
+        gap: 0.4rem;
+    }
+
+    .ihsg-val {
+        font-size: 1.75rem;
+    }
+
+    .ihsg-unit {
+        font-size: 0.9rem;
+    }
+
+    .ihsg-change-pill {
+        font-size: 0.8rem;
+        padding: 2px 8px;
+    }
+
+    .ihsg-meta-row {
+        font-size: 0.73rem;
+        flex-wrap: wrap;
+        gap: 0.25rem 0.5rem;
+    }
+
+    .ihsg-right {
+        width: 100%;
+    }
+
+    .btn-ihsg-chart {
+        width: 100%;
+        justify-content: center;
+        min-height: 42px;
+        font-size: 0.88rem;
+    }
+
+    /* Section Containers & Headers */
     .section-container {
-        margin-top: 3rem;
+        margin-top: 2rem;
     }
 
     .section-header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 0.8rem;
-        margin-bottom: 1.2rem;
+        align-items: stretch;
+        gap: 0.6rem;
+        margin-bottom: 0.9rem;
     }
 
     .section-title {
         font-size: 1.35rem;
+        line-height: 1.3;
     }
 
-    .inspector-controls {
-        flex-direction: column;
-        width: 100%;
-        gap: 0.6rem;
+    .section-desc {
+        font-size: 0.85rem;
+        line-height: 1.45;
     }
 
-    .select-wrapper, .custom-select, #btnLiveForecast {
-        width: 100% !important;
-    }
-
-    .quick-chips-wrapper {
-        gap: 0.5rem;
-    }
-
-    .quick-chips-list {
-        overflow-x: auto;
-        white-space: nowrap;
-        flex-wrap: nowrap;
-        width: 100%;
-        padding-bottom: 4px;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .ticker-chip {
-        flex-shrink: 0;
-    }
-
-    .chart-canvas-wrapper {
-        height: 280px;
-    }
-
-    .milestones-row {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.4rem;
-    }
-
-    /* Calculator Mobile */
-    .calc-inputs-grid {
+    /* Sector Cards Grid Mobile */
+    .sector-cards-grid {
         grid-template-columns: 1fr;
-        gap: 0.9rem;
+        gap: 0.75rem;
     }
 
-    .calc-risk-preset-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.6rem;
+    .sector-card {
+        padding: 1rem;
     }
 
-    .preset-buttons {
-        width: 100%;
-    }
-
-    .btn-preset {
-        flex: 1;
-        text-align: center;
-        font-size: 0.75rem;
-        padding: 6px 8px;
-    }
-
-    .calc-results-grid {
+    /* Inspector Grid & Chart Mobile */
+    .inspector-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
 
-    .calc-footer-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.8rem;
-        padding: 1rem;
+    .chart-panel {
+        padding: 0.9rem;
     }
 
-    /* Table Toolbar Mobile */
-    .table-actions {
+    .chart-header {
         flex-direction: column;
-        width: 100%;
+        align-items: stretch;
         gap: 0.6rem;
+        margin-bottom: 0.8rem;
     }
 
-    .table-actions input, .table-actions select, .table-actions button {
-        width: 100% !important;
+    .chart-title-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 0.55rem;
     }
 
-    .table-toolbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.6rem;
-        padding: 0.8rem;
+    .chart-ticker {
+        font-size: 1.35rem;
     }
 
-    .table-pagination-controls {
-        width: 100%;
-        justify-content: space-between;
+    .chart-sector {
+        font-size: 0.78rem;
+    }
+
+    .chart-price {
+        font-size: 1.2rem;
+    }
+
+    .chart-legend-pills {
+        display: flex;
         flex-wrap: wrap;
         gap: 0.3rem;
     }
 
-    .btn-page {
+    .legend-pill {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+
+    .chart-canvas-wrapper {
+        height: 260px;
+        width: 100%;
+        position: relative;
+    }
+
+    .milestones-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.35rem;
+        margin-top: 0.75rem;
+    }
+
+    .milestone-card {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .milestone-day {
+        font-size: 0.68rem;
+    }
+
+    .milestone-price {
+        font-size: 0.85rem;
+    }
+
+    .milestone-gain {
+        font-size: 0.7rem;
+    }
+
+    /* Supporting News on Chart */
+    .chart-sentiment-box {
+        padding: 0.85rem;
+        margin-top: 0.9rem;
+    }
+
+    .sentiment-box-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .sentiment-header-left {
+        width: 100%;
+    }
+
+    .sentiment-ticker-title {
+        font-size: 0.92rem;
+    }
+
+    .sentiment-header-right {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .ticker-news-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+        padding: 0.65rem 0.75rem;
+    }
+
+    .news-item-left {
+        width: 100%;
+        gap: 0.4rem;
+    }
+
+    .news-item-title {
+        font-size: 0.84rem;
+        white-space: normal;
+        line-height: 1.4;
+    }
+
+    .news-item-meta {
+        width: 100%;
+        justify-content: space-between;
+        font-size: 0.72rem;
+    }
+
+    /* Action Panel Controls */
+    .action-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    .inspector-control-card {
+        padding: 0.9rem;
+        gap: 0.7rem;
+    }
+
+    .inspector-search-input {
+        min-height: 42px;
+    }
+
+    .custom-select {
+        min-height: 42px;
+        width: 100%;
+    }
+
+    #btnLiveForecast {
+        min-height: 44px;
+        font-size: 0.9rem;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .quick-chips-list {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+        width: 100%;
+        gap: 0.35rem;
+        padding-bottom: 3px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .quick-chips-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .ticker-chip {
+        flex-shrink: 0;
+        min-height: 34px;
+        padding: 4px 10px;
+        font-size: 0.78rem;
+    }
+
+    /* Confluence Card Mobile */
+    .confluence-card {
+        padding: 0.9rem;
+    }
+
+    .confluence-meter-wrapper {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .confluence-meter-circle {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+    }
+
+    .confluence-number {
+        font-size: 1.5rem;
+    }
+
+    .confluence-breakdown {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.4rem 0.6rem;
+        flex: 1;
+    }
+
+    .breakdown-label {
+        font-size: 0.72rem;
+    }
+
+    .breakdown-value {
+        font-size: 0.85rem;
+    }
+
+    /* Plan Card Mobile */
+    .plan-card {
+        padding: 0.9rem;
+    }
+
+    .plan-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .plan-item {
+        padding: 0.65rem;
+    }
+
+    .plan-label {
+        font-size: 0.72rem;
+    }
+
+    .plan-value {
+        font-size: 1rem;
+    }
+
+    /* News Module Mobile */
+    .news-header-actions {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .news-auto-sync-indicator {
+        font-size: 0.74rem;
+        padding: 4px 9px;
+    }
+
+    #btnRefreshNews {
         min-height: 38px;
+        font-size: 0.82rem;
+        padding: 6px 12px;
+    }
+
+    .news-controls-bar {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        gap: 0.7rem;
+    }
+
+    .news-category-tabs {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+        gap: 0.35rem;
+        padding-bottom: 2px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .news-category-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .news-tab {
+        flex-shrink: 0;
+        font-size: 0.78rem;
+        padding: 6px 11px;
+    }
+
+    .news-search-wrapper {
+        width: 100%;
+    }
+
+    .news-search-wrapper input {
+        width: 100%;
+        min-height: 40px;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+
+    .news-card {
+        padding: 1.1rem;
+    }
+
+    .news-card-title {
+        font-size: 0.96rem;
+        line-height: 1.45;
+    }
+
+    /* Calculator Mobile */
+    .calc-card {
+        padding: 0.95rem;
+    }
+
+    .calc-risk-preset-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+    }
+
+    .preset-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.35rem;
+        width: 100%;
+    }
+
+    .btn-preset {
+        font-size: 0.72rem;
+        padding: 7px 4px;
+        text-align: center;
+        justify-content: center;
+        min-height: 38px;
+        border-radius: var(--radius-sm);
+    }
+
+    .calc-inputs-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .calc-input {
+        min-height: 42px;
+        padding: 8px 12px;
+    }
+
+    .calc-fee-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .fee-checkbox-label {
+        font-size: 0.78rem;
+        line-height: 1.4;
+    }
+
+    .idx-lot-rule-badge {
+        font-size: 0.74rem;
+        padding: 3px 8px;
+    }
+
+    .calc-results-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .calc-res-box {
+        padding: 0.9rem;
+    }
+
+    .res-label {
+        font-size: 0.75rem;
+    }
+
+    .res-value {
+        font-size: 1.45rem;
+    }
+
+    .calc-footer-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+        padding: 0.85rem;
+    }
+
+    .footer-stat {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    /* Tables Toolbar Mobile */
+    .table-actions {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .table-actions input,
+    .table-actions select,
+    .table-actions button {
+        width: 100% !important;
+        min-height: 42px;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0.7rem 0.8rem;
+    }
+
+    .table-counts-info {
+        font-size: 0.8rem;
+    }
+
+    .table-pagination-controls {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.25rem;
+    }
+
+    .btn-page {
         min-width: 38px;
+        min-height: 38px;
+        padding: 4px 8px;
+        font-size: 0.82rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
     }
 
-    .pro-tip-box {
+    .page-indicator {
+        font-size: 0.78rem;
+        min-width: 44px;
+    }
+
+    .table-container {
+        max-height: 440px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table th, .data-table td {
+        padding: 8px 10px;
+        font-size: 0.78rem;
+    }
+
+    /* Playbook Cards Mobile */
+    .improvements-grid {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+    }
+
+    .improvement-card {
+        padding: 1.15rem;
+    }
+
+    .imp-title {
+        font-size: 1.05rem;
+    }
+
+    .imp-body {
+        font-size: 0.86rem;
+        line-height: 1.5;
+    }
+
+    /* Footer Mobile */
+    .footer {
+        padding: 1.8rem 1rem;
+    }
+
+    .footer-content {
+        gap: 0.8rem;
+    }
+
+    .footer-brand-row {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+        align-items: center;
+        text-align: center;
+        gap: 0.4rem;
+    }
+
+    .footer-note {
+        font-size: 0.75rem;
+        line-height: 1.5;
     }
 }
 
-/* Compact Mobile (iPhone SE, 360px - 430px) */
-@media (max-width: 480px) {
+/* Compact Mobile (iPhone SE, Small Android, 320px - 440px) */
+@media (max-width: 440px) {
+    html {
+        font-size: 13.5px;
+    }
+
+    .navbar {
+        padding: 0.4rem 0.6rem;
+    }
+
+    .brand-title {
+        font-size: 0.95rem;
+    }
+
+    .brand-tag {
+        display: none;
+    }
+
+    .live-status {
+        font-size: 0.68rem;
+        padding: 2px 6px;
+    }
+
     .hero-title {
-        font-size: 1.65rem;
+        font-size: 1.6rem;
     }
 
     .kpi-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.45rem;
+    }
+
+    .kpi-card {
+        padding: 0.75rem;
+    }
+
+    .kpi-value {
+        font-size: 1.2rem;
     }
 
     .milestones-row {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .chart-header {
+    .confluence-meter-wrapper {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
     }
 
-    .table-pagination-controls {
-        font-size: 0.75rem;
+    .confluence-breakdown {
+        width: 100%;
+    }
+
+    .preset-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-preset {
+        min-height: 36px;
     }
 }
 
