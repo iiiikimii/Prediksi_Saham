@@ -1276,10 +1276,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let cachedMarketNews = [];
 
     function getCategoryBadgeLabel(cat) {
-        if (cat === 'idx') return '📈 Saham / IHSG';
-        if (cat === 'macro') return '🏛️ Ekonomi Makro';
         if (cat === 'emiten') return '🏢 Aksi Emiten';
-        return '📰 Berita Bursa';
+        if (cat === 'macro') return '🏛️ Ekonomi Makro';
+        if (cat === 'idx') return '📈 Rekomendasi Saham';
+        return '📰 Berita Pasar';
     }
 
     // 13a. Supporting news for active chart ticker
