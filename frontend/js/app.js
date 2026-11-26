@@ -684,6 +684,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Render Chart with isIndex flag
             renderStockChart(data.history, data.forecast_trajectory, closeLast, tp, sl, isIndex);
 
+            // Fetch real-time supporting news for this chart ticker
+            loadTickerNews(ticker);
+
         } catch (e) {
             console.error(`Failed to load details for ${ticker}:`, e);
         }
@@ -1267,6 +1270,177 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100));
 
     // -------------------------------------------------------------------------
+    // 13. REAL-TIME MARKET & MACROECONOMIC NEWS ENGINE
+    // -------------------------------------------------------------------------
+    let currentNewsCategory = 'all';
+    let cachedMarketNews = [];
+
+    function getCategoryBadgeLabel(cat) {
+        if (cat === 'idx') return '📈 Saham / IHSG';
+        if (cat === 'macro') return '🏛️ Ekonomi Makro';
+        if (cat === 'emiten') return '🏢 Aksi Emiten';
+        return '📰 Berita Bursa';
+    }
+
+    // 13a. Supporting news for active chart ticker
+    async function loadTickerNews(ticker) {
+        const cleanT = (ticker || 'BBCA').toUpperCase();
+        const targetLabel = document.getElementById('newsTickerTarget');
+        if (targetLabel) {
+            targetLabel.innerText = cleanT === 'IHSG' ? 'IHSG (^JKSE)' : cleanT;
+        }
+
+        const container = document.getElementById('tickerNewsItems');
+        const badgeConsensus = document.getElementById('sentimentConsensusBadge');
+        if (!container) return;
+
+        try {
+            const res = await fetch(`/api/news/ticker/${cleanT}`);
+            const json = await res.json();
+            const items = json.data || [];
+
+            if (items.length === 0) {
+                container.innerHTML = '<div class="news-loading-skeleton">Belum ada berita spesifik hari ini. Mengikuti tren pasar makro.</div>';
+                if (badgeConsensus) {
+                    badgeConsensus.className = 'sentiment-consensus-pill neutral';
+                    badgeConsensus.innerText = '⚪ Sentimen Netral';
+                }
+                return;
+            }
+
+            // Calculate consensus
+            let bullCount = 0, bearCount = 0;
+            items.forEach(it => {
+                if (it.sentiment === 'bullish') bullCount++;
+                if (it.sentiment === 'bearish') bearCount++;
+            });
+
+            if (badgeConsensus) {
+                if (bullCount > bearCount) {
+                    badgeConsensus.className = 'sentiment-consensus-pill bullish';
+                    badgeConsensus.innerText = '🟢 Sentimen Berita Positif (Mendukung Sinyal)';
+                } else if (bearCount > bullCount) {
+                    badgeConsensus.className = 'sentiment-consensus-pill bearish';
+                    badgeConsensus.innerText = '🔴 Sentimen Waspada (Katalis Koreksi)';
+                } else {
+                    badgeConsensus.className = 'sentiment-consensus-pill neutral';
+                    badgeConsensus.innerText = '⚪ Sentimen Netral / Konsolidasi';
+                }
+            }
+
+            container.innerHTML = items.slice(0, 3).map(item => `
+                <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" class="ticker-news-item">
+                    <div class="news-item-left">
+                        <span class="news-item-sentiment ${item.sentiment}">${item.sentiment === 'bullish' ? '🟢 Bullish' : (item.sentiment === 'bearish' ? '🔴 Waspada' : '⚪ Netral')}</span>
+                        <span class="news-item-title" title="${item.title}">${item.title}</span>
+                    </div>
+                    <div class="news-item-meta">
+                        <span>${item.source} • ${item.time_ago}</span>
+                        <span>↗</span>
+                    </div>
+                </a>
+            `).join('');
+
+        } catch (e) {
+            console.warn('Failed to load ticker news:', e);
+            if (container) container.innerHTML = '<div class="news-loading-skeleton">Sinkronisasi sentimen berita bursa...</div>';
+        }
+    }
+
+    // 13b. Full news feed module (IDX & Ekonomi Makro)
+    async function loadMarketNews(category = 'all', searchQuery = '') {
+        const grid = document.getElementById('newsCardsGrid');
+        if (!grid) return;
+
+        currentNewsCategory = category;
+
+        try {
+            const url = `/api/news?category=${category}&limit=12`;
+            const res = await fetch(url);
+            const json = await res.json();
+            cachedMarketNews = json.data || [];
+
+            renderNewsGrid(searchQuery);
+        } catch (e) {
+            console.warn('Failed to load market news:', e);
+        }
+    }
+
+    function renderNewsGrid(searchQuery = '') {
+        const grid = document.getElementById('newsCardsGrid');
+        if (!grid) return;
+
+        let filtered = cachedMarketNews;
+        if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            filtered = filtered.filter(n => 
+                (n.title && n.title.toLowerCase().includes(q)) ||
+                (n.source && n.source.toLowerCase().includes(q)) ||
+                (n.related_ticker && n.related_ticker.toLowerCase().includes(q)) ||
+                (n.related_sector && n.related_sector.toLowerCase().includes(q))
+            );
+        }
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+                    <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tidak ada berita yang cocok dengan filter "${searchQuery}".</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Coba kata kunci lain seperti <em>IHSG, Dividen, Laba, Rupiah, BI</em></p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(item => `
+            <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" class="news-card card">
+                <div class="news-card-top">
+                    <span class="news-category-badge">${getCategoryBadgeLabel(item.category)}</span>
+                    <span class="news-sentiment-badge ${item.sentiment}">${item.sentiment_label || '⚪ Netral'}</span>
+                </div>
+                <h3 class="news-card-title">${item.title}</h3>
+                <div class="news-card-footer">
+                    <span class="news-card-source">${item.source} • ${item.time_ago}</span>
+                    <span class="news-card-link-icon">Baca ↗</span>
+                </div>
+            </a>
+        `).join('');
+    }
+
+    // News Event Listeners
+    document.querySelectorAll('.news-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const cat = tab.getAttribute('data-category');
+            const searchVal = document.getElementById('newsSearchInput')?.value || '';
+            loadMarketNews(cat, searchVal);
+        });
+    });
+
+    const newsSearchInput = document.getElementById('newsSearchInput');
+    if (newsSearchInput) {
+        newsSearchInput.addEventListener('input', debounce((e) => {
+            renderNewsGrid(e.target.value.trim());
+        }, 200));
+    }
+
+    const btnRefreshNews = document.getElementById('btnRefreshNews');
+    if (btnRefreshNews) {
+        btnRefreshNews.addEventListener('click', async () => {
+            btnRefreshNews.disabled = true;
+            btnRefreshNews.innerHTML = '<span class="pulse-dot"></span> Memperbarui...';
+            const searchVal = newsSearchInput?.value || '';
+            await loadMarketNews(currentNewsCategory, searchVal);
+            const selector = document.getElementById('stockSelector');
+            if (selector && selector.value) {
+                await loadTickerNews(selector.value);
+            }
+            btnRefreshNews.disabled = false;
+            btnRefreshNews.innerHTML = '<span class="btn-icon">🔄</span> Segarkan Berita';
+        });
+    }
+
+    // -------------------------------------------------------------------------
     // 12. AUTOMATIC LIVE AUTO-UPDATE ENGINE (IHSG & ALL EMITEN)
     // -------------------------------------------------------------------------
     let autoUpdateSecondsLeft = 60;
@@ -1292,7 +1466,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const curTicker = selector ? selector.value : 'BBCA';
                 if (curTicker) {
                     loadStockDetail(curTicker);
+                    loadTickerNews(curTicker);
                 }
+
+                // 3. Silent refresh of market & macro news
+                loadMarketNews(currentNewsCategory);
             }
         }, 1000);
 
@@ -1302,7 +1480,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 autoUpdateSecondsLeft = AUTO_UPDATE_INTERVAL;
                 loadIhsgOverview();
                 const selector = document.getElementById('stockSelector');
-                if (selector && selector.value) loadStockDetail(selector.value);
+                if (selector && selector.value) {
+                    loadStockDetail(selector.value);
+                    loadTickerNews(selector.value);
+                }
+                loadMarketNews(currentNewsCategory);
             }
         });
     }
@@ -1313,6 +1495,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loadOverview();
     loadIhsgOverview();
     populateStockSelector();
+    loadTickerNews('BBCA');
+    loadMarketNews('all');
     loadMultiHariTable();
     loadScalpingTable();
     startAutoUpdateTimer();

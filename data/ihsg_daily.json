@@ -3,87 +3,59 @@
   "symbol": "^JKSE",
   "name": "Indeks Harga Saham Gabungan (IHSG)",
   "sektor": "Indeks Komposit BEI",
-  "live_close": 5197.61,
-  "prev_close": 5215.85,
-  "change_pts": -18.24,
-  "pct_change_today": -0.35,
-  "day_high": 5246.79,
-  "day_low": 5165.66,
+  "live_close": 5257.49,
+  "prev_close": 5197.61,
+  "change_pts": 59.88,
+  "pct_change_today": 1.15,
+  "day_high": 5297.46,
+  "day_low": 5214.57,
   "fifty_two_week_high": 9174.47,
   "fifty_two_week_low": 4824.36,
   "multi_data": {
     "Kode": "IHSG",
     "Sektor": "Indeks Komposit BEI",
-    "Close_Terakhir": 5197.61,
-    "H+1": 5203.93,
-    "H+7": 5240.93,
-    "H+14": 5278.86,
-    "H+21": 5306.68,
-    "H+30": 5322.19,
-    "H+31": 5322.35,
-    "Potensi_H+1(%)": 0.12,
-    "Potensi_H+7(%)": 0.83,
-    "Potensi_H+31(%)": 2.4,
-    "Sinyal_Swing": "KONSOLIDASI / HOLD",
-    "Target_Price": 5322.35,
-    "Stop_Loss": 5015.69,
-    "RRR": 0.69,
+    "Close_Terakhir": 5257.49,
+    "H+1": 5271.34,
+    "H+7": 5352.44,
+    "H+14": 5435.57,
+    "H+21": 5496.53,
+    "H+30": 5530.53,
+    "H+31": 5530.88,
+    "Potensi_H+1(%)": 0.26,
+    "Potensi_H+7(%)": 1.81,
+    "Potensi_H+31(%)": 5.2,
+    "Sinyal_Swing": "ACCUMULATION / BUY",
+    "Target_Price": 5530.88,
+    "Stop_Loss": 5073.48,
+    "RRR": 1.49,
     "MAPE_H+31(%)": 4.15,
     "Grade": "A (Indeks Acuan)"
   },
   "scalp_data": {
     "Kode": "IHSG",
     "Sektor": "Indeks Komposit BEI",
-    "Last_Close": 5197.61,
-    "+5m": 5200.21,
-    "+15m": 5205.41,
-    "+30m": 5210.6,
-    "+60m": 5218.4,
+    "Last_Close": 5257.49,
+    "+5m": 5260.12,
+    "+15m": 5265.38,
+    "+30m": 5270.63,
+    "+60m": 5278.52,
     "Net_Gain_60m(%)": 0.4,
     "Volume_Status": "NORMAL",
-    "Sinyal_Scalp": "HOLD",
-    "TP_Scalp": 5228.8,
-    "SL_Scalp": 5182.02,
+    "Sinyal_Scalp": "BUY",
+    "TP_Scalp": 5289.03,
+    "SL_Scalp": 5241.72,
     "MAPE_60m(%)": 0.85
   },
-  "confluence_score": 65,
+  "confluence_score": 75,
   "indicators": {
-    "rsi_14": 45.96,
+    "rsi_14": 47.44,
     "rsi_status": "Netral / Konsolidasi Sehat",
     "macd_status": "Bullish Momentum",
-    "trend_ema": "Downtrend di bawah EMA 20",
+    "trend_ema": "Uptrend di atas EMA 20",
     "volume_surge": false,
-    "vol_ratio": 1.01
+    "vol_ratio": 1
   },
   "history": [
-    {
-      "date": "2026-09-02",
-      "open": 6625.39,
-      "high": 6629.54,
-      "low": 6561,
-      "close": 6595.78,
-      "volume": 331276500,
-      "ema_20": null,
-      "ema_50": null,
-      "rsi_14": 50,
-      "macd": 0,
-      "macd_signal": 0,
-      "vol_ratio": 1
-    },
-    {
-      "date": "2026-09-03",
-      "open": 6632.83,
-      "high": 6681.84,
-      "low": 6614.71,
-      "close": 6667.89,
-      "volume": 373613100,
-      "ema_20": null,
-      "ema_50": null,
-      "rsi_14": 50,
-      "macd": 0,
-      "macd_signal": 0,
-      "vol_ratio": 1
-    },
     {
       "date": "2026-09-04",
       "open": 6695.69,
@@ -895,227 +867,255 @@
       "macd": -94.98,
       "macd_signal": -141.04,
       "vol_ratio": 1.01
+    },
+    {
+      "date": "2026-11-25",
+      "open": 5235.83,
+      "high": 5246.79,
+      "low": 5165.67,
+      "close": 5197.61,
+      "volume": 224558600,
+      "ema_20": 5247.31,
+      "ema_50": 5634.48,
+      "rsi_14": 43.77,
+      "macd": -89.28,
+      "macd_signal": -130.69,
+      "vol_ratio": 0.81
+    },
+    {
+      "date": "2026-11-26",
+      "open": 5214.62,
+      "high": 5297.46,
+      "low": 5214.57,
+      "close": 5257.49,
+      "volume": 0,
+      "ema_20": 5248.28,
+      "ema_50": 5619.7,
+      "rsi_14": 47.44,
+      "macd": -79.03,
+      "macd_signal": -120.36,
+      "vol_ratio": 0
     }
   ],
   "forecast_trajectory": [
     {
       "day_index": 1,
-      "date": "2026-11-25",
-      "projected_price": 5203.93,
+      "date": "2026-11-27",
+      "projected_price": 5271.34,
       "is_target": true,
       "label": "H+1"
     },
     {
       "day_index": 2,
-      "date": "2026-11-26",
-      "projected_price": 5210.23,
+      "date": "2026-11-28",
+      "projected_price": 5285.15,
       "is_target": false,
       "label": "H+2"
     },
     {
       "day_index": 3,
-      "date": "2026-11-27",
-      "projected_price": 5216.5,
+      "date": "2026-11-29",
+      "projected_price": 5298.89,
       "is_target": false,
       "label": "H+3"
     },
     {
       "day_index": 4,
-      "date": "2026-11-28",
-      "projected_price": 5222.72,
+      "date": "2026-11-30",
+      "projected_price": 5312.52,
       "is_target": false,
       "label": "H+4"
     },
     {
       "day_index": 5,
-      "date": "2026-11-29",
-      "projected_price": 5228.88,
+      "date": "2026-12-01",
+      "projected_price": 5326.02,
       "is_target": false,
       "label": "H+5"
     },
     {
       "day_index": 6,
-      "date": "2026-11-30",
-      "projected_price": 5234.95,
+      "date": "2026-12-02",
+      "projected_price": 5339.33,
       "is_target": false,
       "label": "H+6"
     },
     {
       "day_index": 7,
-      "date": "2026-12-01",
-      "projected_price": 5240.93,
+      "date": "2026-12-03",
+      "projected_price": 5352.44,
       "is_target": true,
       "label": "H+7"
     },
     {
       "day_index": 8,
-      "date": "2026-12-02",
-      "projected_price": 5246.8,
+      "date": "2026-12-04",
+      "projected_price": 5365.3,
       "is_target": false,
       "label": "H+8"
     },
     {
       "day_index": 9,
-      "date": "2026-12-03",
-      "projected_price": 5252.54,
+      "date": "2026-12-05",
+      "projected_price": 5377.89,
       "is_target": false,
       "label": "H+9"
     },
     {
       "day_index": 10,
-      "date": "2026-12-04",
-      "projected_price": 5258.15,
+      "date": "2026-12-06",
+      "projected_price": 5390.17,
       "is_target": false,
       "label": "H+10"
     },
     {
       "day_index": 11,
-      "date": "2026-12-05",
-      "projected_price": 5263.59,
+      "date": "2026-12-07",
+      "projected_price": 5402.1,
       "is_target": false,
       "label": "H+11"
     },
     {
       "day_index": 12,
-      "date": "2026-12-06",
-      "projected_price": 5268.87,
+      "date": "2026-12-08",
+      "projected_price": 5413.67,
       "is_target": false,
       "label": "H+12"
     },
     {
       "day_index": 13,
-      "date": "2026-12-07",
-      "projected_price": 5273.96,
+      "date": "2026-12-09",
+      "projected_price": 5424.83,
       "is_target": false,
       "label": "H+13"
     },
     {
       "day_index": 14,
-      "date": "2026-12-08",
-      "projected_price": 5278.86,
+      "date": "2026-12-10",
+      "projected_price": 5435.57,
       "is_target": true,
       "label": "H+14"
     },
     {
       "day_index": 15,
-      "date": "2026-12-09",
-      "projected_price": 5283.55,
+      "date": "2026-12-11",
+      "projected_price": 5445.85,
       "is_target": false,
       "label": "H+15"
     },
     {
       "day_index": 16,
-      "date": "2026-12-10",
-      "projected_price": 5288.02,
+      "date": "2026-12-12",
+      "projected_price": 5455.64,
       "is_target": false,
       "label": "H+16"
     },
     {
       "day_index": 17,
-      "date": "2026-12-11",
-      "projected_price": 5292.26,
+      "date": "2026-12-13",
+      "projected_price": 5464.93,
       "is_target": false,
       "label": "H+17"
     },
     {
       "day_index": 18,
-      "date": "2026-12-12",
-      "projected_price": 5296.25,
+      "date": "2026-12-14",
+      "projected_price": 5473.68,
       "is_target": false,
       "label": "H+18"
     },
     {
       "day_index": 19,
-      "date": "2026-12-13",
-      "projected_price": 5299.99,
+      "date": "2026-12-15",
+      "projected_price": 5481.88,
       "is_target": false,
       "label": "H+19"
     },
     {
       "day_index": 20,
-      "date": "2026-12-14",
-      "projected_price": 5303.47,
+      "date": "2026-12-16",
+      "projected_price": 5489.5,
       "is_target": false,
       "label": "H+20"
     },
     {
       "day_index": 21,
-      "date": "2026-12-15",
-      "projected_price": 5306.68,
+      "date": "2026-12-17",
+      "projected_price": 5496.53,
       "is_target": true,
       "label": "H+21"
     },
     {
       "day_index": 22,
-      "date": "2026-12-16",
-      "projected_price": 5309.6,
+      "date": "2026-12-18",
+      "projected_price": 5502.94,
       "is_target": false,
       "label": "H+22"
     },
     {
       "day_index": 23,
-      "date": "2026-12-17",
-      "projected_price": 5312.24,
+      "date": "2026-12-19",
+      "projected_price": 5508.72,
       "is_target": false,
       "label": "H+23"
     },
     {
       "day_index": 24,
-      "date": "2026-12-18",
-      "projected_price": 5314.59,
+      "date": "2026-12-20",
+      "projected_price": 5513.86,
       "is_target": false,
       "label": "H+24"
     },
     {
       "day_index": 25,
-      "date": "2026-12-19",
-      "projected_price": 5316.63,
+      "date": "2026-12-21",
+      "projected_price": 5518.34,
       "is_target": false,
       "label": "H+25"
     },
     {
       "day_index": 26,
-      "date": "2026-12-20",
-      "projected_price": 5318.37,
+      "date": "2026-12-22",
+      "projected_price": 5522.15,
       "is_target": false,
       "label": "H+26"
     },
     {
       "day_index": 27,
-      "date": "2026-12-21",
-      "projected_price": 5319.8,
+      "date": "2026-12-23",
+      "projected_price": 5525.28,
       "is_target": false,
       "label": "H+27"
     },
     {
       "day_index": 28,
-      "date": "2026-12-22",
-      "projected_price": 5320.91,
+      "date": "2026-12-24",
+      "projected_price": 5527.73,
       "is_target": false,
       "label": "H+28"
     },
     {
       "day_index": 29,
-      "date": "2026-12-23",
-      "projected_price": 5321.71,
+      "date": "2026-12-25",
+      "projected_price": 5529.48,
       "is_target": false,
       "label": "H+29"
     },
     {
       "day_index": 30,
-      "date": "2026-12-24",
-      "projected_price": 5322.19,
+      "date": "2026-12-26",
+      "projected_price": 5530.53,
       "is_target": true,
       "label": "H+30"
     },
     {
       "day_index": 31,
-      "date": "2026-12-25",
-      "projected_price": 5322.35,
+      "date": "2026-12-27",
+      "projected_price": 5530.88,
       "is_target": true,
       "label": "H+31"
     }
   ],
-  "as_of": "26/11/2026, 02.31.20 WIB",
-  "updated_at": "2026-11-25T19:31:20.625Z"
+  "as_of": "26/11/2026, 10.24.51 WIB",
+  "updated_at": "2026-11-26T03:24:51.346Z"
 }

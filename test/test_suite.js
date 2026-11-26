@@ -317,6 +317,19 @@ async function runTestSuite() {
         assert(typeof liveRes.body.live_close === 'number');
     });
 
+    await test('GET /api/news and /api/news/ticker/:ticker returns categorized financial news', async () => {
+        const newsRes = await request('/api/news');
+        assert.strictEqual(newsRes.status, 200);
+        assert.strictEqual(newsRes.body.status, 'success');
+        assert(Array.isArray(newsRes.body.data), 'News data must be an array');
+        assert(newsRes.body.data.length > 0, 'News data must not be empty');
+
+        const tickerNews = await request('/api/news/ticker/BBCA');
+        assert.strictEqual(tickerNews.status, 200);
+        assert.strictEqual(tickerNews.body.ticker, 'BBCA');
+        assert(Array.isArray(tickerNews.body.data));
+    });
+
     // =========================================================================
     // 4. FRONTEND BUILD & ASSET INTEGRITY
     // =========================================================================
@@ -333,6 +346,9 @@ async function runTestSuite() {
         assert(html.includes('id="calculator"'), 'index.html must contain calculator section');
         assert(html.includes('id="multihari"'), 'index.html must contain multihari section');
         assert(html.includes('id="scalping"'), 'index.html must contain scalping section');
+        assert(html.includes('id="berita"'), 'index.html must contain berita section');
+        assert(html.includes('chartSentimentBox'), 'index.html must contain chart sentiment box');
+        assert(html.includes('newsCardsGrid'), 'index.html must contain newsCardsGrid');
         assert(html.includes('id="inspectorSearch"'), 'index.html must contain inspectorSearch input');
         assert(html.includes('id="stockSelector"'), 'index.html must contain stockSelector');
         assert(html.includes('stockForecastChart'), 'index.html must contain chart canvas');

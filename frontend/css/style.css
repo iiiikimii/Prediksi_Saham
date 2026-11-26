@@ -237,6 +237,14 @@ body.dark-terminal {
     font-weight: 700;
 }
 
+.nav-link[href="#berita"].active {
+    background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+    color: #021a1f !important;
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
+    font-weight: 700;
+}
+
 
 .live-status {
     display: inline-flex;
@@ -992,6 +1000,330 @@ body.dark-terminal {
     font-size: 0.75rem;
     font-family: var(--font-mono);
     font-weight: 600;
+}
+
+/* ==============================================================================
+   CHART NEWS SENTIMENT SUPPORT BOX
+   ============================================================================== */
+.chart-sentiment-box {
+    margin-top: 1.2rem;
+    padding: 1.1rem 1.3rem;
+    background: rgba(13, 19, 32, 0.7);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.sentiment-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sentiment-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.sentiment-tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+}
+
+.sentiment-ticker-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.sentiment-consensus-pill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sentiment-consensus-pill.bullish {
+    color: var(--accent-green);
+    background: rgba(0, 230, 118, 0.12);
+    border-color: rgba(0, 230, 118, 0.3);
+}
+
+.sentiment-consensus-pill.bearish {
+    color: var(--accent-red);
+    background: rgba(255, 23, 68, 0.12);
+    border-color: rgba(255, 23, 68, 0.3);
+}
+
+.sentiment-consensus-pill.neutral {
+    color: #cbd5e1;
+    background: rgba(148, 163, 184, 0.12);
+    border-color: rgba(148, 163, 184, 0.25);
+}
+
+.ticker-news-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.ticker-news-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.ticker-news-item:hover {
+    background: rgba(0, 210, 255, 0.05);
+    border-color: rgba(0, 210, 255, 0.3);
+    transform: translateX(3px);
+}
+
+.news-item-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.news-item-sentiment {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.news-item-sentiment.bullish {
+    color: var(--accent-green);
+    background: rgba(0, 230, 118, 0.15);
+}
+
+.news-item-sentiment.bearish {
+    color: var(--accent-red);
+    background: rgba(255, 23, 68, 0.15);
+}
+
+.news-item-sentiment.neutral {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.15);
+}
+
+.news-item-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.news-item-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.news-loading-skeleton {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: 0.5rem 0;
+}
+
+/* ==============================================================================
+   REAL-TIME MARKET & MACROECONOMIC NEWS MODULE
+   ============================================================================== */
+.news-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.news-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 1.4rem;
+    margin-bottom: 1.5rem;
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.news-category-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.news-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-sans);
+}
+
+.news-tab:hover {
+    color: var(--text-primary);
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.news-tab.active {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    color: #031c18;
+    border-color: var(--accent-cyan);
+    font-weight: 700;
+    box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
+}
+
+.news-search-wrapper {
+    flex: 1;
+    max-width: 380px;
+    min-width: 220px;
+}
+
+.news-search-wrapper input {
+    width: 100%;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.3rem;
+}
+
+.news-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.9rem;
+    transition: var(--transition);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.news-card:hover {
+    border-color: rgba(0, 210, 255, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.news-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.news-category-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    background: rgba(0, 210, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.news-sentiment-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+}
+
+.news-sentiment-badge.bullish {
+    color: var(--accent-green);
+    background: rgba(0, 230, 118, 0.12);
+    border: 1px solid rgba(0, 230, 118, 0.25);
+}
+
+.news-sentiment-badge.bearish {
+    color: var(--accent-red);
+    background: rgba(255, 23, 68, 0.12);
+    border: 1px solid rgba(255, 23, 68, 0.25);
+}
+
+.news-sentiment-badge.neutral {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.12);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.news-card-title {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.45;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-card:hover .news-card-title {
+    color: #38bdf8;
+}
+
+.news-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.news-card-source {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.news-card-link-icon {
+    color: var(--accent-cyan);
+    font-weight: 700;
 }
 
 /* Action Panel (Right side) */

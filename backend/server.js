@@ -13,6 +13,7 @@ const {
 const { fetchLiveStock } = require('./yahooService');
 const { runDailyUpdate } = require('./cronUpdater');
 const { buildIhsgData, fetchLiveIhsg, getIhsgSummary } = require('./ihsgService');
+const { getMarketNews, getTickerAnalysisNews } = require('./newsService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -379,6 +380,42 @@ app.get('/api/ihsg', async (req, res) => {
         res.json(summary);
     } catch (err) {
         res.status(500).json({ error: 'Failed to retrieve IHSG summary: ' + err.message });
+    }
+});
+
+// 7c. Real-Time Market & Macroeconomic News (IDX & Ekonomi Indonesia)
+app.get('/api/news', async (req, res) => {
+    try {
+        const { category, ticker, limit } = req.query;
+        const items = await getMarketNews({
+            category: category || 'all',
+            ticker: ticker || null,
+            limit: limit ? parseInt(limit, 10) : 12
+        });
+        res.json({
+            status: 'success',
+            count: items.length,
+            category: category || 'all',
+            data: items
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve market news: ' + err.message });
+    }
+});
+
+// 7d. Real-Time News to Support Specific Stock / Chart Analysis
+app.get('/api/news/ticker/:ticker', async (req, res) => {
+    try {
+        const ticker = (req.params.ticker || 'BBCA').toUpperCase();
+        const items = await getTickerAnalysisNews(ticker);
+        res.json({
+            status: 'success',
+            ticker: ticker,
+            count: items.length,
+            data: items
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve ticker news: ' + err.message });
     }
 });
 

@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IDX Stock Terminal — Terminal Analisis & Proyeksi 167 Saham BEI</title>
-    
+
     <!-- Favicon using logo.jpg -->
     <link rel="icon" type="image/jpeg" href="/static/logo.jpg">
     <link rel="shortcut icon" type="image/jpeg" href="/static/logo.jpg">
     <link rel="apple-touch-icon" href="/static/logo.jpg">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
     <!-- Lenis Smooth Scroll CSS -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/style.css">
-    
+
     <!-- Chart.js & Plugins -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
-    
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
     <!-- GSAP & ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    
+
     <!-- Lenis Library -->
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 </head>
+
 <body class="dark-terminal">
 
     <!-- Top Glow / Background Elements -->
@@ -48,10 +53,11 @@
                     <span class="brand-tag">167 Emiten</span>
                 </div>
             </div>
-            
+
             <nav class="nav-links" id="navLinks">
                 <a href="#overview" class="nav-link active">Overview</a>
                 <a href="#inspector" class="nav-link">Grafik & Target</a>
+                <a href="#berita" class="nav-link">Berita Pasar</a>
                 <a href="#calculator" class="nav-link">Kalkulator Lot</a>
                 <a href="#multihari" class="nav-link">Multi-Hari (31D)</a>
                 <a href="#scalping" class="nav-link">Scalping (5m)</a>
@@ -59,7 +65,9 @@
             </nav>
 
             <div class="nav-actions">
-                <span class="live-status status-closed" title="Jam perdagangan BEI: 09:00 - 16:00 WIB. Pembaruan harian: 16:30 WIB."><span class="blue-dot"></span> <strong>Pasar Tutup</strong> • Buka 09:00 WIB</span>
+                <span class="live-status status-closed"
+                    title="Jam perdagangan BEI: 09:00 - 16:00 WIB. Pembaruan harian: 16:30 WIB."><span
+                        class="blue-dot"></span> <strong>Pasar Tutup</strong> • Buka 09:00 WIB</span>
             </div>
         </div>
     </header>
@@ -74,13 +82,15 @@
                     <span class="pill-dot"></span>
                     <span>BURSA EFEK INDONESIA • KUANTITATIF & TEKNIKAL</span>
                 </div>
-                
+
                 <h1 class="hero-title" id="heroTitle">
                     Terminal Proyeksi & Analisis Saham BEI
                 </h1>
-                
+
                 <p class="hero-subtitle">
-                    Sistem analisis teknikal kuantitatif untuk <strong>167 saham BEI</strong> (Perbankan, Konsumsi, Perkebunan, Mineral). Dilengkapi proyeksi target swing 31 hari, sinyal scalping 5 menit, dan alokasi lot risiko realistis.
+                    Sistem analisis teknikal kuantitatif untuk <strong>167 saham BEI</strong> (Perbankan, Konsumsi,
+                    Perkebunan, Mineral). Dilengkapi proyeksi target swing 31 hari, sinyal scalping 5 menit, dan alokasi
+                    lot risiko realistis.
                 </p>
 
                 <!-- Quick Market KPI Row -->
@@ -148,7 +158,8 @@
                 <div>
                     <span class="section-tag">Peta Sektoral</span>
                     <h2 class="section-title">Performa Komparatif 4 Sektor BEI</h2>
-                    <p class="section-desc">Rata-rata estimasi return H+31, akurasi model historis (MAPE), dan konsentrasi sinyal beli di masing-masing sektor.</p>
+                    <p class="section-desc">Rata-rata estimasi return H+31, akurasi model historis (MAPE), dan
+                        konsentrasi sinyal beli di masing-masing sektor.</p>
                 </div>
             </div>
 
@@ -168,7 +179,9 @@
                             <span class="chart-sector" id="chartSector">Perbankan</span>
                             <span class="chart-price" id="chartPrice">Rp -</span>
                             <span class="chart-badge badge-strong-buy" id="chartSignal">STRONG BUY</span>
-                            <span class="auto-sync-indicator" id="chartAutoSyncIndicator" title="Data IHSG & Emiten auto-update otomatis"><span class="pulse-dot"></span> Auto-Sync: Aktif (<span id="chartSyncTimer">60s</span>)</span>
+                            <span class="auto-sync-indicator" id="chartAutoSyncIndicator"
+                                title="Data IHSG & Emiten auto-update otomatis"><span class="pulse-dot"></span>
+                                Auto-Sync: Aktif (<span id="chartSyncTimer">60s</span>)</span>
                         </div>
                         <div class="chart-legend-pills">
                             <span class="legend-pill"><span class="dot dot-white"></span> Historis 60H</span>
@@ -186,6 +199,23 @@
                     <div class="milestones-row" id="milestonesRow">
                         <!-- Populated by JS -->
                     </div>
+
+                    <!-- Real-Time News & Sentiment to Support Chart Analysis -->
+                    <div class="chart-sentiment-box" id="chartSentimentBox">
+                        <div class="sentiment-box-header">
+                            <div class="sentiment-header-left">
+                                <span class="sentiment-tag">Sentimen Katalis Berita</span>
+                                <h4 class="sentiment-ticker-title">Sentimen Terkini: <span id="newsTickerTarget">BBCA</span></h4>
+                            </div>
+                            <div class="sentiment-consensus-pill" id="sentimentConsensusBadge">
+                                🟢 Sentimen Positif
+                            </div>
+                        </div>
+                        <div class="ticker-news-items" id="tickerNewsItems">
+                            <!-- Populated dynamically by JS -->
+                            <div class="news-loading-skeleton">Memuat sentimen berita real-time...</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right: Dedicated Controls, Stock Selector, Confluence & Trading Plan -->
@@ -195,12 +225,14 @@
                         <div class="panel-header-compact">
                             <span class="section-tag">Analisis Saham</span>
                             <h3 class="panel-title">Pilih & Cari Emiten</h3>
-                            <p class="panel-desc-compact">Pilih salah satu dari 167 emiten untuk menganalisis kurva proyeksi dan rencana trading.</p>
+                            <p class="panel-desc-compact">Pilih salah satu dari 167 emiten untuk menganalisis kurva
+                                proyeksi dan rencana trading.</p>
                         </div>
 
                         <!-- Instant Ticker Search Box -->
                         <div class="inspector-search-wrapper">
-                            <input type="text" id="inspectorSearch" class="custom-input inspector-search-input" placeholder="🔍 Ketik Ticker (misal: BBCA, ANTM)..." autocomplete="off">
+                            <input type="text" id="inspectorSearch" class="custom-input inspector-search-input"
+                                placeholder="🔍 Ketik Ticker (misal: BBCA, ANTM)..." autocomplete="off">
                         </div>
 
                         <!-- Dropdown Select -->
@@ -219,7 +251,8 @@
                         <div class="quick-chips-wrapper-compact">
                             <span class="chips-label">Akses Cepat Indeks & Emiten:</span>
                             <div class="quick-chips-list">
-                                <button type="button" class="ticker-chip ticker-chip-ihsg" data-ticker="IHSG" title="Grafik Indeks Acuan Komposit IHSG (^JKSE)">📊 IHSG</button>
+                                <button type="button" class="ticker-chip ticker-chip-ihsg" data-ticker="IHSG"
+                                    title="Grafik Indeks Acuan Komposit IHSG (^JKSE)">📊 IHSG</button>
                                 <button type="button" class="ticker-chip active" data-ticker="BBCA">BBCA</button>
                                 <button type="button" class="ticker-chip" data-ticker="BBRI">BBRI</button>
                                 <button type="button" class="ticker-chip" data-ticker="BMRI">BMRI</button>
@@ -295,13 +328,48 @@
             </div>
         </section>
 
+        <!-- MODULE: REAL-TIME MARKET & MACROECONOMIC NEWS -->
+        <section id="berita" class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Warta Terkini & Analisis Sentimen</span>
+                    <h2 class="section-title">Berita Real-Time Pasar BEI & Ekonomi Indonesia</h2>
+                    <p class="section-desc">Pantau katalis berita bursa saham, aksi korporasi emiten, dan data makroekonomi Bank Indonesia terkini untuk melengkapi analisis teknikal.</p>
+                </div>
+                <div class="news-header-actions">
+                    <button id="btnRefreshNews" class="btn btn-secondary">
+                        <span class="btn-icon">🔄</span> Segarkan Berita
+                    </button>
+                </div>
+            </div>
+
+            <!-- News Filter Tabs & Search -->
+            <div class="news-controls-bar card">
+                <div class="news-category-tabs">
+                    <button type="button" class="news-tab active" data-category="all">🌐 Semua Berita</button>
+                    <button type="button" class="news-tab" data-category="idx">📈 Saham & IHSG (IDX)</button>
+                    <button type="button" class="news-tab" data-category="macro">🏛️ Ekonomi Indonesia & BI</button>
+                    <button type="button" class="news-tab" data-category="emiten">🏢 Aksi Emiten Saham</button>
+                </div>
+                <div class="news-search-wrapper">
+                    <input type="text" id="newsSearchInput" class="custom-input" placeholder="🔍 Cari berita (misal: BI-Rate, Dividen, Laba)..." autocomplete="off">
+                </div>
+            </div>
+
+            <!-- News Cards Grid -->
+            <div class="news-grid" id="newsCardsGrid">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </section>
+
         <!-- MODULE 2: INTERACTIVE LOT & MONEY MANAGEMENT CALCULATOR -->
         <section id="calculator" class="section-container">
             <div class="section-header">
                 <div>
                     <span class="section-tag">Manajemen Posisi & Modal</span>
                     <h2 class="section-title">Kalkulator Lot Saham & Manajemen Risiko Realistis</h2>
-                    <p class="section-desc">Hitung alokasi modal, jumlah lot optimal (1 Lot = 100 Lembar), dan simulasi untung/rugi bersih setelah memperhitungkan fee transaksi bursa.</p>
+                    <p class="section-desc">Hitung alokasi modal, jumlah lot optimal (1 Lot = 100 Lembar), dan simulasi
+                        untung/rugi bersih setelah memperhitungkan fee transaksi bursa.</p>
                 </div>
             </div>
 
@@ -311,7 +379,8 @@
                     <span class="preset-label">Pilih Profil Risiko Cepat:</span>
                     <div class="preset-buttons">
                         <button type="button" class="btn-preset" data-risk="1.0">🛡️ 1.0% (Konservatif)</button>
-                        <button type="button" class="btn-preset active" data-risk="2.0">⚖️ 2.0% (Standar Disarankan)</button>
+                        <button type="button" class="btn-preset active" data-risk="2.0">⚖️ 2.0% (Standar
+                            Disarankan)</button>
                         <button type="button" class="btn-preset" data-risk="3.0">🚀 3.0% (Agresif / Scalping)</button>
                     </div>
                 </div>
@@ -324,7 +393,8 @@
                     </div>
                     <div class="calc-input-group">
                         <label for="calcRiskPct">Maksimal Toleransi Risiko (% Modal):</label>
-                        <input type="number" id="calcRiskPct" class="calc-input" value="2.0" step="0.5" min="0.1" max="10">
+                        <input type="number" id="calcRiskPct" class="calc-input" value="2.0" step="0.5" min="0.1"
+                            max="10">
                         <span class="input-hint" id="calcRiskSummary">Batas rugi maksimal: Rp 200.000</span>
                     </div>
                     <div class="calc-input-group">
@@ -366,7 +436,8 @@
                     <div class="calc-res-box">
                         <span class="res-label">Batas Risiko Riil Portofolio</span>
                         <span class="res-value text-red" id="resMaxRisk">Rp 200.000</span>
-                        <span class="res-sub" id="resRiskExplanation">Jika kena SL, modal berkurang HANYA Rp 200.000 (2.0%), BUKAN modal seluruhnya!</span>
+                        <span class="res-sub" id="resRiskExplanation">Jika kena SL, modal berkurang HANYA Rp 200.000
+                            (2.0%), BUKAN modal seluruhnya!</span>
                         <div class="res-pill" id="resRiskPerShare">Risiko: Rp 500 / lembar</div>
                     </div>
 
@@ -415,11 +486,13 @@
                 <div>
                     <span class="section-tag">Swing Trading Projections</span>
                     <h2 class="section-title">Daftar Proyeksi Multi-Hari (H+1 s.d. H+31)</h2>
-                    <p class="section-desc">Seluruh 167 emiten dari 4 sektor dengan level target, sinyal, dan rasio risiko.</p>
+                    <p class="section-desc">Seluruh 167 emiten dari 4 sektor dengan level target, sinyal, dan rasio
+                        risiko.</p>
                 </div>
 
                 <div class="table-actions">
-                    <input type="text" id="searchMulti" class="custom-input" placeholder="🔍 Cari Ticker (contoh: BBCA, ANTM)...">
+                    <input type="text" id="searchMulti" class="custom-input"
+                        placeholder="🔍 Cari Ticker (contoh: BBCA, ANTM)...">
                     <select id="filterSectorMulti" class="custom-select">
                         <option value="ALL">Semua Sektor (167)</option>
                         <option value="Perbankan">Perbankan (47)</option>
@@ -441,7 +514,8 @@
             <!-- Scroll Tips & Pagination Toolbar Top -->
             <div class="table-toolbar">
                 <div class="table-counts-info">
-                    Menampilkan <strong id="multiShowingCount">1 - 25</strong> dari <strong id="multiTotalCount">167</strong> saham
+                    Menampilkan <strong id="multiShowingCount">1 - 25</strong> dari <strong
+                        id="multiTotalCount">167</strong> saham
                 </div>
                 <div class="table-pagination-controls">
                     <span class="page-size-label">Baris:</span>
@@ -496,7 +570,8 @@
                 <div>
                     <span class="section-tag">High-Frequency Intraday</span>
                     <h2 class="section-title">Proyeksi Scalping Intraday (5 Menit)</h2>
-                    <p class="section-desc">Pergerakan jangka sangat pendek (+5m s.d. +60m) dengan perlindungan komisi bursa 0.40%.</p>
+                    <p class="section-desc">Pergerakan jangka sangat pendek (+5m s.d. +60m) dengan perlindungan komisi
+                        bursa 0.40%.</p>
                 </div>
 
                 <div class="table-actions">
@@ -515,7 +590,8 @@
             <!-- Scroll Tips & Pagination Toolbar Top -->
             <div class="table-toolbar">
                 <div class="table-counts-info">
-                    Menampilkan <strong id="scalpShowingCount">1 - 25</strong> dari <strong id="scalpTotalCount">158</strong> saham scalping
+                    Menampilkan <strong id="scalpShowingCount">1 - 25</strong> dari <strong
+                        id="scalpTotalCount">158</strong> saham scalping
                 </div>
                 <div class="table-pagination-controls">
                     <span class="page-size-label">Baris:</span>
@@ -569,7 +645,8 @@
                 <div>
                     <span class="section-tag">Trading Playbook</span>
                     <h2 class="section-title">Panduan Strategi & Aturan Disiplin Trading</h2>
-                    <p class="section-desc">Aturan praktis untuk memaksimalkan keuntungan dan melindungi modal menggunakan sinyal kuantitatif.</p>
+                    <p class="section-desc">Aturan praktis untuk memaksimalkan keuntungan dan melindungi modal
+                        menggunakan sinyal kuantitatif.</p>
                 </div>
             </div>
 
@@ -579,7 +656,9 @@
                     <div class="imp-icon">🎯</div>
                     <h3 class="imp-title">1. Eksekusi Swing Trading (7 - 31 Hari)</h3>
                     <div class="imp-body">
-                        Fokus pada saham dengan label <strong>STRONG BUY</strong> yang berada di area pantulan support EMA 20/50. Masuk bertahap di <em>Area Entry</em>, pasang target di level <strong>TP H+31</strong>, dan trailing stop saat keuntungan sudah melewati +5%.
+                        Fokus pada saham dengan label <strong>STRONG BUY</strong> yang berada di area pantulan support
+                        EMA 20/50. Masuk bertahap di <em>Area Entry</em>, pasang target di level <strong>TP
+                            H+31</strong>, dan trailing stop saat keuntungan sudah melewati +5%.
                     </div>
                     <div class="imp-badge-rule">Sinyal Utama: Strong Buy + Tren EMA Naik</div>
                 </div>
@@ -589,7 +668,9 @@
                     <div class="imp-icon">⚡</div>
                     <h3 class="imp-title">2. Taktik Scalping Cepat (Intraday 5m - 60m)</h3>
                     <div class="imp-body">
-                        Khusus trading kilat saat jam bursa aktif. Perhatikan kolom <strong>Volume Surge (&gt;1.5x)</strong> dengan proyeksi Net Gain positif setelah dipotong fee bursa 0.40%. Amankan profit kilat di target <em>TP Scalp</em> sebelum penutupan sesi.
+                        Khusus trading kilat saat jam bursa aktif. Perhatikan kolom <strong>Volume Surge
+                            (&gt;1.5x)</strong> dengan proyeksi Net Gain positif setelah dipotong fee bursa 0.40%.
+                        Amankan profit kilat di target <em>TP Scalp</em> sebelum penutupan sesi.
                     </div>
                     <div class="imp-badge-rule">Sinyal Utama: Volume Surge + Net Gain &gt; 1.5%</div>
                 </div>
@@ -599,7 +680,9 @@
                     <div class="imp-icon">🛡️</div>
                     <h3 class="imp-title">3. Hukum Mutlak Stop Loss (Proteksi Modal)</h3>
                     <div class="imp-body">
-                        Jangan pernah menahan posisi rugi dengan harapan harga berbalik arah tanpa rencana. Pasang automatic cut loss di level <strong>Stop Loss (SL)</strong> yang telah dihitung. Selama modal Anda terlindungi, peluang baru selalu terbuka setiap hari.
+                        Jangan pernah menahan posisi rugi dengan harapan harga berbalik arah tanpa rencana. Pasang
+                        automatic cut loss di level <strong>Stop Loss (SL)</strong> yang telah dihitung. Selama modal
+                        Anda terlindungi, peluang baru selalu terbuka setiap hari.
                     </div>
                     <div class="imp-badge-rule">Toleransi Risiko: Maksimal 1% - 2% Modal</div>
                 </div>
@@ -609,7 +692,9 @@
                     <div class="imp-icon">🏛️</div>
                     <h3 class="imp-title">4. Perlindungan Likuiditas & Regulasi BEI</h3>
                     <div class="imp-body">
-                        Sistem secara otomatis memverifikasi ketersediaan likuiditas bid/offer di bursa agar Anda tidak terjebak di saham tidur. Mematuhi batas simetris Auto Rejection Atas (ARA) dan Auto Rejection Bawah (ARB) reguler BEI.
+                        Sistem secara otomatis memverifikasi ketersediaan likuiditas bid/offer di bursa agar Anda tidak
+                        terjebak di saham tidur. Mematuhi batas simetris Auto Rejection Atas (ARA) dan Auto Rejection
+                        Bawah (ARB) reguler BEI.
                     </div>
                     <div class="imp-badge-rule">Regulasi: 1 Lot = 100 Lembar Saham</div>
                 </div>
@@ -619,7 +704,9 @@
                     <div class="imp-icon">⚖️</div>
                     <h3 class="imp-title">5. Syarat Rasio Risk-Reward Minimal 1:2</h3>
                     <div class="imp-body">
-                        Hanya ambil posisi jika rasio keuntungan terhadap risiko (RRR) bernilai minimal <strong>1 : 2.0</strong>. Dengan rasio ini, portofolio Anda tetap bertumbuh positif meskipun tingkat kemenangan (win rate) Anda berada di kisaran 50%.
+                        Hanya ambil posisi jika rasio keuntungan terhadap risiko (RRR) bernilai minimal <strong>1 :
+                            2.0</strong>. Dengan rasio ini, portofolio Anda tetap bertumbuh positif meskipun tingkat
+                        kemenangan (win rate) Anda berada di kisaran 50%.
                     </div>
                     <div class="imp-badge-rule">Prinsip: Potensi Cuan ≥ 2x Potensi Risiko</div>
                 </div>
@@ -640,7 +727,9 @@
                 </div>
             </div>
             <div class="footer-note">
-                Disclaimer: Seluruh data proyeksi, indikator teknikal, dan kalkulator manajemen risiko merupakan alat bantu analisis kuantitatif. Keputusan investasi dan eksekusi transaksi sepenuhnya merupakan tanggung jawab investor.
+                Disclaimer: Seluruh data proyeksi, indikator teknikal, dan kalkulator manajemen risiko merupakan alat
+                bantu analisis kuantitatif. Keputusan investasi dan eksekusi transaksi sepenuhnya merupakan tanggung
+                jawab investor.
             </div>
         </div>
     </footer>
@@ -648,5 +737,5 @@
     <!-- Application Script -->
     <script src="/static/js/app.js"></script>
 </body>
-</html>
 
+</html>
