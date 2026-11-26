@@ -469,10 +469,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Add Featured IHSG Option at the top
             const indexGroup = document.createElement('optgroup');
-            indexGroup.label = '🌟 Indeks Acuan Komposit Pasar BEI';
+            indexGroup.label = 'Indeks Komposit BEI';
             const ihsgOpt = document.createElement('option');
             ihsgOpt.value = 'IHSG';
-            ihsgOpt.text = '📊 IHSG - Indeks Harga Saham Gabungan (^JKSE)';
+            ihsgOpt.text = 'IHSG — Indeks Harga Saham Gabungan (^JKSE)';
             indexGroup.appendChild(ihsgOpt);
             selector.appendChild(indexGroup);
 
@@ -1276,10 +1276,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let cachedMarketNews = [];
 
     function getCategoryBadgeLabel(cat) {
-        if (cat === 'emiten') return '🏢 Aksi Emiten';
-        if (cat === 'macro') return '🏛️ Ekonomi Makro';
-        if (cat === 'idx') return '📈 Rekomendasi Saham';
-        return '📰 Berita Pasar';
+        if (cat === 'emiten') return 'Aksi Emiten';
+        if (cat === 'macro') return 'Ekonomi Makro';
+        if (cat === 'idx') return 'Rekomendasi Saham';
+        return 'Berita Pasar';
     }
 
     // 13a. Supporting news for active chart ticker
@@ -1308,7 +1308,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 container.innerHTML = '<div class="news-loading-skeleton">Belum ada berita spesifik hari ini. Mengikuti sentimen umum pasar bursa.</div>';
                 if (badgeConsensus) {
                     badgeConsensus.className = 'sentiment-consensus-pill neutral';
-                    badgeConsensus.innerText = '⚪ Sentimen Netral';
+                    badgeConsensus.innerHTML = '<span class="sentiment-pip neutral"></span> Sentimen Netral';
                 }
                 return;
             }
@@ -1323,20 +1323,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (badgeConsensus) {
                 if (bullCount > bearCount) {
                     badgeConsensus.className = 'sentiment-consensus-pill bullish';
-                    badgeConsensus.innerText = '🟢 Sentimen Berita Positif (Mendukung Sinyal)';
+                    badgeConsensus.innerHTML = '<span class="sentiment-pip bullish"></span> Sentimen Berita Positif (Mendukung Sinyal)';
                 } else if (bearCount > bullCount) {
                     badgeConsensus.className = 'sentiment-consensus-pill bearish';
-                    badgeConsensus.innerText = '🔴 Sentimen Waspada (Katalis Koreksi)';
+                    badgeConsensus.innerHTML = '<span class="sentiment-pip bearish"></span> Sentimen Waspada (Katalis Koreksi)';
                 } else {
                     badgeConsensus.className = 'sentiment-consensus-pill neutral';
-                    badgeConsensus.innerText = '⚪ Sentimen Netral / Konsolidasi';
+                    badgeConsensus.innerHTML = '<span class="sentiment-pip neutral"></span> Sentimen Netral / Konsolidasi';
                 }
             }
 
             container.innerHTML = items.slice(0, 3).map(item => `
                 <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" class="ticker-news-item">
                     <div class="news-item-left">
-                        <span class="news-item-sentiment ${item.sentiment}">${item.sentiment === 'bullish' ? '🟢 Bullish' : (item.sentiment === 'bearish' ? '🔴 Waspada' : '⚪ Netral')}</span>
+                        <span class="news-item-sentiment ${item.sentiment}"><span class="sentiment-pip ${item.sentiment}"></span>${item.sentiment === 'bullish' ? 'Bullish' : (item.sentiment === 'bearish' ? 'Waspada' : 'Netral')}</span>
                         <span class="news-item-title" title="${item.title}">${item.title}</span>
                     </div>
                     <div class="news-item-meta">
@@ -1458,7 +1458,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newsSyncTimerEl) newsSyncTimerEl.innerText = `${AUTO_UPDATE_INTERVAL}s`;
             if (tickerNewsTimerEl) tickerNewsTimerEl.innerText = `${AUTO_UPDATE_INTERVAL}s`;
             btnRefreshNews.disabled = false;
-            btnRefreshNews.innerHTML = '<span class="btn-icon">🔄</span> Segarkan Berita';
+            btnRefreshNews.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Segarkan Berita';
         });
     }
 

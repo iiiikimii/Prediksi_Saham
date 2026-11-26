@@ -69,6 +69,82 @@
     font-feature-settings: "tnum" 1, "zero" 1;
 }
 
+/* ==============================================================================
+   PRECISION SVG ICON SYSTEM (ANTI-AI SLOP)
+   ============================================================================== */
+.ui-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    vertical-align: -2px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.icon-xs {
+    width: 12px;
+    height: 12px;
+    vertical-align: -1px;
+}
+
+.icon-sm {
+    width: 14px;
+    height: 14px;
+    vertical-align: -2px;
+}
+
+.icon-md {
+    width: 16px;
+    height: 16px;
+    vertical-align: -2.5px;
+}
+
+.icon-lg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.6;
+}
+
+.icon-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Micro Status Pip */
+.res-pip, .sentiment-pip {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: 1px;
+    flex-shrink: 0;
+}
+
+.res-pip.green, .sentiment-pip.bullish {
+    background-color: var(--accent-green);
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.res-pip.red, .sentiment-pip.bearish {
+    background-color: var(--accent-red);
+    box-shadow: 0 0 6px rgba(244, 63, 94, 0.6);
+}
+
+.res-pip.gold, .sentiment-pip.neutral {
+    background-color: var(--accent-gold);
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+}
+
 html {
     font-size: 15px;
     background-color: var(--bg-main);
@@ -1318,6 +1394,32 @@ body.dark-terminal {
     padding: 2px 8px;
     border-radius: var(--radius-full);
     font-family: var(--font-mono);
+    display: inline-flex;
+    align-items: center;
+}
+
+.news-sentiment-badge::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+
+.news-sentiment-badge.bullish::before {
+    background-color: var(--accent-green);
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
+}
+
+.news-sentiment-badge.bearish::before {
+    background-color: var(--accent-red);
+    box-shadow: 0 0 5px rgba(244, 63, 94, 0.6);
+}
+
+.news-sentiment-badge.neutral::before {
+    background-color: #94a3b8;
 }
 
 .news-sentiment-badge.bullish {
@@ -2087,9 +2189,25 @@ body.dark-terminal {
     transform: translateY(-2px);
 }
 
-.imp-icon {
-    font-size: 2rem;
-    margin-bottom: 0.8rem;
+.imp-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--accent-cyan);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.1rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+}
+
+.improvement-card:hover .imp-icon-box {
+    background: rgba(56, 189, 248, 0.14);
+    border-color: rgba(56, 189, 248, 0.35);
+    transform: scale(1.05);
 }
 
 .imp-title {

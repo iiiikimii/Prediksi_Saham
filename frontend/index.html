@@ -141,7 +141,8 @@
                     </div>
                     <div class="ihsg-right">
                         <button type="button" class="btn btn-outline btn-ihsg-chart" id="btnOpenIhsgChart">
-                            📈 Buka Grafik IHSG
+                            <svg class="ui-icon" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                            Buka Grafik IHSG
                         </button>
                     </div>
                 </div>
@@ -208,7 +209,7 @@
                                     <span class="pulse-dot"></span> Auto-Sync: <span id="tickerNewsTimer">60s</span>
                                 </span>
                                 <div class="sentiment-consensus-pill" id="sentimentConsensusBadge">
-                                    🟢 Sentimen Positif
+                                    <span class="sentiment-pip bullish"></span> Sentimen Positif
                                 </div>
                             </div>
                         </div>
@@ -233,7 +234,7 @@
                         <!-- Instant Ticker Search Box -->
                         <div class="inspector-search-wrapper">
                             <input type="text" id="inspectorSearch" class="custom-input inspector-search-input"
-                                placeholder="🔍 Ketik Ticker (misal: BBCA, ANTM)..." autocomplete="off">
+                                placeholder="Ketik Ticker (misal: BBCA, ANTM)..." autocomplete="off">
                         </div>
 
                         <!-- Dropdown Select -->
@@ -245,7 +246,8 @@
 
                         <!-- Live Yahoo Finance Trigger -->
                         <button id="btnLiveForecast" class="btn btn-primary btn-block">
-                            <span class="btn-icon">⚡</span> Cek Real-time Yahoo Finance
+                            <svg class="ui-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            Cek Real-time Yahoo Finance
                         </button>
 
                         <!-- Quick Ticker Shortcuts Bar (Docked on Right) -->
@@ -253,7 +255,7 @@
                             <span class="chips-label">Akses Cepat Indeks & Emiten:</span>
                             <div class="quick-chips-list">
                                 <button type="button" class="ticker-chip ticker-chip-ihsg" data-ticker="IHSG"
-                                    title="Grafik Indeks Acuan Komposit IHSG (^JKSE)">📊 IHSG</button>
+                                    title="Grafik Indeks Acuan Komposit IHSG (^JKSE)"><svg class="ui-icon icon-xs" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> IHSG</button>
                                 <button type="button" class="ticker-chip active" data-ticker="BBCA">BBCA</button>
                                 <button type="button" class="ticker-chip" data-ticker="BBRI">BBRI</button>
                                 <button type="button" class="ticker-chip" data-ticker="BMRI">BMRI</button>
@@ -342,7 +344,8 @@
                         <span class="pulse-dot"></span> Auto-Update: <span id="newsSyncTimer">60s</span>
                     </span>
                     <button id="btnRefreshNews" class="btn btn-secondary">
-                        <span class="btn-icon">🔄</span> Segarkan Berita
+                        <svg class="ui-icon" viewBox="0 0 24 24"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        Segarkan Berita
                     </button>
                 </div>
             </div>
@@ -350,13 +353,13 @@
             <!-- News Filter Tabs & Search -->
             <div class="news-controls-bar card">
                 <div class="news-category-tabs">
-                    <button type="button" class="news-tab active" data-category="all">🌐 Semua Berita</button>
-                    <button type="button" class="news-tab" data-category="emiten">🏢 Aksi Emiten & Dividen</button>
-                    <button type="button" class="news-tab" data-category="macro">🏛️ Ekonomi Indonesia & BI</button>
-                    <button type="button" class="news-tab" data-category="idx">📈 Rekomendasi Saham (BEI)</button>
+                    <button type="button" class="news-tab active" data-category="all"><svg class="ui-icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> Semua Berita</button>
+                    <button type="button" class="news-tab" data-category="emiten"><svg class="ui-icon icon-sm" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="22.01"></line><line x1="15" y1="22" x2="15" y2="22.01"></line><line x1="9" y1="6" x2="9" y2="6.01"></line><line x1="15" y1="6" x2="15" y2="6.01"></line><line x1="9" y1="10" x2="9" y2="10.01"></line><line x1="15" y1="10" x2="15" y2="10.01"></line><line x1="9" y1="14" x2="9" y2="14.01"></line><line x1="15" y1="14" x2="15" y2="14.01"></line><line x1="9" y1="18" x2="9" y2="18.01"></line><line x1="15" y1="18" x2="15" y2="18.01"></line></svg> Aksi Emiten & Dividen</button>
+                    <button type="button" class="news-tab" data-category="macro"><svg class="ui-icon icon-sm" viewBox="0 0 24 24"><line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="5 6 12 3 19 6"></polyline><line x1="4" y1="10" x2="4" y2="21"></line><line x1="20" y1="10" x2="20" y2="21"></line><line x1="8" y1="14" x2="8" y2="17"></line><line x1="12" y1="14" x2="12" y2="17"></line><line x1="16" y1="14" x2="16" y2="17"></line></svg> Ekonomi Indonesia & BI</button>
+                    <button type="button" class="news-tab" data-category="idx"><svg class="ui-icon icon-sm" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Rekomendasi Saham (BEI)</button>
                 </div>
                 <div class="news-search-wrapper">
-                    <input type="text" id="newsSearchInput" class="custom-input" placeholder="🔍 Cari berita (misal: BI-Rate, Dividen, Laba)..." autocomplete="off">
+                    <input type="text" id="newsSearchInput" class="custom-input" placeholder="Cari berita (misal: BI-Rate, Dividen, Laba)..." autocomplete="off">
                 </div>
             </div>
 
@@ -380,12 +383,11 @@
             <div class="calc-card card">
                 <!-- Preset Risk Level Selector -->
                 <div class="calc-risk-preset-bar">
-                    <span class="preset-label">Pilih Profil Risiko Cepat:</span>
+                    <span class="preset-label">Pilih Profil Risiko:</span>
                     <div class="preset-buttons">
-                        <button type="button" class="btn-preset" data-risk="1.0">🛡️ 1.0% (Konservatif)</button>
-                        <button type="button" class="btn-preset active" data-risk="2.0">⚖️ 2.0% (Standar
-                            Disarankan)</button>
-                        <button type="button" class="btn-preset" data-risk="3.0">🚀 3.0% (Agresif / Scalping)</button>
+                        <button type="button" class="btn-preset" data-risk="1.0"><svg class="ui-icon icon-xs" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Konservatif (1.0%)</button>
+                        <button type="button" class="btn-preset active" data-risk="2.0"><svg class="ui-icon icon-xs" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg> Standar (2.0%)</button>
+                        <button type="button" class="btn-preset" data-risk="3.0"><svg class="ui-icon icon-xs" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Agresif (3.0%)</button>
                     </div>
                 </div>
 
@@ -424,7 +426,7 @@
                         <input type="checkbox" id="calcIncludeFees" checked>
                         <span>Sertakan Estimasi Fee Sekuritas (Fee Beli 0.15% + Fee Jual 0.25% termasuk PPh 0.1%)</span>
                     </label>
-                    <span class="idx-lot-rule-badge">🏛️ Regulasi BEI: 1 Lot = 100 Lembar Saham</span>
+                    <span class="idx-lot-rule-badge"><svg class="ui-icon icon-xs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Regulasi BEI: 1 Lot = 100 Lembar Saham</span>
                 </div>
 
                 <!-- Realistic Position Sizing Results -->
@@ -434,7 +436,7 @@
                         <span class="res-value text-cyan" id="resLots">4 Lot</span>
                         <span class="res-sub" id="resShares">400 Lembar Saham</span>
                         <div class="res-pill" id="resTotalBuy">Total Beli: Rp 4.000.000 (40.0% modal)</div>
-                        <div class="res-status text-green" id="resCapStatus">✅ Sesuai ketersediaan kas modal</div>
+                        <div class="res-status text-green" id="resCapStatus"><span class="res-pip green"></span> Sesuai ketersediaan kas modal</div>
                     </div>
 
                     <div class="calc-res-box">
@@ -446,7 +448,7 @@
                     </div>
 
                     <div class="calc-res-box scenario-box scenario-profit">
-                        <span class="res-label">🟢 Skenario Untung (TP Tercapai)</span>
+                        <span class="res-label"><span class="res-pip green"></span> Skenario Untung (TP Tercapai)</span>
                         <span class="res-value text-green" id="resProfit">+Rp 462.800</span>
                         <span class="res-sub" id="resProfitPct">Return Bersih: +11.57% (setelah fee)</span>
                         <div class="scenario-details">
@@ -457,7 +459,7 @@
                     </div>
 
                     <div class="calc-res-box scenario-box scenario-loss">
-                        <span class="res-label">🔴 Skenario Rugi (SL Tersentuh)</span>
+                        <span class="res-label"><span class="res-pip red"></span> Skenario Rugi (SL Tersentuh)</span>
                         <span class="res-value text-red" id="resLoss">-Rp 215.500</span>
                         <span class="res-sub" id="resLossPct">Rugi Bersih: -2.16% modal (termasuk fee)</span>
                         <div class="scenario-details">
@@ -496,7 +498,7 @@
 
                 <div class="table-actions">
                     <input type="text" id="searchMulti" class="custom-input"
-                        placeholder="🔍 Cari Ticker (contoh: BBCA, ANTM)...">
+                        placeholder="Cari Ticker (contoh: BBCA, ANTM)...">
                     <select id="filterSectorMulti" class="custom-select">
                         <option value="ALL">Semua Sektor (167)</option>
                         <option value="Perbankan">Perbankan (47)</option>
@@ -511,7 +513,10 @@
                         <option value="HOLD / WAIT">HOLD / WAIT</option>
                         <option value="TAKE PROFIT / SELL">SELL</option>
                     </select>
-                    <button id="btnExportMulti" class="btn btn-secondary">📥 Download CSV</button>
+                    <button id="btnExportMulti" class="btn btn-secondary">
+                        <svg class="ui-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Ekspor CSV
+                    </button>
                 </div>
             </div>
 
@@ -579,7 +584,7 @@
                 </div>
 
                 <div class="table-actions">
-                    <input type="text" id="searchScalp" class="custom-input" placeholder="🔍 Cari Ticker Scalping...">
+                    <input type="text" id="searchScalp" class="custom-input" placeholder="Cari Ticker Scalping...">
                     <select id="filterSectorScalp" class="custom-select">
                         <option value="ALL">Semua Sektor (167)</option>
                         <option value="Perbankan">Perbankan</option>
@@ -587,7 +592,10 @@
                         <option value="Perkebunan">Perkebunan</option>
                         <option value="Mineral">Mineral</option>
                     </select>
-                    <button id="btnExportScalp" class="btn btn-secondary">📥 Download CSV</button>
+                    <button id="btnExportScalp" class="btn btn-secondary">
+                        <svg class="ui-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Ekspor CSV
+                    </button>
                 </div>
             </div>
 
@@ -657,7 +665,7 @@
             <div class="improvements-grid">
                 <!-- Playbook 1 -->
                 <div class="improvement-card card">
-                    <div class="imp-icon">🎯</div>
+                    <div class="imp-icon-box"><svg class="ui-icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
                     <h3 class="imp-title">1. Eksekusi Swing Trading (7 - 31 Hari)</h3>
                     <div class="imp-body">
                         Fokus pada saham dengan label <strong>STRONG BUY</strong> yang berada di area pantulan support
@@ -669,7 +677,7 @@
 
                 <!-- Playbook 2 -->
                 <div class="improvement-card card">
-                    <div class="imp-icon">⚡</div>
+                    <div class="imp-icon-box"><svg class="ui-icon icon-lg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
                     <h3 class="imp-title">2. Taktik Scalping Cepat (Intraday 5m - 60m)</h3>
                     <div class="imp-body">
                         Khusus trading kilat saat jam bursa aktif. Perhatikan kolom <strong>Volume Surge
@@ -681,7 +689,7 @@
 
                 <!-- Playbook 3 -->
                 <div class="improvement-card card">
-                    <div class="imp-icon">🛡️</div>
+                    <div class="imp-icon-box"><svg class="ui-icon icon-lg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
                     <h3 class="imp-title">3. Hukum Mutlak Stop Loss (Proteksi Modal)</h3>
                     <div class="imp-body">
                         Jangan pernah menahan posisi rugi dengan harapan harga berbalik arah tanpa rencana. Pasang
@@ -693,7 +701,7 @@
 
                 <!-- Playbook 4 -->
                 <div class="improvement-card card">
-                    <div class="imp-icon">🏛️</div>
+                    <div class="imp-icon-box"><svg class="ui-icon icon-lg" viewBox="0 0 24 24"><line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="5 6 12 3 19 6"></polyline><line x1="4" y1="10" x2="4" y2="21"></line><line x1="20" y1="10" x2="20" y2="21"></line><line x1="8" y1="14" x2="8" y2="17"></line><line x1="12" y1="14" x2="12" y2="17"></line><line x1="16" y1="14" x2="16" y2="17"></line></svg></div>
                     <h3 class="imp-title">4. Perlindungan Likuiditas & Regulasi BEI</h3>
                     <div class="imp-body">
                         Sistem secara otomatis memverifikasi ketersediaan likuiditas bid/offer di bursa agar Anda tidak
@@ -705,7 +713,7 @@
 
                 <!-- Playbook 5 -->
                 <div class="improvement-card card">
-                    <div class="imp-icon">⚖️</div>
+                    <div class="imp-icon-box"><svg class="ui-icon icon-lg" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg></div>
                     <h3 class="imp-title">5. Syarat Rasio Risk-Reward Minimal 1:2</h3>
                     <div class="imp-body">
                         Hanya ambil posisi jika rasio keuntungan terhadap risiko (RRR) bernilai minimal <strong>1 :

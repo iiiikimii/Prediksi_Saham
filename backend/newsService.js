@@ -36,7 +36,7 @@ const BEARISH_WORDS = [
  * Determine sentiment from title and text
  */
 function evaluateSentiment(text) {
-    if (!text) return { sentiment: 'neutral', label: '⚪ Netral', score: 0 };
+    if (!text) return { sentiment: 'neutral', label: 'Netral', score: 0 };
     const lower = text.toLowerCase();
 
     let bullScore = 0;
@@ -50,12 +50,12 @@ function evaluateSentiment(text) {
     }
 
     if (bullScore > bearScore) {
-        return { sentiment: 'bullish', label: '🟢 Sentimen Positif (Bullish)', score: bullScore - bearScore };
+        return { sentiment: 'bullish', label: 'Sentimen Positif (Bullish)', score: bullScore - bearScore };
     }
     if (bearScore > bullScore) {
-        return { sentiment: 'bearish', label: '🔴 Waspada Koreksi (Bearish)', score: bearScore - bullScore };
+        return { sentiment: 'bearish', label: 'Waspada Koreksi (Bearish)', score: bearScore - bullScore };
     }
-    return { sentiment: 'neutral', label: '⚪ Netral / Konsolidasi', score: 0 };
+    return { sentiment: 'neutral', label: 'Netral / Konsolidasi', score: 0 };
 }
 
 /**
@@ -191,7 +191,7 @@ function getFallbackNews() {
             time_ago: '18 menit yang lalu',
             category: 'emiten',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'BMRI',
             related_sector: 'Perbankan'
         },
@@ -204,7 +204,7 @@ function getFallbackNews() {
             time_ago: '45 menit yang lalu',
             category: 'emiten',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'ASII',
             related_sector: 'Konsumsi'
         },
@@ -217,7 +217,7 @@ function getFallbackNews() {
             time_ago: '1 jam yang lalu',
             category: 'emiten',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'ANTM',
             related_sector: 'Mineral'
         },
@@ -230,7 +230,7 @@ function getFallbackNews() {
             time_ago: '2 jam yang lalu',
             category: 'emiten',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'ICBP',
             related_sector: 'Makanan'
         },
@@ -258,7 +258,7 @@ function getFallbackNews() {
             time_ago: '1 jam yang lalu',
             category: 'macro',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'IHSG',
             related_sector: 'Ekonomi Makro'
         },
@@ -271,7 +271,7 @@ function getFallbackNews() {
             time_ago: '2 jam yang lalu',
             category: 'macro',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'IHSG',
             related_sector: 'Ekonomi Makro'
         },
@@ -299,7 +299,7 @@ function getFallbackNews() {
             time_ago: '25 menit yang lalu',
             category: 'idx',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'BBCA',
             related_sector: 'Perbankan'
         },
@@ -312,7 +312,7 @@ function getFallbackNews() {
             time_ago: '1 jam yang lalu',
             category: 'idx',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'PTBA',
             related_sector: 'Mineral'
         },
@@ -338,7 +338,7 @@ function getFallbackNews() {
             time_ago: '4 jam yang lalu',
             category: 'idx',
             sentiment: 'bullish',
-            sentiment_label: '🟢 Sentimen Positif (Bullish)',
+            sentiment_label: 'Sentimen Positif (Bullish)',
             related_ticker: 'AALI',
             related_sector: 'Perkebunan'
         }
